@@ -1,21 +1,21 @@
 import React from 'react';
-import { Router, Route, Switch } from "react-router-dom"
-import Sidebar from "./Sidebar"
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom"
+import Sidebar from "./components/Sidebar"
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
+	    <Router>
 		  <Sidebar></Sidebar>
-	    {/* <Router>
         <Switch>
-          <Route path="/">
+          <Route path="/Home">
             <h1>Hi!</h1>
+            <h1>Hi!</h1>
+            <h1>Hi!</h1>
+            <h1>Hi!</h1>
+            <p>Test</p>
           </Route>
         </Switch>
-    	</Router> */}
-      </header>
-    </div>
+    	</Router>
   );
 }
 
