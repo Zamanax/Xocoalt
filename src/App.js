@@ -12,6 +12,25 @@ import MapIcon from "@material-ui/icons/Map";
 import SettingsIcon from "@material-ui/icons/Settings";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import DashBoard from "./components/DashBoard";
+import Welcome from "./components/Home";
+
+// Firebase App (the core Firebase SDK) is always required and
+// must be listed before other Firebase SDKs
+import * as firebase from "firebase/app";
+
+// Add the Firebase services that you want to use
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBehAYVloHKD6mHan4il-0IWDylrmcpTX8",
+  authDomain: "xocoalt-f75b7.firebaseapp.com",
+  databaseURL: "https://xocoalt-f75b7.firebaseio.com",
+  projectId: "xocoalt-f75b7",
+  storageBucket: "xocoalt-f75b7.appspot.com",
+  messagingSenderId: "142689675817",
+  appId: "1:142689675817:web:23a9700528511db5ff0a38",
+  measurementId: "G-GE2TT4TS0X"
+};
 
 const drawerWidth = 240;
 
@@ -21,9 +40,12 @@ const useStyles = makeStyles(theme => ({
     height: "100%",
   },
   main: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
     height: "100%",
     background: "#2F2F2F",
-    color : "#FFFFFF",
+    color : "#FFF",
     marginLeft : 75,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
@@ -73,6 +95,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function App() {
   document.body.style = 'background: #2f2f2f;';
+
+  firebase.initializeApp(firebaseConfig);
 
   const classes = useStyles();
 
@@ -138,11 +162,10 @@ export default function App() {
         </Typography>
         <Switch>
           <Route path="/DashBoard">
-            <Typography paragraph>
-              What a beautiful dashboard.
-            </Typography>
+            <DashBoard/>
           </Route>
           <Route path="/">
+            <Welcome/>
           </Route>
         </Switch>
       </main>
