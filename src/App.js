@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import clsx from "clsx";
 
-import { Drawer, List, ListItem, ListItemText, ListItemIcon, Typography, CssBaseline } from "@material-ui/core";
+import { Drawer, List, ListItem, ListItemText, ListItemIcon, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 
@@ -18,8 +18,12 @@ const drawerWidth = 240;
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
+    height: "100%",
   },
   main: {
+    height: "100%",
+    background: "#2F2F2F",
+    color : "#FFFFFF",
     marginLeft : 75,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
@@ -61,9 +65,15 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     padding: theme.spacing(3),
   },
+  title: {
+    margin: 20,
+    textAlign: 'center',
+  }
 }));
 
 export default function App() {
+  document.body.style = 'background: #2f2f2f;';
+
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -87,7 +97,6 @@ export default function App() {
 
   return (
     <Router className={classes.root}>
-      <CssBaseline/>
       <Drawer
       variant="permanent"
       className={clsx(classes.drawer, {
@@ -124,6 +133,9 @@ export default function App() {
       <main className={clsx(classes.main, {
           [classes.mainShift]: open,
       })}>
+        <Typography variant="h4" className={classes.title}>
+          XOCOALT
+        </Typography>
         <Switch>
           <Route path="/DashBoard">
             <Typography paragraph>
@@ -131,9 +143,6 @@ export default function App() {
             </Typography>
           </Route>
           <Route path="/">
-            <Typography paragraph>
-              empty dumpty sat on the wall, empty dumty fell from the wall.
-            </Typography>
           </Route>
         </Switch>
       </main>
