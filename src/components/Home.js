@@ -8,10 +8,16 @@ import {
   InputLabel,
   InputAdornment,
   IconButton,
-  Button
+  Button,
+  CircularProgress
 } from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
+
+import * as firebase from "firebase/app";
+import "firebase/database";
+
+import LessonCard from "./LessonCard";
 
 const useStyles = makeStyles(theme => ({
   center: {
@@ -29,14 +35,22 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Welcome() {
+  const database = firebase.database();
+
   const classes = useStyles();
 
   const [values, setValues] = React.useState({
     login: "",
     password: "",
     showPassword: false,
-    isLoggedIn: false
+    user: false,
+    fetching: false
   });
+
+  const [err, setError] = React.useState({
+    name: false,
+    password: false
+  })
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
@@ -51,28 +65,47 @@ export default function Welcome() {
   };
 
   const handleLog = () => {
-    setValues({ ...values, isLoggedIn: true });
-    console.log(values)
+    setValues({ ...values, fetching: true });
+    setError({
+      name: false,
+      password: false,
+    })
+
+    database
+      .ref("/users/" + values.login)
+      .once("value")
+      .then(snapshot => {
+        setValues({ ...values, fetching: false });
+        let val = snapshot.val();
+        if (val !== null && val.password === values.password) {
+          setValues({ ...values, user: val });
+        } else if (val === null) {
+          setError({...err, name: true})
+        } else {
+          setError({...err, password: true})
+        }
+      });
   };
 
   const createSubjects = () => {
-    let table = [];
-
-    // for (const subject of firebase) {
-      
-    // }
-
-    return table;
-  }
+    database.ref("/lang/english/languages/" + Object.keys(values.user.languages)[0]).once("value").then((snapshot) => {
+      let cards = [];
+      let subjects = snapshot.val();
+      for (const subject of Object.keys(subjects)) {
+        cards.push(
+          <LessonCard type={subject} user={values.user}/>
+        )
+      }
+      return cards
+    })
+  };
 
   return (
     <div className={classes.center}>
-      {values.isLoggedIn ? (
+      {values.user ? (
         <div>
-          <h1>Welcome {values.login} !</h1>
-          {
-            createSubjects()
-          }
+          <h2>Welcome {values.login} !</h2>
+          {createSubjects()}
         </div>
       ) : (
         <div>
@@ -82,7 +115,8 @@ export default function Welcome() {
               <h3>Please enter your credentials</h3>
               <FormControl noValidate autoComplete="on">
                 <TextField
-                  id="userName"
+                    id="userName"
+                    error={err.name}
                   label="User Name"
                   style={{ marginBottom: 15 }}
                   value={values.login}
@@ -96,7 +130,8 @@ export default function Welcome() {
               >
                 <InputLabel htmlFor="password">Password</InputLabel>
                 <Input
-                  id="password"
+                    id="password"
+                    error={err.password}
                   style={{ width: 175 }}
                   type={values.showPassword ? "text" : "password"}
                   value={values.password}
@@ -119,11 +154,15 @@ export default function Welcome() {
                 />
               </FormControl>
               <br />
-              <FormControl noValidate autoComplete="on">
-                <Button style={{ marginBottom: 15 }} onClick={handleLog}>
-                  Login
-                </Button>
-              </FormControl>
+              {values.fetching ? (
+                <CircularProgress />
+              ) : (
+                <FormControl>
+                  <Button style={{ marginBottom: 20 }} onClick={handleLog}>
+                    Login
+                  </Button>
+                </FormControl>
+              )}
             </div>
           </div>
         </div>

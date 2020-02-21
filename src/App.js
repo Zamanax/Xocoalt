@@ -15,11 +15,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import DashBoard from "./components/DashBoard";
 import Welcome from "./components/Home";
 
-// Firebase App (the core Firebase SDK) is always required and
-// must be listed before other Firebase SDKs
 import * as firebase from "firebase/app";
-
-// Add the Firebase services that you want to use
 
 const firebaseConfig = {
   apiKey: "AIzaSyD7-UB8z5eI4NqdTKk06U4QLCagAu4Z3fQ",
@@ -96,9 +92,9 @@ const useStyles = makeStyles(theme => ({
 export default function App() {
   document.body.style = 'background: #2f2f2f;';
 
-  firebase.initializeApp(firebaseConfig);
-  var database = firebase.database();
-
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
