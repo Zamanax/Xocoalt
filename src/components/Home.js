@@ -58,9 +58,9 @@ export default function Welcome() {
   const createSubjects = () => {
     let table = [];
 
-    for (const subject of firebase) {
+    // for (const subject of firebase) {
       
-    }
+    // }
 
     return table;
   }

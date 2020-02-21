@@ -22,14 +22,14 @@ import * as firebase from "firebase/app";
 // Add the Firebase services that you want to use
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBehAYVloHKD6mHan4il-0IWDylrmcpTX8",
-  authDomain: "xocoalt-f75b7.firebaseapp.com",
-  databaseURL: "https://xocoalt-f75b7.firebaseio.com",
-  projectId: "xocoalt-f75b7",
-  storageBucket: "xocoalt-f75b7.appspot.com",
-  messagingSenderId: "142689675817",
-  appId: "1:142689675817:web:23a9700528511db5ff0a38",
-  measurementId: "G-GE2TT4TS0X"
+  apiKey: "AIzaSyD7-UB8z5eI4NqdTKk06U4QLCagAu4Z3fQ",
+  authDomain: "xocoalt-e94d3.firebaseapp.com",
+  databaseURL: "https://xocoalt-e94d3.firebaseio.com",
+  projectId: "xocoalt-e94d3",
+  storageBucket: "xocoalt-e94d3.appspot.com",
+  messagingSenderId: "1087340054105",
+  appId: "1:1087340054105:web:5d3179367a76e340bd9348",
+  measurementId: "G-GT09MEM2G2"
 };
 
 const drawerWidth = 240;
@@ -97,6 +97,7 @@ export default function App() {
   document.body.style = 'background: #2f2f2f;';
 
   firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
 
   const classes = useStyles();
 
