@@ -19,6 +19,8 @@ import "firebase/database";
 
 import LessonCard from "./LessonCard";
 
+import {capitalizeFirstLetter} from "../model/utils"
+
 const useStyles = makeStyles(theme => ({
   center: {
     justifyContent: "center",
@@ -26,12 +28,11 @@ const useStyles = makeStyles(theme => ({
     width: 300
   },
   rectangle: {
-    justifyContent: "center",
     padding: 2,
     borderRadius: 10,
     color: "#000",
     background: "#FFF"
-  }
+  },
 }));
 
 export default function Welcome() {
@@ -50,7 +51,12 @@ export default function Welcome() {
   const [err, setError] = React.useState({
     name: false,
     password: false
-  })
+  });
+
+  const [cards, setCards] = React.useState({
+    list: [],
+    fetching: false,
+  });
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
@@ -68,8 +74,8 @@ export default function Welcome() {
     setValues({ ...values, fetching: true });
     setError({
       name: false,
-      password: false,
-    })
+      password: false
+    });
 
     database
       .ref("/users/" + values.login)
@@ -79,25 +85,30 @@ export default function Welcome() {
         let val = snapshot.val();
         if (val !== null && val.password === values.password) {
           setValues({ ...values, user: val });
+          createSubjects(val);
         } else if (val === null) {
-          setError({...err, name: true})
+          setError({ ...err, name: true });
         } else {
-          setError({...err, password: true})
+          setError({ ...err, password: true });
         }
       });
   };
 
-  const createSubjects = () => {
-    database.ref("/lang/english/languages/" + Object.keys(values.user.languages)[0]).once("value").then((snapshot) => {
-      let cards = [];
-      let subjects = snapshot.val();
-      for (const subject of Object.keys(subjects)) {
-        cards.push(
-          <LessonCard type={subject} user={values.user}/>
-        )
-      }
-      return cards
-    })
+  const createSubjects = (user) => {
+    setCards({ ...cards, fetching: true });
+    database
+      .ref("/lang/english/languages/" + Object.keys(user.languages)[0])
+      .once("value")
+      .then(snapshot => {
+        let list = [];
+        const subjects = snapshot.val();
+        let i = 0;
+        for (const subject of Object.keys(subjects)) {
+          list.push(<LessonCard type={subject} user={user} key={i} />);
+          i++;
+        }
+        setCards({ list: list, fetching: false });
+      });
   };
 
   return (
@@ -105,7 +116,10 @@ export default function Welcome() {
       {values.user ? (
         <div>
           <h2>Welcome {values.login} !</h2>
-          {createSubjects()}
+          <h1>{capitalizeFirstLetter(Object.keys(values.user.languages)[0])}</h1>
+          <div>
+            {cards.fetching ? <CircularProgress /> : cards.list}
+          </div>
         </div>
       ) : (
         <div>
@@ -115,12 +129,13 @@ export default function Welcome() {
               <h3>Please enter your credentials</h3>
               <FormControl noValidate autoComplete="on">
                 <TextField
-                    id="userName"
-                    error={err.name}
+                  id="userName"
+                  error={err.name}
                   label="User Name"
                   style={{ marginBottom: 15 }}
                   value={values.login}
                   onChange={handleChange("login")}
+                  onKeyDown={(e)=>{if (e.key === "Enter") handleLog()}}
                 />
               </FormControl>
               <FormControl
@@ -130,12 +145,13 @@ export default function Welcome() {
               >
                 <InputLabel htmlFor="password">Password</InputLabel>
                 <Input
-                    id="password"
-                    error={err.password}
+                  id="password"
+                  error={err.password}
                   style={{ width: 175 }}
                   type={values.showPassword ? "text" : "password"}
                   value={values.password}
                   onChange={handleChange("password")}
+                  onKeyDown={(e)=>{if (e.key === "Enter") handleLog()}}
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
