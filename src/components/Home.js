@@ -10,7 +10,12 @@ import {
   IconButton,
   Button,
   CircularProgress,
-  Typography
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 } from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
@@ -25,23 +30,23 @@ import { capitalizeFirstLetter } from "../model/utils";
 const useStyles = makeStyles(theme => ({
   center: {
     justifyContent: "center",
-    textAlign: "center",
+    textAlign: "center"
   },
   rectangle: {
     padding: 2,
     borderRadius: 10,
     color: "#000",
     background: "#FFF",
-    width: 300,
+    width: 300
   },
   cardContainer: {
     display: "flex",
-    flexDirection: "row",
+    flexDirection: "row"
   },
   buttons: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-evenly",
+    justifyContent: "space-evenly"
   }
 }));
 
@@ -65,8 +70,36 @@ export default function Welcome() {
 
   const [cards, setCards] = React.useState({
     list: [],
-    fetching: false,
+    fetching: false
   });
+
+  const [openDial, setOpenDial] = React.useState(false);
+
+  const handleRegister = () => {
+    setOpenDial(true);
+  };
+
+  const handleDialogCloseCancel = () => {
+    setOpenDial(false);
+  };
+  const handleDialogCloseConfirm = () => {
+    setOpenDial(false);
+
+    setValues({ ...values, fetching: true });
+
+    database.ref("/users/" + values.login).set(
+      {
+        name: values.login,
+        password: values.password
+      },
+      function(error) {
+        if (error) {
+        } else {
+          handleLog();
+        }
+      }
+    );
+  };
 
   const handleChange = prop => event => {
     setValues({ ...values, [prop]: event.target.value });
@@ -104,17 +137,25 @@ export default function Welcome() {
       });
   };
 
-  const createSubjects = user => {
+  const createSubjects = (user) => {
     setCards({ ...cards, fetching: true });
+    const defaultLanguage = user.languages !== undefined ? Object.keys(user.languages)[0] : "french";
     database
-      .ref("/lang/english/languages/" + Object.keys(user.languages)[0])
+      .ref("/lang/english/languages/" + defaultLanguage)
       .once("value")
       .then(snapshot => {
         let list = [];
         const subjects = snapshot.val();
         let i = 0;
         for (const subject of Object.keys(subjects)) {
-          list.push(<LessonCard type={subject} chapters={subjects[subject]} user={user} key={i} />);
+          list.push(
+            <LessonCard
+              type={subject}
+              chapters={subjects[subject]}
+              user={user}
+              key={i}
+            />
+          );
           i++;
         }
         setCards({ list: list, fetching: false });
@@ -127,9 +168,11 @@ export default function Welcome() {
         <div>
           <h2>Welcome {values.login} !</h2>
           <h1>
-            {capitalizeFirstLetter(Object.keys(values.user.languages)[0])}
+            {capitalizeFirstLetter( values.user.languages !== undefined ? Object.keys(values.user.languages)[0] : "french")}
           </h1>
-          <div className={classes.cardContainer}>{cards.fetching ? <CircularProgress /> : cards.list}</div>
+          <div className={classes.cardContainer}>
+            {cards.fetching ? <CircularProgress /> : cards.list}
+          </div>
         </div>
       ) : (
         <div>
@@ -186,16 +229,19 @@ export default function Welcome() {
               <br />
               {values.fetching ? (
                 <CircularProgress />
-                ) : (
+              ) : (
                 <div className={classes.buttons}>
                   <FormControl>
-                    <Button onClick={handleLog}>
-                      Login
-                    </Button>
+                    <Button onClick={handleLog}>Login</Button>
                   </FormControl>
-                  <Typography variant="h6" style={{fontSize:15}}>Or</Typography>
+                  <Typography variant="h6" style={{ fontSize: 15 }}>
+                    Or
+                  </Typography>
                   <FormControl>
-                    <Button style={{ marginBottom: 20 }} onClick={handleLog}>
+                    <Button
+                      style={{ marginBottom: 20 }}
+                      onClick={handleRegister}
+                    >
                       Register
                     </Button>
                   </FormControl>
@@ -203,6 +249,31 @@ export default function Welcome() {
               )}
             </div>
           </div>
+          <Dialog
+            open={openDial}
+            onClose={handleDialogCloseCancel}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">Register</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Do you confirm to create this account ?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDialogCloseCancel} color="primary">
+                Disagree
+              </Button>
+              <Button
+                onClick={handleDialogCloseConfirm}
+                color="primary"
+                autoFocus
+              >
+                Agree
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       )}
     </div>

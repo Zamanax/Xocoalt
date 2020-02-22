@@ -44,7 +44,9 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function LessonCard(props) {
-  const classes = useStyles();
+	const classes = useStyles();
+	
+	const defaultLanguage = props.user.languages !== undefined ? Object.keys(props.user.languages)[0] : "french";
 
   const buildChapter = chap => {
     let chapters = [];
@@ -52,7 +54,7 @@ export default function LessonCard(props) {
     let currentChap = undefined;
     try {
       currentChap =
-        props.user.languages[Object.keys(props.user.languages)[0]][props.type]
+        props.user.languages[defaultLanguage][props.type]
           .current;
     } catch {}
     for (const key of Object.keys(chap)) {
@@ -97,13 +99,14 @@ export default function LessonCard(props) {
           {capitalizeFirstLetter(props.type)}
         </Typography>
         <Typography variant="h6" className={classes.percent}>
-          {(props.user.languages[Object.keys(props.user.languages)[0]][
+					{
+						( props.user.languages !== undefined ? (props.user.languages[defaultLanguage][
             props.type
           ] !== undefined
-            ? props.user.languages[Object.keys(props.user.languages)[0]][
+            ? props.user.languages[defaultLanguage][
                 props.type
               ].progression
-            : 0) + "%"}
+            : 0 + "%") : "0%")}
         </Typography>
       </div>
     </div>
