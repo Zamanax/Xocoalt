@@ -9,7 +9,8 @@ import {
   InputAdornment,
   IconButton,
   Button,
-  CircularProgress
+  CircularProgress,
+  Typography
 } from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
@@ -19,20 +20,29 @@ import "firebase/database";
 
 import LessonCard from "./LessonCard";
 
-import {capitalizeFirstLetter} from "../model/utils"
+import { capitalizeFirstLetter } from "../model/utils";
 
 const useStyles = makeStyles(theme => ({
   center: {
     justifyContent: "center",
     textAlign: "center",
-    width: 300
   },
   rectangle: {
     padding: 2,
     borderRadius: 10,
     color: "#000",
-    background: "#FFF"
+    background: "#FFF",
+    width: 300,
   },
+  cardContainer: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  buttons: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-evenly",
+  }
 }));
 
 export default function Welcome() {
@@ -94,7 +104,7 @@ export default function Welcome() {
       });
   };
 
-  const createSubjects = (user) => {
+  const createSubjects = user => {
     setCards({ ...cards, fetching: true });
     database
       .ref("/lang/english/languages/" + Object.keys(user.languages)[0])
@@ -104,7 +114,7 @@ export default function Welcome() {
         const subjects = snapshot.val();
         let i = 0;
         for (const subject of Object.keys(subjects)) {
-          list.push(<LessonCard type={subject} user={user} key={i} />);
+          list.push(<LessonCard type={subject} chapters={subjects[subject]} user={user} key={i} />);
           i++;
         }
         setCards({ list: list, fetching: false });
@@ -116,10 +126,10 @@ export default function Welcome() {
       {values.user ? (
         <div>
           <h2>Welcome {values.login} !</h2>
-          <h1>{capitalizeFirstLetter(Object.keys(values.user.languages)[0])}</h1>
-          <div>
-            {cards.fetching ? <CircularProgress /> : cards.list}
-          </div>
+          <h1>
+            {capitalizeFirstLetter(Object.keys(values.user.languages)[0])}
+          </h1>
+          <div className={classes.cardContainer}>{cards.fetching ? <CircularProgress /> : cards.list}</div>
         </div>
       ) : (
         <div>
@@ -135,7 +145,9 @@ export default function Welcome() {
                   style={{ marginBottom: 15 }}
                   value={values.login}
                   onChange={handleChange("login")}
-                  onKeyDown={(e)=>{if (e.key === "Enter") handleLog()}}
+                  onKeyDown={e => {
+                    if (e.key === "Enter") handleLog();
+                  }}
                 />
               </FormControl>
               <FormControl
@@ -151,7 +163,9 @@ export default function Welcome() {
                   type={values.showPassword ? "text" : "password"}
                   value={values.password}
                   onChange={handleChange("password")}
-                  onKeyDown={(e)=>{if (e.key === "Enter") handleLog()}}
+                  onKeyDown={e => {
+                    if (e.key === "Enter") handleLog();
+                  }}
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
@@ -172,12 +186,20 @@ export default function Welcome() {
               <br />
               {values.fetching ? (
                 <CircularProgress />
-              ) : (
-                <FormControl>
-                  <Button style={{ marginBottom: 20 }} onClick={handleLog}>
-                    Login
-                  </Button>
-                </FormControl>
+                ) : (
+                <div className={classes.buttons}>
+                  <FormControl>
+                    <Button onClick={handleLog}>
+                      Login
+                    </Button>
+                  </FormControl>
+                  <Typography variant="h6" style={{fontSize:15}}>Or</Typography>
+                  <FormControl>
+                    <Button style={{ marginBottom: 20 }} onClick={handleLog}>
+                      Register
+                    </Button>
+                  </FormControl>
+                </div>
               )}
             </div>
           </div>
