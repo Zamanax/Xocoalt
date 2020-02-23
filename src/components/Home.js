@@ -37,7 +37,8 @@ const useStyles = makeStyles(theme => ({
     borderRadius: 10,
     color: "#000",
     background: "#FFF",
-    width: 300
+    width: 300,
+    paddingBottom: 15,
   },
   cardContainer: {
     display: "flex",
@@ -239,7 +240,6 @@ export default function Welcome() {
                   </Typography>
                   <FormControl>
                     <Button
-                      style={{ marginBottom: 20 }}
                       onClick={handleRegister}
                     >
                       Register
