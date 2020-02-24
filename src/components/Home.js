@@ -1,10 +1,12 @@
 import React from "react";
 
 import {
-  TextField,
   makeStyles,
+  createMuiTheme,
+  ThemeProvider,
+  TextField,
   FormControl,
-  Input,
+  OutlinedInput,
   InputLabel,
   InputAdornment,
   IconButton,
@@ -26,6 +28,17 @@ import "firebase/database";
 import LessonCard from "./LessonCard";
 
 import { capitalizeFirstLetter } from "../model/utils";
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#2f2f2f',
+    },
+    secondary: {
+      main: '#ffffff',
+    },
+  }
+});
 
 const useStyles = makeStyles(theme => ({
   center: {
@@ -51,18 +64,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Welcome() {
+export default function Welcome(props) {
   const database = firebase.database();
 
   const classes = useStyles();
 
-  const [values, setValues] = React.useState({
-    login: "",
-    password: "",
-    showPassword: false,
-    user: false,
-    fetching: false
-  });
+  const [values, setValues] = props.values;
 
   const [err, setError] = React.useState({
     name: false,
@@ -181,12 +188,14 @@ export default function Welcome() {
           <div className={classes.rectangle}>
             <div>
               <h3>Please enter your credentials</h3>
+              <ThemeProvider theme={theme}>
               <FormControl noValidate autoComplete="on">
                 <TextField
+                  variant="outlined"
                   id="userName"
                   error={err.name}
                   label="User Name"
-                  style={{ marginBottom: 15 }}
+                  style={{ marginBottom: 15 ,width: 215 }}
                   value={values.login}
                   onChange={handleChange("login")}
                   onKeyDown={e => {
@@ -196,17 +205,19 @@ export default function Welcome() {
               </FormControl>
               <FormControl
                 noValidate
+                variant="outlined"
                 autoComplete="on"
                 style={{ marginBottom: 15 }}
               >
                 <InputLabel htmlFor="password">Password</InputLabel>
-                <Input
+                <OutlinedInput
                   id="password"
                   error={err.password}
-                  style={{ width: 175 }}
+                  style={{ width: 215 }}
                   type={values.showPassword ? "text" : "password"}
                   value={values.password}
                   onChange={handleChange("password")}
+                  label="Password"
                   onKeyDown={e => {
                     if (e.key === "Enter") handleLog();
                   }}
@@ -227,6 +238,7 @@ export default function Welcome() {
                   }
                 />
               </FormControl>
+              </ThemeProvider>
               <br />
               {values.fetching ? (
                 <CircularProgress />

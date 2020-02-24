@@ -13,7 +13,7 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import DashBoard from "./components/DashBoard";
-import Welcome from "./components/Home";
+import Home from "./components/Home";
 
 import * as firebase from "firebase/app";
 
@@ -84,7 +84,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3),
   },
   title: {
-    margin: 20,
+    marginTop: 40,
     textAlign: 'center',
   }
 }));
@@ -96,6 +96,14 @@ export default function App() {
     firebase.initializeApp(firebaseConfig);
   }
   const classes = useStyles();
+
+  const [values, setValues] = React.useState({
+    login: "",
+    password: "",
+    showPassword: false,
+    user: false,
+    fetching: false
+  });
 
   const [open, setOpen] = React.useState(false);
   const icons = [<HomeIcon />, <BarChartIcon />, <MapIcon />, <SettingsIcon />];
@@ -162,7 +170,7 @@ export default function App() {
             <DashBoard/>
           </Route>
           <Route path="/">
-            <Welcome/>
+            <Home values={[values, setValues]} />
           </Route>
         </Switch>
       </main>
