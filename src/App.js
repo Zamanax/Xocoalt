@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
     height: "100%",
     background: "#2F2F2F",
     color : "#FFF",
-    marginLeft : 75,
+    marginLeft : theme.spacing(7) + 1,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
     }),
   },
   mainShift: {
-    marginLeft: drawerWidth,
+    marginLeft: theme.spacing(11) + 1 + drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -75,9 +75,7 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9) + 1,
-    },
+    width: theme.spacing(7) + 1,
   },
   content: {
     flexGrow: 1,
