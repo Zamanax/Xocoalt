@@ -37,6 +37,7 @@ const useStyles = makeStyles(theme => ({
   },
   main: {
     display: "flex",
+    overflowX: "hidden",
     flexDirection: "column",
     alignItems: "center",
     height: "100%",
@@ -74,7 +75,6 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    overflowX: 'hidden',
     width: theme.spacing(7) + 1,
   },
   content: {
@@ -88,8 +88,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function App() {
-  document.body.style = 'background: #2f2f2f;';
-
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
