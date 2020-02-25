@@ -2,8 +2,6 @@ import React from "react";
 
 import {
   makeStyles,
-  createMuiTheme,
-  ThemeProvider,
   TextField,
   FormControl,
   OutlinedInput,
@@ -29,16 +27,6 @@ import LessonCard from "./LessonCard";
 
 import { capitalizeFirstLetter } from "../model/utils";
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#2f2f2f',
-    },
-    secondary: {
-      main: '#ffffff',
-    },
-  }
-});
 
 const useStyles = makeStyles(theme => ({
   center: {
@@ -61,6 +49,10 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-evenly"
+  },
+  pageTitle: {
+    margin: 20,
+    fontWeight: "normal",
   }
 }));
 
@@ -184,11 +176,10 @@ export default function Welcome(props) {
         </div>
       ) : (
         <div>
-          <h1>Login</h1>
+          <Typography variant="h3" color="secondary" className={classes.pageTitle}>Login</Typography>
           <div className={classes.rectangle}>
             <div>
               <h3>Please enter your credentials</h3>
-              <ThemeProvider theme={theme}>
               <FormControl noValidate autoComplete="on">
                 <TextField
                   variant="outlined"
@@ -238,7 +229,6 @@ export default function Welcome(props) {
                   }
                 />
               </FormControl>
-              </ThemeProvider>
               <br />
               {values.fetching ? (
                 <CircularProgress />

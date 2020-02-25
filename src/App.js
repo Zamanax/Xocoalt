@@ -2,8 +2,10 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import clsx from "clsx";
 
-import { Drawer, List, ListItem, ListItemText, ListItemIcon, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Drawer, List, ListItem, ListItemText, ListItemIcon, Typography, CssBaseline } from "@material-ui/core";
+import { makeStyles, createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+
+import { Fade } from "react-reveal";
 
 
 import HomeIcon from "@material-ui/icons/Home";
@@ -37,12 +39,10 @@ const useStyles = makeStyles(theme => ({
   },
   main: {
     display: "flex",
-    overflowX: "hidden",
+    overflow: "hidden",
     flexDirection: "column",
     alignItems: "center",
     height: "100%",
-    background: "#2F2F2F",
-    color : "#FFF",
     marginLeft : theme.spacing(7) + 1,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
@@ -75,6 +75,7 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    overflowX : "hidden",
     width: theme.spacing(7) + 1,
   },
   content: {
@@ -86,6 +87,20 @@ const useStyles = makeStyles(theme => ({
     textAlign: 'center',
   }
 }));
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#2f2f2f',
+    },
+    secondary: {
+      main: '#fff',
+    },
+    background : {
+      default : "#2f2f2f"
+    },
+  },
+})
 
 export default function App() {
   if (!firebase.apps.length) {
@@ -102,7 +117,6 @@ export default function App() {
   });
 
   const [open, setOpen] = React.useState(false);
-  const icons = [<HomeIcon />, <BarChartIcon />, <MapIcon />, <SettingsIcon />];
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -121,6 +135,8 @@ export default function App() {
   };
 
   return (
+    <ThemeProvider theme={theme}>
+    <CssBaseline/>
     <Router className={classes.root}>
       <Drawer
       variant="permanent"
@@ -149,7 +165,7 @@ export default function App() {
             }}
             key={text}
           >
-            <ListItemIcon> {icons[index]} </ListItemIcon>
+            <ListItemIcon> {[<HomeIcon />, <BarChartIcon />, <MapIcon />, <SettingsIcon />][index]} </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
         ))}
@@ -158,7 +174,7 @@ export default function App() {
       <main className={clsx(classes.main, {
           [classes.mainShift]: open,
       })}>
-        <Typography variant="h4" className={classes.title}>
+        <Typography variant="h2" className={classes.title} color="secondary">
           XOCOALT
         </Typography>
         <Switch>
@@ -166,10 +182,13 @@ export default function App() {
             <DashBoard/>
           </Route>
           <Route path="/">
-            <Home values={[values, setValues]} />
+            <Fade duration={2000}>
+              <Home values={[values, setValues]} />
+            </Fade>
           </Route>
         </Switch>
       </main>
     </Router>
+    </ThemeProvider>
   );
 }
