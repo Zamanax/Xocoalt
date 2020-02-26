@@ -28,16 +28,16 @@ const useStyles = makeStyles(() => ({
     justifyContent: "space-between",
     padding: 10,
     borderTop: "1px solid",
-    height: 35
+    height: 50,
   },
   percent: {
     border: "1px solid",
-    lineHeight: 2,
+    lineHeight: 2.5,
     padding: 2,
     borderRadius: 5,
     width: 30,
     height: 30,
-    fontSize: 15,
+    fontSize: 10,
     textAlign: "center",
     verticalAlign: "middle"
   }
@@ -48,15 +48,16 @@ export default function LessonCard(props) {
 	
 	const defaultLanguage = props.user.languages !== undefined ? Object.keys(props.user.languages)[0] : "french";
 
+  let currentChap = undefined;
+  try {
+    currentChap =
+      props.user.languages[defaultLanguage][props.type]
+        .current;
+  } catch {}
+
   const buildChapter = chap => {
     let chapters = [];
     let i = 0;
-    let currentChap = undefined;
-    try {
-      currentChap =
-        props.user.languages[defaultLanguage][props.type]
-          .current;
-    } catch {}
     for (const key of Object.keys(chap)) {
       if (currentChap === key || (i === 0 && currentChap === undefined)) {
         chapters.push(
@@ -72,11 +73,12 @@ export default function LessonCard(props) {
               flexDirection: "row",
               justifyContent: "center"
             }}
+            key={i}
           >
             <Typography key={i} style={{ color: "#939393" }}>
               {key.slice(1)}
             </Typography>
-            <CheckIcon fontSize="small" style={{ color: "#939393" }} />
+            <CheckIcon key={i+1} fontSize="small" style={{ color: "#939393" }} />
           </div>
         );
       } else {
@@ -86,13 +88,17 @@ export default function LessonCard(props) {
           </Typography>
         );
       }
-      i++;
+      i+=2;
     }
     return chapters;
   };
 
+  const chooseSubject = () => {
+    window.location.pathname = "/" + currentChap.slice(1);
+  };
+
   return (
-    <div className={classes.card}>
+    <div className={classes.card} onClick={chooseSubject}>
       <div className={classes.top}>{buildChapter(props.chapters)}</div>
       <div className={classes.bottom}>
         <Typography variant="h5">
@@ -106,7 +112,7 @@ export default function LessonCard(props) {
             ? props.user.languages[defaultLanguage][
                 props.type
               ].progression
-            : 0 + "%") : "0%")}
+          + "%" : 0 + "%") : "0%")}
         </Typography>
       </div>
     </div>

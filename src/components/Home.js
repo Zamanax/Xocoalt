@@ -20,6 +20,8 @@ import {
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
+import { Fade } from "react-reveal";
+
 import * as firebase from "firebase/app";
 import "firebase/database";
 
@@ -166,13 +168,15 @@ export default function Welcome(props) {
     <div className={classes.center}>
       {values.user ? (
         <div>
-          <h2>Welcome {values.login} !</h2>
-          <h1>
+          <Typography variant="h3" color="secondary" >Welcome {values.login} !</Typography>
+          <Fade bottom>
+          <Typography variant="h4" color="secondary">
             {capitalizeFirstLetter( values.user.languages !== undefined ? Object.keys(values.user.languages)[0] : "french")}
-          </h1>
+          </Typography>
           <div className={classes.cardContainer}>
             {cards.fetching ? <CircularProgress /> : cards.list}
           </div>
+          </Fade>
         </div>
       ) : (
         <div>
@@ -238,7 +242,7 @@ export default function Welcome(props) {
                     <Button onClick={handleLog}>Login</Button>
                   </FormControl>
                   <Typography variant="h6" style={{ fontSize: 15 }}>
-                    Or
+                    OR
                   </Typography>
                   <FormControl>
                     <Button
