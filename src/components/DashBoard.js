@@ -1,9 +1,7 @@
 import React from "react";
-import { Typography, makeStyles } from "@material-ui/core";
-import CheckIcon from "@material-ui/icons/Check";
+import { makeStyles } from "@material-ui/core";
 
-import Camembert from "./Camembert";
-import Progression from "./Progression"
+import Progression from "./Progression";
 
 const useStyles = makeStyles(theme => ({
   container : {
@@ -17,7 +15,7 @@ export default function DashBoard(props) {
 
   return(
     <div className={classes.container}>
-      <Camembert/>
+      <Progression/>
     </div>
   )
 };

@@ -75,17 +75,17 @@ export default function Welcome(props) {
     fetching: false
   });
 
-  const [openDial, setOpenDial] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
 
   const handleRegister = () => {
-    setOpenDial(true);
+    setOpenDialog(true);
   };
 
   const handleDialogCloseCancel = () => {
-    setOpenDial(false);
+    setOpenDialog(false);
   };
   const handleDialogCloseConfirm = () => {
-    setOpenDial(false);
+    setOpenDialog(false);
 
     setValues({ ...values, fetching: true });
 
@@ -256,7 +256,7 @@ export default function Welcome(props) {
             </div>
           </div>
           <Dialog
-            open={openDial}
+            open={openDialog}
             onClose={handleDialogCloseCancel}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"

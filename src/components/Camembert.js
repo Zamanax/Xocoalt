@@ -9,11 +9,12 @@ const data = [
 ];
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-export default class Camambert extends React.Component {
-  
-    render() {
+export default function Camembert () {
+
+    const onPieEnter = () => {};
+
       return (
-        <PieChart width={800} height={400} onMouseEnter={this.onPieEnter}>
+        <PieChart width={800} height={400} onMouseEnter={onPieEnter}>
           <Pie
             data={data}
             cx={120}
@@ -46,5 +47,4 @@ export default class Camambert extends React.Component {
           </Pie>
         </PieChart>
       );
-    }
   }

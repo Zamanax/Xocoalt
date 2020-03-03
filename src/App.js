@@ -1,8 +1,8 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import clsx from "clsx";
 
-import { Drawer, List, ListItem, ListItemText, ListItemIcon, Typography, CssBaseline } from "@material-ui/core";
+import { Drawer, List, ListItem, ListItemIcon, Typography, CssBaseline } from "@material-ui/core";
 import { makeStyles, createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
 import { Fade } from "react-reveal";
@@ -18,6 +18,7 @@ import DashBoard from "./components/DashBoard";
 import Home from "./components/Home";
 
 import * as firebase from "firebase/app";
+import ListItemLink from "./components/ListItemLink";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD7-UB8z5eI4NqdTKk06U4QLCagAu4Z3fQ",
@@ -158,16 +159,13 @@ export default function App() {
           </ListItemIcon>
         </ListItem>
         {["Home", "DashBoard", "Map", "Settings"].map((text, index) => (
-          <ListItem
-            button
-            onClick={() => {
-              window.location.pathname = "/" + (text === "Home" ? "" : text);
-            }}
+          <ListItemLink
             key={text}
+            icon={[<HomeIcon />, <BarChartIcon />, <MapIcon />, <SettingsIcon />][index]}
+            to={"/" + (text === "Home" ? "" : text)}
+            primary={text}
           >
-            <ListItemIcon> {[<HomeIcon />, <BarChartIcon />, <MapIcon />, <SettingsIcon />][index]} </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
+          </ListItemLink>
         ))}
       </List>
     </Drawer>
@@ -179,7 +177,7 @@ export default function App() {
         </Typography>
         <Switch>
           <Route path="/DashBoard">
-            <DashBoard/>
+            { values.login !== "" ? <DashBoard/> : <Redirect to="/" /> }
           </Route>
           <Route path="/">
             <Fade duration={2000}>
