@@ -65,14 +65,11 @@ export default function Welcome(props) {
 
   const [values, setValues] = props.values;
 
+  const [cards, setCards] = props.cards;
+
   const [err, setError] = React.useState({
     name: false,
     password: false
-  });
-
-  const [cards, setCards] = React.useState({
-    list: [],
-    fetching: false
   });
 
   const [openDialog, setOpenDialog] = React.useState(false);

@@ -7,7 +7,6 @@ import { makeStyles, createMuiTheme, ThemeProvider } from "@material-ui/core/sty
 
 import { Fade } from "react-reveal";
 
-
 import HomeIcon from "@material-ui/icons/Home";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import MapIcon from "@material-ui/icons/Map";
@@ -117,6 +116,11 @@ export default function App() {
     fetching: false
   });
 
+  const [cards, setCards] = React.useState({
+    list: [],
+    fetching: false
+  });
+
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -179,9 +183,12 @@ export default function App() {
           <Route path="/DashBoard">
             { values.login !== "" ? <DashBoard/> : <Redirect to="/" /> }
           </Route>
+          <Route path="/Settings">
+            <h1>Hi !</h1>
+          </Route>
           <Route path="/">
             <Fade duration={2000}>
-              <Home values={[values, setValues]} />
+              <Home values={[values, setValues]} cards={[cards, setCards]} />
             </Fade>
           </Route>
         </Switch>

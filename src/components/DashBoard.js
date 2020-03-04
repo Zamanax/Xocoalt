@@ -1,7 +1,10 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
 
-import Progression from "./Progression";
+import RadarLanguage from "./RadarLanguage";
+import Camembert from "./Camembert";
+import ThetaProgression from "./ThetaProgression";
+import RadarSubjects from "./RadarSubjects"
 
 const useStyles = makeStyles(theme => ({
   container : {
@@ -15,7 +18,10 @@ export default function DashBoard(props) {
 
   return(
     <div className={classes.container}>
-      <Progression/>
+      <RadarLanguage/>
+      <Camembert/>
+      <ThetaProgression/>
+      <RadarSubjects/>
     </div>
   )
-};
+}

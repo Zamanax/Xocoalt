@@ -23,9 +23,8 @@ const data = [
     },
   ];
 
-export default class DashBoard extends React.Component {
+export default function RadarLanguage () {
 
-    render() {
         return (
         <RadarChart cx={300} cy={225} outerRadius={150} width={600} height={600} data={data}>
             <PolarGrid />
@@ -33,6 +32,5 @@ export default class DashBoard extends React.Component {
             <PolarRadiusAxis domain={[0, 150]} />
             <Radar name="Mike" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
         </RadarChart>
-    );
-  }
+    )
 }
