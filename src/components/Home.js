@@ -23,12 +23,12 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import { Fade } from "react-reveal";
 
 import * as firebase from "firebase/app";
-import "firebase/database";
+import "firebase/auth";
+import "firebase/firestore"
 
 import LessonCard from "./LessonCard";
 
 import { capitalizeFirstLetter } from "../model/utils";
-
 
 const useStyles = makeStyles(theme => ({
   center: {
@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Welcome(props) {
-  const database = firebase.database();
+  const db = firebase.firestore();
 
   const classes = useStyles();
 
@@ -86,18 +86,7 @@ export default function Welcome(props) {
 
     setValues({ ...values, fetching: true });
 
-    database.ref("/users/" + values.login).set(
-      {
-        name: values.login,
-        password: values.password
-      },
-      function(error) {
-        if (error) {
-        } else {
-          handleLog();
-        }
-      }
-    );
+    
   };
 
   const handleChange = prop => event => {
@@ -119,65 +108,61 @@ export default function Welcome(props) {
       password: false
     });
 
-    database
-      .ref("/users/" + values.login)
-      .once("value")
-      .then(snapshot => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(values.login, values.password)
+      .then(() => {
         setValues({ ...values, fetching: false });
-        let val = snapshot.val();
-        if (val !== null && val.password === values.password) {
-          setValues({ ...values, user: val });
-          createSubjects(val);
-        } else if (val === null) {
-          setError({ ...err, name: true });
-        } else {
-          setError({ ...err, password: true });
-        }
+        db.collection("users").doc("4GYEMfS0bfNm8zAqBgN5").get().then((snap) => {
+          const val = snap.data()[values.login]
+          setValues({...values, user : val})
+          createSubjects(values.user)
+        })
+      })
+      .catch((err) => {
+        setError({
+          name: true,
+          password: true
+        });
       });
   };
 
-  const createSubjects = (user) => {
+  const createSubjects = user => {
     setCards({ ...cards, fetching: true });
-    const defaultLanguage = user.languages !== undefined ? Object.keys(user.languages)[0] : "french";
-    database
-      .ref("/lang/english/languages/" + defaultLanguage)
-      .once("value")
-      .then(snapshot => {
-        let list = [];
-        const subjects = snapshot.val();
-        let i = 0;
-        for (const subject of Object.keys(subjects)) {
-          list.push(
-            <LessonCard
-              type={subject}
-              chapters={subjects[subject]}
-              user={user}
-              key={i}
-            />
-          );
-          i++;
-        }
-        setCards({ list: list, fetching: false });
-      });
+    const defaultLanguage =
+      user.languages !== undefined ? Object.keys(user.languages)[0] : "french";
+    
   };
 
   return (
     <div className={classes.center}>
       {values.user ? (
         <div>
-          <Typography variant="h3" color="secondary" >Welcome {values.login} !</Typography>
-          <Fade bottom>
-          <Typography variant="h4" color="secondary">
-            {capitalizeFirstLetter( values.user.languages !== undefined ? Object.keys(values.user.languages)[0] : "french")}
+          <Typography variant="h3" color="secondary">
+            Welcome {values.user.name} !
           </Typography>
-          <div className={classes.cardContainer}>
-            {cards.fetching ? <CircularProgress /> : cards.list}
-          </div>
+          <Fade bottom>
+            <Typography variant="h4" color="secondary">
+              {capitalizeFirstLetter(
+                values.user.languages !== undefined
+                  ? Object.keys(values.user.languages)[0]
+                  : "french"
+              )}
+            </Typography>
+            <div className={classes.cardContainer}>
+              {cards.fetching ? <CircularProgress /> : cards.list}
+            </div>
           </Fade>
         </div>
       ) : (
         <div>
-          <Typography variant="h3" color="secondary" className={classes.pageTitle}>Login</Typography>
+          <Typography
+            variant="h3"
+            color="secondary"
+            className={classes.pageTitle}
+          >
+            Login
+          </Typography>
           <div className={classes.rectangle}>
             <div>
               <h3>Please enter your credentials</h3>
@@ -187,7 +172,7 @@ export default function Welcome(props) {
                   id="userName"
                   error={err.name}
                   label="User Name"
-                  style={{ marginBottom: 15 ,width: 215 }}
+                  style={{ marginBottom: 15, width: 215 }}
                   value={values.login}
                   onChange={handleChange("login")}
                   onKeyDown={e => {
@@ -242,11 +227,7 @@ export default function Welcome(props) {
                     OR
                   </Typography>
                   <FormControl>
-                    <Button
-                      onClick={handleRegister}
-                    >
-                      Register
-                    </Button>
+                    <Button onClick={handleRegister}>Register</Button>
                   </FormControl>
                 </div>
               )}
