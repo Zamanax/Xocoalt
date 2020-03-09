@@ -3,7 +3,7 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect,
+  Redirect
 } from "react-router-dom";
 import clsx from "clsx";
 
@@ -13,8 +13,7 @@ import {
   ListItem,
   ListItemIcon,
   Typography,
-  CssBaseline,
-  ListItemText
+  CssBaseline
 } from "@material-ui/core";
 import {
   makeStyles,
@@ -36,6 +35,9 @@ import DashBoard from "./components/DashBoard";
 import Home from "./components/Home";
 
 import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
+
 import ListItemLink from "./components/ListItemLink";
 
 const firebaseConfig = {
@@ -157,6 +159,16 @@ export default function App() {
       handleDrawerOpen();
     }
   };
+    // if (firebase.auth().currentUser !== null) {
+    //   db.collection("users")
+    //             .doc("4GYEMfS0bfNm8zAqBgN5")
+    //             .get()
+    //             .then(snap => {
+    //               const val = snap.data()[firebase.auth().currentUser.email];
+    //               setValues({ ...values, user: val });
+    //               createSubjects(values.user, cards, setCards);
+    //             });
+    // }
 
   return (
     <ThemeProvider theme={theme}>
@@ -201,16 +213,16 @@ export default function App() {
               to="/"
               primary="Log out"
               onClick={() => {
-              firebase.auth().signOut()
+                firebase.auth().signOut();
                 setValues({
                   login: "",
                   password: "",
                   showPassword: false,
                   user: false,
                   fetching: false
-              })
-            }}>
-            </ListItemLink>
+                });
+              }}
+            ></ListItemLink>
           </List>
         </Drawer>
         <main
@@ -223,11 +235,7 @@ export default function App() {
           </Typography>
           <Switch>
             <Route path="/DashBoard">
-              {values.login !== "" ? (
-                  <DashBoard />
-              ) : (
-                <Redirect to="/" />
-              )}
+              {values.login !== "" ? <DashBoard /> : <Redirect to="/" />}
             </Route>
             <Route path="/Settings">
               <h1>Hi !</h1>
