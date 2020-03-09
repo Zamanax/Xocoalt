@@ -6,7 +6,6 @@ import {
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
-import "firebase/firestore";
 
 import Hub from "./Hub"
 import Login from "./Login"
@@ -27,7 +26,7 @@ export default function Welcome(props) {
 
   return (
     <div className={classes.center}>
-      {values.user ? (
+      {(firebase.auth().currentUser !== null && cards.list !== []) ? (
         <Hub values={values} cards={cards} />
       ) : (
         <Login values={values} setValues={setValues} cards={cards} setCards={setCards} />
