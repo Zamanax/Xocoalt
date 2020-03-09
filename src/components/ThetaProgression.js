@@ -80,7 +80,6 @@ export default function ThetaProgression() {
           stroke="#82ca9d"
         />
       </LineChart>
-      <p className="notes">That's some insane progress!</p>
     </div>
   );
 }

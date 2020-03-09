@@ -1,9 +1,26 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
 import clsx from "clsx";
 
-import { Drawer, List, ListItem, ListItemIcon, Typography, CssBaseline } from "@material-ui/core";
-import { makeStyles, createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  Typography,
+  CssBaseline,
+  ListItemText
+} from "@material-ui/core";
+import {
+  makeStyles,
+  createMuiTheme,
+  ThemeProvider
+} from "@material-ui/core/styles";
 
 import { Fade } from "react-reveal";
 
@@ -13,6 +30,8 @@ import MapIcon from "@material-ui/icons/Map";
 import SettingsIcon from "@material-ui/icons/Settings";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+
 import DashBoard from "./components/DashBoard";
 import Home from "./components/Home";
 
@@ -34,8 +53,8 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex',
-    height: "100%",
+    display: "flex",
+    height: "100%"
   },
   main: {
     display: "flex",
@@ -43,64 +62,64 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     alignItems: "center",
     height: "100%",
-    marginLeft : theme.spacing(7) + 1,
+    marginLeft: theme.spacing(7) + 1,
     zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+      duration: theme.transitions.duration.leavingScreen
+    })
   },
   mainShift: {
     marginLeft: theme.spacing(11) + 1 + drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: 'nowrap',
+    whiteSpace: "nowrap"
   },
   drawerOpen: {
     width: drawerWidth,
-    transition: theme.transitions.create('width', {
+    transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+      duration: theme.transitions.duration.enteringScreen
+    })
   },
   drawerClose: {
-    transition: theme.transitions.create('width', {
+    transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      duration: theme.transitions.duration.leavingScreen
     }),
-    overflowX : "hidden",
-    width: theme.spacing(7) + 1,
+    overflowX: "hidden",
+    width: theme.spacing(7) + 1
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(3)
   },
   title: {
     marginTop: 40,
-    textAlign: 'center',
+    textAlign: "center"
   }
 }));
 
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#2f2f2f',
+      main: "#2f2f2f"
     },
     secondary: {
-      main: '#fff',
+      main: "#fff"
     },
-    background : {
-      default : "#2f2f2f"
-    },
-  },
-})
+    background: {
+      default: "#2f2f2f"
+    }
+  }
+});
 
 export default function App() {
   if (!firebase.apps.length) {
@@ -141,59 +160,89 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-    <CssBaseline/>
-    <Router className={classes.root}>
-      <Drawer
-      variant="permanent"
-      className={clsx(classes.drawer, {
-        [classes.drawerOpen]: open,
-        [classes.drawerClose]: !open
-      })}
-      classes={{
-        paper: clsx({
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open
-        })
-      }}
-    >
-      <List>
-        <ListItem button onClick={handleDrawer}>
-          <ListItemIcon>
-            {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </ListItemIcon>
-        </ListItem>
-        {["Home", "DashBoard", "Map", "Settings"].map((text, index) => (
-          <ListItemLink
-            key={text}
-            icon={[<HomeIcon />, <BarChartIcon />, <MapIcon />, <SettingsIcon />][index]}
-            to={"/" + (text === "Home" ? "" : text)}
-            primary={text}
-          >
-          </ListItemLink>
-        ))}
-      </List>
-    </Drawer>
-      <main className={clsx(classes.main, {
-          [classes.mainShift]: open,
-      })}>
-        <Typography variant="h2" className={classes.title} color="secondary">
-          XOCOALT
-        </Typography>
-        <Switch>
-          <Route path="/DashBoard">
-            { values.login !== "" ? <DashBoard/> : <Redirect to="/" /> }
-          </Route>
-          <Route path="/Settings">
-            <h1>Hi !</h1>
-          </Route>
-          <Route path="/">
-            <Fade duration={2000}>
-              <Home values={[values, setValues]} cards={[cards, setCards]} />
-            </Fade>
-          </Route>
-        </Switch>
-      </main>
-    </Router>
+      <CssBaseline />
+      <Router className={classes.root}>
+        <Drawer
+          variant="permanent"
+          className={clsx(classes.drawer, {
+            [classes.drawerOpen]: open,
+            [classes.drawerClose]: !open
+          })}
+          classes={{
+            paper: clsx({
+              [classes.drawerOpen]: open,
+              [classes.drawerClose]: !open
+            })
+          }}
+        >
+          <List>
+            <ListItem button onClick={handleDrawer}>
+              <ListItemIcon>
+                {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              </ListItemIcon>
+            </ListItem>
+            {["Home", "DashBoard", "Map", "Settings"].map((text, index) => (
+              <ListItemLink
+                key={text}
+                icon={
+                  [
+                    <HomeIcon />,
+                    <BarChartIcon />,
+                    <MapIcon />,
+                    <SettingsIcon />
+                  ][index]
+                }
+                to={"/" + (text === "Home" ? "" : text)}
+                primary={text}
+              ></ListItemLink>
+            ))}
+            <ListItem button onClick={() => {
+              firebase.auth().signOut()
+              setValues({
+                login: "",
+                password: "",
+                showPassword: false,
+                user: false,
+                fetching: false
+              })
+              return(<Redirect to="/"/>)
+            }}>
+              <ListItemIcon>
+                <ExitToAppIcon/>
+              </ListItemIcon>
+              <ListItemText>
+                Log out
+              </ListItemText>
+            </ListItem>
+          </List>
+        </Drawer>
+        <main
+          className={clsx(classes.main, {
+            [classes.mainShift]: open
+          })}
+        >
+          <Typography variant="h2" className={classes.title} color="secondary">
+            XOCOALT
+          </Typography>
+          <Switch>
+            <Route path="/DashBoard">
+              {values.login !== "" ? (
+                  <DashBoard />
+              ) : (
+                <Redirect to="/" />
+              )}
+            </Route>
+            <Route path="/Settings">
+              <h1>Hi !</h1>
+            </Route>
+            <Route path="/">
+              <Fade duration={2000}>
+                <Home values={[values, setValues]} cards={[cards, setCards]} />
+              </Fade>
+            </Route>
+          </Switch>
+        </main>
+      </Router>
     </ThemeProvider>
   );
 }

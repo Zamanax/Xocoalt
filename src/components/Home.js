@@ -45,7 +45,9 @@ const useStyles = makeStyles(theme => ({
   },
   cardContainer: {
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center"
   },
   buttons: {
     display: "flex",
@@ -129,8 +131,22 @@ export default function Welcome(props) {
 
   const createSubjects = user => {
     setCards({ ...cards, fetching: true });
-    const defaultLanguage =
-      user.languages !== undefined ? Object.keys(user.languages)[0] : "french";
+    const defaultSourceLanguage =
+      user.languages !== undefined ? Object.keys(user.languages)[0] : "english";
+      const defaultDestLanguage =
+      user.languages !== undefined ? Object.keys(user.languages[defaultSourceLanguage])[0] : "french";
+    
+    db.collection("sources").doc("VlH9IVRhALoGTy0upjD6").get().then((snap) => {
+      const val = snap.data()[defaultSourceLanguage][defaultDestLanguage]
+      let cards = []
+      let i = 0;
+      for (const subject of Object.keys(val)) {
+        cards.push(
+          <LessonCard type={subject} user={values.user} chapters={val[subject]} key={i++}/>
+        )
+      }
+      setCards({...cards, list : cards})
+    })
     
   };
 
