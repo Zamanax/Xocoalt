@@ -196,24 +196,21 @@ export default function App() {
                 primary={text}
               ></ListItemLink>
             ))}
-            <ListItem button onClick={() => {
+            <ListItemLink
+              icon={<ExitToAppIcon />}
+              to="/"
+              primary="Log out"
+              onClick={() => {
               firebase.auth().signOut()
-              setValues({
-                login: "",
-                password: "",
-                showPassword: false,
-                user: false,
-                fetching: false
+                setValues({
+                  login: "",
+                  password: "",
+                  showPassword: false,
+                  user: false,
+                  fetching: false
               })
-              return(<Redirect to="/"/>)
             }}>
-              <ListItemIcon>
-                <ExitToAppIcon/>
-              </ListItemIcon>
-              <ListItemText>
-                Log out
-              </ListItemText>
-            </ListItem>
+            </ListItemLink>
           </List>
         </Drawer>
         <main
