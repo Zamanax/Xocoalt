@@ -100,17 +100,6 @@ export default function Login(props) {
         return firebase
           .auth()
           .signInWithEmailAndPassword(values.login, values.password)
-          .then(() => {
-            setValues({ ...values, fetching: false });
-            db.collection("users")
-              .doc("4GYEMfS0bfNm8zAqBgN5")
-              .get()
-              .then(snap => {
-                const val = snap.data()[values.login];
-                setValues({ ...values, user: val });
-                createSubjects(values.user, cards, setCards);
-              });
-          });
       })
       .catch(err => {
         setError({
@@ -119,6 +108,19 @@ export default function Login(props) {
         });
       });
   };
+
+  firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      db.collection("users")
+              .doc("4GYEMfS0bfNm8zAqBgN5")
+              .get()
+              .then(snap => {
+                const val = snap.data()[user.email];
+                setValues({ ...values, user: val });
+                createSubjects(values.user, cards, setCards);
+              });
+    }
+  })
 
   return (
     <Fade bottom>

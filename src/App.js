@@ -71,7 +71,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3)
   },
   title: {
-    marginTop: 40,
+    margin: 20,
     textAlign: "center"
   }
 }));
@@ -111,17 +111,6 @@ export default function App() {
 
   const [open, setOpen] = React.useState(false);
 
-    // if (firebase.auth().currentUser !== null) {
-    //   db.collection("users")
-    //             .doc("4GYEMfS0bfNm8zAqBgN5")
-    //             .get()
-    //             .then(snap => {
-    //               const val = snap.data()[firebase.auth().currentUser.email];
-    //               setValues({ ...values, user: val });
-    //               createSubjects(values.user, cards, setCards);
-    //             });
-    // }
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -137,7 +126,7 @@ export default function App() {
           </Typography>
           <Switch>
             <Route path="/DashBoard">
-              {values.login !== "" ? <DashBoard /> : <Redirect to="/" />}
+              {firebase.auth().currentUser ? <DashBoard /> : <Redirect to="/" />}
             </Route>
             <Route path="/Settings">
               <h1>Hi !</h1>
