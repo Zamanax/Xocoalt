@@ -18,10 +18,10 @@ const createSubjects = (user, cards, setCards) => {
       : "french";
 
   db.collection("sources")
-    .doc("VlH9IVRhALoGTy0upjD6")
+    .doc(defaultSourceLanguage)
     .get()
     .then(snap => {
-      const val = snap.data()[defaultSourceLanguage][defaultDestLanguage];
+      const val = snap.data()[defaultDestLanguage];
       let cards = [];
       let i = 0;
       for (const subject of Object.keys(val)) {
