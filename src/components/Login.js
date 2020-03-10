@@ -25,33 +25,33 @@ import "firebase/auth";
 import "firebase/firestore";
 
 const useStyles = makeStyles(theme => ({
-    center: {
-      justifyContent: "center",
-      textAlign: "center"
-    },
-    rectangle: {
-      padding: 2,
-      borderRadius: 10,
-      color: "#000",
-      background: "#FFF",
-      width: 300,
-      paddingBottom: 15
-    },
-    buttons: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-evenly"
-    },
-    pageTitle: {
-      margin: 20,
-      fontWeight: "normal"
-    }
-  }));
+  center: {
+    justifyContent: "center",
+    textAlign: "center"
+  },
+  rectangle: {
+    padding: 2,
+    borderRadius: 10,
+    color: "#000",
+    background: "#FFF",
+    width: 300,
+    paddingBottom: 15
+  },
+  buttons: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-evenly"
+  },
+  pageTitle: {
+    margin: 20,
+    fontWeight: "normal"
+  }
+}));
 
 export default function Login(props) {
-    const { values, setValues } = props;
-    const classes = useStyles();
-    const db = firebase.firestore();
+  const { values, setValues } = props;
+  const classes = useStyles();
+  const db = firebase.firestore();
 
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -71,18 +71,26 @@ export default function Login(props) {
     setOpenDialog(false);
 
     setValues({ ...values, fetching: true });
-    firebase.auth().createUserWithEmailAndPassword(values.login, values.password).catch(function(error) {
-      setValues({...values, fetching: false})
-      setError({
-        name: false,
-        password: false
-      });
-      db.collection("users").doc(values.login).set({
-        name:values.login
-      }).then(()=>{
-        handleLog()
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(values.login, values.password)
+      .then(() => {
+        db.collection("users")
+          .doc(values.login)
+          .set({
+            name: values.login
+          })
+          .then(() => {
+            handleLog();
+          });
       })
-    });
+      .catch(function(error) {
+        setValues({ ...values, fetching: false });
+        setError({
+          name: false,
+          password: false
+        });
+      });
   };
 
   const handleChange = prop => event => {
@@ -109,19 +117,19 @@ export default function Login(props) {
       .then(() => {
         return firebase
           .auth()
-          .signInWithEmailAndPassword(values.login, values.password)
+          .signInWithEmailAndPassword(values.login, values.password);
       })
       .catch(err => {
         setError({
           name: true,
           password: true
         });
-        setValues({...values, fetching:false})
+        setValues({ ...values, fetching: false });
       });
   };
 
   return (
-  <Fade bottom>
+    <Fade bottom>
       <Typography variant="h3" color="secondary" className={classes.pageTitle}>
         Login
       </Typography>
