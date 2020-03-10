@@ -70,6 +70,14 @@ export default function Login(props) {
     setOpenDialog(false);
 
     setValues({ ...values, fetching: true });
+    firebase.auth().createUserWithEmailAndPassword(values.login, values.password).catch(function(error) {
+      setValues({...values, fetching: false})
+      setError({
+        name: false,
+        password: false
+      });
+    });
+    handleLog()
   };
 
   const handleChange = prop => event => {
@@ -103,6 +111,7 @@ export default function Login(props) {
           name: true,
           password: true
         });
+        setValues({...values, fetching:false})
       });
   };
 
