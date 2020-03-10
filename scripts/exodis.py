@@ -13,7 +13,7 @@ with open('sentences.csv', mode="r", encoding="utf8") as sen:
         lang = row[1]
         text = row[2].lower()
         if lang == 'eng' and bool(re.search( "(?:^|\W)"+W+"(?=$|\W)", text)):
-            x = text.replace(W,"_____")
+            x = text.replace(W,ran.randrange())
             y.append(x)
             print(x)
         lcnt += 1
