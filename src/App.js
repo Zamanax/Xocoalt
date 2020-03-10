@@ -7,10 +7,7 @@ import {
 } from "react-router-dom";
 import clsx from "clsx";
 
-import {
-  Typography,
-  CssBaseline
-} from "@material-ui/core";
+import { Typography, CssBaseline } from "@material-ui/core";
 import {
   makeStyles,
   createMuiTheme,
@@ -115,7 +112,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router className={classes.root}>
-        <Sidebar open={open} setOpen={setOpen} setValues={setValues}/>
+        <Sidebar open={open} setOpen={setOpen} setValues={setValues} />
         <main
           className={clsx(classes.main, {
             [classes.mainShift]: open
@@ -126,7 +123,11 @@ export default function App() {
           </Typography>
           <Switch>
             <Route path="/DashBoard">
-              {firebase.auth().currentUser ? <DashBoard /> : <Redirect to="/" />}
+              {firebase.auth().currentUser ? (
+                <DashBoard />
+              ) : (
+                <Redirect to="/" />
+              )}
             </Route>
             <Route path="/Settings">
               <h1>Hi !</h1>

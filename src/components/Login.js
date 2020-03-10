@@ -20,8 +20,6 @@ import {
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
-import { createSubjects } from "../model/utils";
-
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -51,8 +49,7 @@ const useStyles = makeStyles(theme => ({
   }));
 
 export default function Login(props) {
-    const { values, setValues, cards, setCards } = props;
-    const db = firebase.firestore();
+    const { values, setValues } = props;
     const classes = useStyles();
 
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -109,21 +106,8 @@ export default function Login(props) {
       });
   };
 
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      db.collection("users")
-              .doc("4GYEMfS0bfNm8zAqBgN5")
-              .get()
-              .then(snap => {
-                const val = snap.data()[user.email];
-                setValues({ ...values, user: val });
-                createSubjects(values.user, cards, setCards);
-              });
-    }
-  })
-
   return (
-    <Fade bottom>
+  <Fade bottom>
       <Typography variant="h3" color="secondary" className={classes.pageTitle}>
         Login
       </Typography>
