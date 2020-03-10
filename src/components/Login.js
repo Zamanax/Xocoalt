@@ -51,6 +51,7 @@ const useStyles = makeStyles(theme => ({
 export default function Login(props) {
     const { values, setValues } = props;
     const classes = useStyles();
+    const db = firebase.firestore();
 
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -76,8 +77,12 @@ export default function Login(props) {
         name: false,
         password: false
       });
+      db.collection("users").doc(values.login).set({
+        name:values.login
+      }).then(()=>{
+        handleLog()
+      })
     });
-    handleLog()
   };
 
   const handleChange = prop => event => {
