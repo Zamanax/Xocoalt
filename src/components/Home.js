@@ -35,10 +35,10 @@ export default function Welcome(props) {
       setAuthInit(false)
       if (user) {
         db.collection("users")
-                .doc("4GYEMfS0bfNm8zAqBgN5")
+                .doc(user.email)
                 .get()
                 .then(snap => {
-                  const val = snap.data()[user.email];
+                  const val = snap.data();
                   createSubjects(val, cards, setCards);
                   setValues({ ...values, user: val });
                 });
