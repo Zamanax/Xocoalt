@@ -9,6 +9,8 @@ import {
   Legend
 } from "recharts";
 
+import { makeStyles } from "@material-ui/core";
+
 const data = [
   { name: "January", progress: 0, amt: 2400 },
   { name: "February", progress: 0, amt: 2210 },
@@ -23,6 +25,18 @@ const data = [
   { name: "November", progress: 95, amt: 2100 },
   { name: "December", uprogress: 100, amt: 2100 }
 ];
+
+const useStyles = makeStyles(theme => ({
+  title : {
+    color: "white",
+  },
+  container : {
+    display : "flex",
+    alignItems: "center",
+    flexDirection: "column",
+  }
+}));
+
 export default function ThetaProgression() {
   const [state, setState] = React.useState({
     opacity: {
@@ -55,8 +69,10 @@ export default function ThetaProgression() {
 
   const { opacity } = state;
 
+  const classes = useStyles();
+
   return (
-    <div>
+    <div className={classes.container}>
       <LineChart
         width={1000}
         height={300}
@@ -80,6 +96,7 @@ export default function ThetaProgression() {
           stroke="#82ca9d"
         />
       </LineChart>
+      <p className={classes.title}>Progression</p>
     </div>
   );
 }
