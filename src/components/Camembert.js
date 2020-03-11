@@ -6,7 +6,7 @@ export default function Camembert () {
   const COLORS = ['#00C49F','#FCBD86'];
 
   return (
-    <ResponsiveContainer>
+    <ResponsiveContainer width={300} marginTop={0}>
       <PieChart>
         <Pie
           data={data}
