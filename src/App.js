@@ -25,6 +25,7 @@ import "firebase/auth";
 import "firebase/firestore";
 
 import { createSubjects } from "./model/utils";
+import Settings from "./components/Settings";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD7-UB8z5eI4NqdTKk06U4QLCagAu4Z3fQ",
@@ -85,8 +86,11 @@ const theme = createMuiTheme({
     },
     background: {
       default: "#2f2f2f"
+    },
+    text : {
+      primary: "#fff"
     }
-  }
+  },
 });
 
 export default function App() {
@@ -152,7 +156,7 @@ export default function App() {
               ))}
             </Route>
             <Route path="/Settings">
-              <h1>Hi !</h1>
+              <Settings/>
             </Route>
             <Route path="/">
               <Fade duration={1000}>
