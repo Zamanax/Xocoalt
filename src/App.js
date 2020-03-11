@@ -24,6 +24,8 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
+import { createSubjects } from "./model/utils";
+
 const firebaseConfig = {
   apiKey: "AIzaSyD7-UB8z5eI4NqdTKk06U4QLCagAu4Z3fQ",
   authDomain: "xocoalt-e94d3.firebaseapp.com",
@@ -108,6 +110,26 @@ export default function App() {
 
   const [open, setOpen] = React.useState(false);
 
+  const [authInit, setAuthInit] = React.useState(true);
+  
+  const db = firebase.firestore();
+
+  if (authInit) {
+    firebase.auth().onAuthStateChanged((user) => {
+      setAuthInit(false)
+      if (user) {
+        db.collection("users")
+                .doc(user.email)
+                .get()
+                .then(snap => {
+                  const val = snap.data();
+                  createSubjects(val, cards, setCards);
+                  setValues({ ...values, user: val });
+                });
+      }
+    })
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -134,7 +156,7 @@ export default function App() {
             </Route>
             <Route path="/">
               <Fade duration={1000}>
-                <Home values={[values, setValues]} cards={[cards, setCards]} />
+                <Home values={[values, setValues]} cards={[cards, setCards]} auth={authInit} />
               </Fade>
             </Route>
           </Switch>

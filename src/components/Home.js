@@ -10,8 +10,6 @@ import "firebase/auth";
 import Hub from "./Hub"
 import Login from "./Login"
 
-import { createSubjects } from "../model/utils"
-
 const useStyles = makeStyles(theme => ({
   center: {
     justifyContent: "center",
@@ -26,25 +24,7 @@ export default function Welcome(props) {
 
   const [cards, setCards] = props.cards;
 
-  const [authInit, setAuthInit] = React.useState(true);
-
-  const db = firebase.firestore();
-
-  if (authInit) {
-    firebase.auth().onAuthStateChanged((user) => {
-      setAuthInit(false)
-      if (user) {
-        db.collection("users")
-                .doc(user.email)
-                .get()
-                .then(snap => {
-                  const val = snap.data();
-                  createSubjects(val, cards, setCards);
-                  setValues({ ...values, user: val });
-                });
-      }
-    })
-  }
+  const authInit = props.auth;
 
   return (
     <div className={classes.center}>

@@ -13,13 +13,12 @@ export default function Camembert () {
           labelLine={false}
           label={"comp"}
           innerRadius={60}
-          outerRadius={80} 
+          outerRadius={80}
           paddingAngle={5}
         >
           {
-            data.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]}/>)
+            data.map((entry, index) => <Cell fill={COLORS[index % COLORS.length]} key={index}/>)
           }
-          <p className="notes">That's some insane progress!</p>
         </Pie>
       </PieChart>
       </ResponsiveContainer>
