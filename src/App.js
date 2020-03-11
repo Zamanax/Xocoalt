@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import clsx from "clsx";
 
-import { Typography, CssBaseline } from "@material-ui/core";
+import { Typography, CssBaseline, CircularProgress } from "@material-ui/core";
 import {
   makeStyles,
   createMuiTheme,
@@ -145,11 +145,11 @@ export default function App() {
           </Typography>
           <Switch>
             <Route path="/DashBoard">
-              {firebase.auth().currentUser ? (
+              {( authInit ? <CircularProgress color="secondary"/> : firebase.auth().currentUser ? (
                 <DashBoard />
               ) : (
                 <Redirect to="/" />
-              )}
+              ))}
             </Route>
             <Route path="/Settings">
               <h1>Hi !</h1>
