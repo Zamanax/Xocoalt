@@ -23,10 +23,12 @@ const data = [
     },
   ];
 
+const radius = 150;
+
 export default function RadarLanguage () {
 
         return (
-        <RadarChart cx={300} cy={225} outerRadius={150} width={600} height={600} data={data}>
+        <RadarChart outerRadius={radius} width={radius*3} height={radius*3} data={data}>
             <PolarGrid />
             <PolarAngleAxis dataKey="subject" stroke="#FFF"/>
             <PolarRadiusAxis domain={[0, 150]} />

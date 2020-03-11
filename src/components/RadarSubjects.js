@@ -9,9 +9,9 @@ const data = [
 { subject: 'Expression', A: 99, fullMark: 150 },
 ];
 
-export default function TwoLevelPieChart() {
+export default function RadarSubject() {
     return (
-    <RadarChart cx={300} cy={250} outerRadius={150} width={600} height={500} data={data}>
+    <RadarChart outerRadius={150} width={500} height={500} data={data}>
         <PolarGrid />
         <PolarAngleAxis dataKey="subject" stroke="#FFF"/>
         <PolarRadiusAxis/>
