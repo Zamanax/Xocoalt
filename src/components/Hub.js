@@ -2,7 +2,7 @@ import React from "react";
 import { Fade } from "react-reveal";
 import { makeStyles, CircularProgress, Typography } from "@material-ui/core";
 
-import { capitalizeFirstLetter, createSubjects } from "../model/utils";
+import { capitalizeFirstLetter } from "../model/utils";
 
 const useStyles = makeStyles(theme => ({
     cardContainer: {
@@ -14,15 +14,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Hub(props) {
-  const { values, cards, setCards } = props;
+  const { values, cards } = props;
   const classes = useStyles();
 
-  if (cards.list.length === 0 && !cards.fetching) {
-    createSubjects(values.user, cards, setCards)
-  }
-
   return (
-    (cards.fetching ? <CircularProgress color="secondary"/> :<Fade bottom>
+    (cards.fetching || cards.list.length === 0 ? <CircularProgress color="secondary"/> :<Fade bottom>
       <Typography variant="h3" color="secondary">
         Welcome {values.user.name} !
       </Typography>
