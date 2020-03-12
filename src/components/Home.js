@@ -24,6 +24,10 @@ export default function Welcome(props) {
 
   const [cards, setCards] = props.cards;
 
+  const [err, setError] = props.err;
+
+  const setOpenAlert = props.setOpenAlert;
+
   const authInit = props.auth;
 
   return (
@@ -31,7 +35,7 @@ export default function Welcome(props) {
       {(firebase.auth().currentUser || authInit) ? (
         <Hub values={values} cards={cards} setCards={setCards} />
       ) : (
-        <Login values={values} setValues={setValues} cards={cards} setCards={setCards} />
+        <Login values={values} setValues={setValues} err={err} setError={setError} setOpenAlert={setOpenAlert}/>
       )}
     </div>
   );

@@ -7,12 +7,13 @@ import {
 } from "react-router-dom";
 import clsx from "clsx";
 
-import { Typography, CssBaseline, CircularProgress } from "@material-ui/core";
+import { Typography, CssBaseline, CircularProgress, Snackbar } from "@material-ui/core";
 import {
   makeStyles,
   createMuiTheme,
   ThemeProvider
 } from "@material-ui/core/styles";
+import MuiAlert from "@material-ui/lab/Alert";
 
 import { Fade } from "react-reveal";
 
@@ -87,9 +88,6 @@ const theme = createMuiTheme({
     background: {
       default: "#2f2f2f"
     },
-    text : {
-      primary: "#fff"
-    }
   },
 });
 
@@ -115,6 +113,22 @@ export default function App() {
   const [open, setOpen] = React.useState(false);
 
   const [authInit, setAuthInit] = React.useState(true);
+
+  const [err, setError] = React.useState({
+    name: false,
+    password: false,
+    reason: ""
+  });
+
+  const [openAlert, setOpenAlert] = React.useState(false);
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenAlert(false);
+  };
   
   const db = firebase.firestore();
 
@@ -138,8 +152,8 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router className={classes.root}>
-        <Sidebar open={open} setOpen={setOpen} setValues={setValues} />
-        <main
+        <Sidebar open={open} setOpen={setOpen} setValues={setValues} authInit={authInit} />
+        {( authInit ? <CircularProgress style={{marginLeft:"50%", marginTop:"22.5%"}} color="secondary"/> : <main
           className={clsx(classes.main, {
             [classes.mainShift]: open
           })}
@@ -149,22 +163,34 @@ export default function App() {
           </Typography>
           <Switch>
             <Route path="/DashBoard">
-              {( authInit ? <CircularProgress color="secondary"/> : firebase.auth().currentUser ? (
+              {firebase.auth().currentUser ? (
                 <DashBoard />
               ) : (
                 <Redirect to="/" />
-              ))}
+              )}
             </Route>
             <Route path="/Settings">
-              <Settings/>
+              <Fade bottom duration={1000}>
+                <Settings/>
+              </Fade>
             </Route>
             <Route path="/">
               <Fade duration={1000}>
-                <Home values={[values, setValues]} cards={[cards, setCards]} auth={authInit} />
+                <Home values={[values, setValues]} cards={[cards, setCards]} auth={authInit} err={[err, setError]} setOpenAlert={setOpenAlert}/>
               </Fade>
             </Route>
           </Switch>
-        </main>
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <MuiAlert elevation={6} variant="filled" onClose={handleCloseAlert} severity="error">
+          {err.reason}
+        </MuiAlert>
+      </Snackbar>
+        </main>)}
       </Router>
     </ThemeProvider>
   );
