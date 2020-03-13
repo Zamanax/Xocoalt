@@ -94,7 +94,7 @@ export default function Sidebar(props) {
             }
             to={"/" + (text === "Home" ? "" : text)}
             primary={text}
-          ></ListItemLink>
+          />
         ))}
         <ListItemLink
           icon={<ExitToAppIcon />}
@@ -115,7 +115,7 @@ export default function Sidebar(props) {
                 });
               });
           }}
-        ></ListItemLink>
+        />
       </List>
     </Drawer>
   );

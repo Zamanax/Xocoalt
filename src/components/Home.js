@@ -2,6 +2,7 @@ import React from "react";
 
 import {
   makeStyles,
+  CircularProgress,
 } from "@material-ui/core";
 
 import * as firebase from "firebase/app";
@@ -13,7 +14,8 @@ import Login from "./Login"
 const useStyles = makeStyles(theme => ({
   center: {
     justifyContent: "center",
-    textAlign: "center"
+    textAlign: "center",
+    height: "100%",
   },
 }));
 
@@ -32,11 +34,11 @@ export default function Welcome(props) {
 
   return (
     <div className={classes.center}>
-      {(firebase.auth().currentUser || authInit) ? (
+      {( cards.list.length !== 0 ? (firebase.auth().currentUser || authInit) ? (
         <Hub values={values} cards={cards} setCards={setCards} />
       ) : (
         <Login values={values} setValues={setValues} err={err} setError={setError} setOpenAlert={setOpenAlert}/>
-      )}
+      ) : <CircularProgress color="secondary"/>)}
     </div>
   );
 }

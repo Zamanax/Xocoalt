@@ -73,7 +73,8 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     margin: 20,
-    textAlign: "center"
+    textAlign: "center",
+    height: 72
   }
 }));
 
@@ -175,7 +176,7 @@ export default function App() {
               </Fade>
             </Route>
             <Route path="/">
-              <Fade duration={1000}>
+              <Fade bottom duration={1000} when={cards.list.length !== 0} appear>
                 <Home values={[values, setValues]} cards={[cards, setCards]} auth={authInit} err={[err, setError]} setOpenAlert={setOpenAlert}/>
               </Fade>
             </Route>

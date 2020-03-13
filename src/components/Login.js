@@ -1,5 +1,4 @@
 import React from "react";
-import { Fade } from "react-reveal";
 import {
   makeStyles,
   TextField,
@@ -25,6 +24,11 @@ import "firebase/auth";
 import "firebase/firestore";
 
 const useStyles = makeStyles(theme => ({
+  container : {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
   center: {
     justifyContent: "center",
     textAlign: "center"
@@ -129,7 +133,7 @@ export default function Login(props) {
   };
 
   return (
-    <Fade bottom>
+    <div className={classes.container}>
       <Typography variant="h3" color="secondary" className={classes.pageTitle}>
         Login
       </Typography>
@@ -215,6 +219,6 @@ export default function Login(props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </Fade>
-  );
+      </div>
+      );
 }

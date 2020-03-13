@@ -1,16 +1,23 @@
 import React from "react";
-import { Fade } from "react-reveal";
-import { makeStyles, CircularProgress, Typography } from "@material-ui/core";
+import { makeStyles, Typography } from "@material-ui/core";
 
 import { capitalizeFirstLetter } from "../model/utils";
 
 const useStyles = makeStyles(theme => ({
-    cardContainer: {
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center"
-    },
+  hub: {
+    width: "100%",
+    height: "100%"
+  },
+  header: {
+    height: 110
+  },
+  cardContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: "calc(80% - 110px)"
+  }
 }));
 
 export default function Hub(props) {
@@ -18,20 +25,22 @@ export default function Hub(props) {
   const classes = useStyles();
 
   return (
-    (cards.fetching || cards.list.length === 0 ? <CircularProgress color="secondary"/> :<Fade bottom>
-      <Typography variant="h3" color="secondary">
-        Welcome {values.user.name} !
-      </Typography>
-      <Typography variant="h3" color="secondary">
-        {capitalizeFirstLetter(
-          values.user.languages !== undefined
-            ? Object.keys(values.user.languages)[0]
-            : "french"
-        )}
-      </Typography>
-      <div className={classes.cardContainer}>
-        {cards.fetching ? <CircularProgress /> : cards.list}
+    <div className={classes.hub}>
+      <div className={classes.header}>
+        <Typography variant="h3" color="secondary">
+          Welcome {values.user.name} !
+        </Typography>
+        <Typography variant="h3" color="secondary">
+          {capitalizeFirstLetter(
+            values.user.languages !== undefined
+              ? Object.keys(values.user.languages)[0]
+              : "french"
+          )}
+        </Typography>
       </div>
-    </Fade>)
+      <div className={classes.cardContainer}>
+        {cards.list}
+      </div>
+    </div>
   );
 }
