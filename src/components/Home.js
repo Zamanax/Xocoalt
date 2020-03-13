@@ -2,7 +2,6 @@ import React from "react";
 
 import {
   makeStyles,
-  CircularProgress,
 } from "@material-ui/core";
 
 import * as firebase from "firebase/app";
@@ -34,11 +33,11 @@ export default function Welcome(props) {
 
   return (
     <div className={classes.center}>
-      {( cards.list.length !== 0 ? (firebase.auth().currentUser || authInit) ? (
+      {(firebase.auth().currentUser || authInit) ? (
         <Hub values={values} cards={cards} setCards={setCards} />
       ) : (
         <Login values={values} setValues={setValues} err={err} setError={setError} setOpenAlert={setOpenAlert}/>
-      ) : <CircularProgress color="secondary"/>)}
+      )}
     </div>
   );
 }

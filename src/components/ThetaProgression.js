@@ -6,7 +6,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  ResponsiveContainer
 } from "recharts";
 
 const data = [
@@ -56,7 +57,7 @@ export default function ThetaProgression() {
   const { opacity } = state;
 
   return (
-    <div>
+    <ResponsiveContainer width="50%" height="30%">
       <LineChart
         width={1000}
         height={300}
@@ -80,6 +81,6 @@ export default function ThetaProgression() {
           stroke="#82ca9d"
         />
       </LineChart>
-    </div>
+    </ResponsiveContainer>
   );
 }
