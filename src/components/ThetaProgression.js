@@ -10,6 +10,8 @@ import {
   ResponsiveContainer
 } from "recharts";
 
+import { makeStyles } from "@material-ui/core";
+
 const data = [
   { name: "January", progress: 0, amt: 2400 },
   { name: "February", progress: 0, amt: 2210 },
@@ -24,6 +26,18 @@ const data = [
   { name: "November", progress: 95, amt: 2100 },
   { name: "December", uprogress: 100, amt: 2100 }
 ];
+
+const useStyles = makeStyles(theme => ({
+  title : {
+    color: "white",
+  },
+  container : {
+    display : "flex",
+    alignItems: "center",
+    flexDirection: "column",
+  }
+}));
+
 export default function ThetaProgression() {
   const [state, setState] = React.useState({
     opacity: {
@@ -55,6 +69,8 @@ export default function ThetaProgression() {
   };
 
   const { opacity } = state;
+
+  const classes = useStyles();
 
   return (
     <ResponsiveContainer width="50%" height="30%">
