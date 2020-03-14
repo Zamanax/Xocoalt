@@ -1,5 +1,4 @@
 import React from "react";
-import { Fade } from "react-reveal";
 import {
   makeStyles,
   TextField,
@@ -25,6 +24,11 @@ import "firebase/auth";
 import "firebase/firestore";
 
 const useStyles = makeStyles(theme => ({
+  container : {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
   center: {
     justifyContent: "center",
     textAlign: "center"
@@ -49,16 +53,11 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Login(props) {
-  const { values, setValues } = props;
+  const { values, setValues, err, setError, setOpenAlert } = props;
   const classes = useStyles();
   const db = firebase.firestore();
 
   const [openDialog, setOpenDialog] = React.useState(false);
-
-  const [err, setError] = React.useState({
-    name: false,
-    password: false
-  });
 
   const handleRegister = () => {
     setOpenDialog(true);
@@ -69,7 +68,7 @@ export default function Login(props) {
   };
   const handleDialogCloseConfirm = () => {
     setOpenDialog(false);
-
+    setOpenAlert(false);
     setValues({ ...values, fetching: true });
     firebase
       .auth()
@@ -88,7 +87,8 @@ export default function Login(props) {
         setValues({ ...values, fetching: false });
         setError({
           name: false,
-          password: false
+          password: false,
+          reason: ""
         });
       });
   };
@@ -109,8 +109,10 @@ export default function Login(props) {
     setValues({ ...values, fetching: true });
     setError({
       name: false,
-      password: false
+      password: false,
+      reason: ""
     });
+    setOpenAlert(false)
     firebase
       .auth()
       .setPersistence(firebase.auth.Auth.Persistence.SESSION)
@@ -122,14 +124,16 @@ export default function Login(props) {
       .catch(err => {
         setError({
           name: true,
-          password: true
+          password: true,
+          reason: err.message
         });
         setValues({ ...values, fetching: false });
+        setOpenAlert(true);
       });
   };
 
   return (
-    <Fade bottom>
+    <div className={classes.container}>
       <Typography variant="h3" color="secondary" className={classes.pageTitle}>
         Login
       </Typography>
@@ -215,6 +219,6 @@ export default function Login(props) {
           </Button>
         </DialogActions>
       </Dialog>
-    </Fade>
-  );
+      </div>
+      );
 }

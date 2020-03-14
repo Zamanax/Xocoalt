@@ -2,6 +2,8 @@ import React from "react";
 import { Typography, makeStyles } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 
+import { useHistory } from "react-router-dom";
+
 import { capitalizeFirstLetter } from "../model/utils";
 
 const useStyles = makeStyles(() => ({
@@ -13,7 +15,12 @@ const useStyles = makeStyles(() => ({
     color: "#000",
     background: "#FFF",
     margin: 15,
-    minWidth: 300
+    minWidth: 300,
+    transition: "transform .3s",
+    '&:hover': {
+      transform: "scale(1.1)",
+      cursor: "pointer",
+    },
   },
   top: {
     display: "flex",
@@ -44,7 +51,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function LessonCard(props) {
-	const classes = useStyles();
+  const classes = useStyles();
+  const history = useHistory();
 	
 	const defaultLanguage = props.user.languages !== undefined ? Object.keys(props.user.languages)[0] : "french";
 
@@ -94,7 +102,7 @@ export default function LessonCard(props) {
   };
 
   const chooseSubject = () => {
-    window.location.pathname = "/" + currentChap.slice(1);
+    history.push("/" + props.type)
   };
 
   return (
@@ -112,7 +120,7 @@ export default function LessonCard(props) {
             ? props.user.languages[defaultLanguage][
                 props.type
               ].progression
-          + "%" : 0 + "%") : "0%")}
+          + "%" : "0%") : "0%")}
         </Typography>
       </div>
     </div>

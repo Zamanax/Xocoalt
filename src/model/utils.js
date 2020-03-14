@@ -34,7 +34,7 @@ const createSubjects = (user, cards, setCards) => {
           />
         );
       }
-      setCards({ ...cards, list: cards });
+      setCards({ ...cards, list: cards, fetching: false });
     });
 };
 

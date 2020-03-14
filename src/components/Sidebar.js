@@ -7,7 +7,7 @@ import {
   makeStyles
 } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
-import BarChartIcon from "@material-ui/icons/BarChart";
+import TimeLineIcon from "@material-ui/icons/Timeline"
 import MapIcon from "@material-ui/icons/Map";
 import SettingsIcon from "@material-ui/icons/Settings";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function Sidebar(props) {
-  const { open, setOpen, setValues } = props;
+  const { open, setOpen, setValues, authInit } = props;
   const classes = useStyles();
 
   const handleDrawerOpen = () => {
@@ -88,18 +88,19 @@ export default function Sidebar(props) {
           <ListItemLink
             key={text}
             icon={
-              [<HomeIcon />, <BarChartIcon />, <MapIcon />, <SettingsIcon />][
+              [<HomeIcon />, <TimeLineIcon />, <MapIcon />, <SettingsIcon />][
                 index
               ]
             }
             to={"/" + (text === "Home" ? "" : text)}
             primary={text}
-          ></ListItemLink>
+          />
         ))}
         <ListItemLink
           icon={<ExitToAppIcon />}
           to="/"
           primary="Log out"
+          disabled={authInit || !firebase.auth().currentUser}
           onClick={() => {
             firebase
               .auth()
@@ -114,7 +115,7 @@ export default function Sidebar(props) {
                 });
               });
           }}
-        ></ListItemLink>
+        />
       </List>
     </Drawer>
   );

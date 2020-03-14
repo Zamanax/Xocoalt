@@ -6,7 +6,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  ResponsiveContainer
 } from "recharts";
 
 import { makeStyles } from "@material-ui/core";
@@ -72,7 +73,7 @@ export default function ThetaProgression() {
   const classes = useStyles();
 
   return (
-    <div className={classes.container}>
+    <ResponsiveContainer width="50%" height="30%">
       <LineChart
         width={1000}
         height={300}
@@ -96,7 +97,6 @@ export default function ThetaProgression() {
           stroke="#82ca9d"
         />
       </LineChart>
-      <p className={classes.title}>Progression</p>
-    </div>
+    </ResponsiveContainer>
   );
 }
