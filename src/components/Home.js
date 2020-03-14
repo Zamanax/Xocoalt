@@ -1,21 +1,20 @@
 import React from "react";
 
-import {
-  makeStyles,
-} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
-import Hub from "./Hub"
-import Login from "./Login"
+import Hub from "./Hub";
+import Login from "./Login";
+import { Fade } from "react-reveal";
 
 const useStyles = makeStyles(theme => ({
   center: {
     justifyContent: "center",
     textAlign: "center",
-    height: "100%",
-  },
+    height: "100%"
+  }
 }));
 
 export default function Welcome(props) {
@@ -33,10 +32,20 @@ export default function Welcome(props) {
 
   return (
     <div className={classes.center}>
-      {(firebase.auth().currentUser || authInit) ? (
-        <Hub values={values} cards={cards} setCards={setCards} />
+      {firebase.auth().currentUser || authInit ? (
+        <Fade bottom duration={1000}>
+          <Hub values={values} cards={cards} setCards={setCards} />
+        </Fade>
       ) : (
-        <Login values={values} setValues={setValues} err={err} setError={setError} setOpenAlert={setOpenAlert}/>
+        <Fade bottom duration={1000}>
+          <Login
+            values={values}
+            setValues={setValues}
+            err={err}
+            setError={setError}
+            setOpenAlert={setOpenAlert}
+          />
+        </Fade>
       )}
     </div>
   );

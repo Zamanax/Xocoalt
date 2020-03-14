@@ -196,12 +196,6 @@ export default function App() {
                 </Fade>
               </Route>
               <Route path="/">
-                <Fade
-                  bottom
-                  duration={1000}
-                  when={cards.list.length !== 0}
-                  appear
-                >
                   <Home
                     values={[values, setValues]}
                     cards={[cards, setCards]}
@@ -209,7 +203,6 @@ export default function App() {
                     err={[err, setError]}
                     setOpenAlert={setOpenAlert}
                   />
-                </Fade>
               </Route>
             </Switch>
             <Snackbar

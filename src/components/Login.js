@@ -83,12 +83,12 @@ export default function Login(props) {
             handleLog();
           });
       })
-      .catch(function(error) {
+      .catch((error) => {
         setValues({ ...values, fetching: false });
         setError({
           name: false,
           password: false,
-          reason: ""
+          reason: error.message
         });
       });
   };
