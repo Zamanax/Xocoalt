@@ -1,7 +1,7 @@
 import csv
 import json
 import re
-import random as ran
+
 
 with open('sentences.csv', mode="r", encoding="utf8") as sen:
     csv_reader = csv.reader(sen, delimiter='	')
