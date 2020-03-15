@@ -179,3 +179,5 @@ var stemmer = (function(){
 })();
 
 console.log(stemmer(w))
+let r = stemmer(w)
+export default r
