@@ -1,4 +1,6 @@
-w = "killing"
+// Somehow this only works with suffixes and not prefixes, careful
+
+w = "reading"
 
 var stemmer = (function(){
 	var step2list = {
