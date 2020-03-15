@@ -1,4 +1,7 @@
 import React from "react";
+
+import { useLocation } from "react-router-dom";
+
 import LessonCard from "../components/LessonCard";
 import * as firebase from "firebase/app";
 import "firebase/firestore";
@@ -38,4 +41,8 @@ const createSubjects = (user, cards, setCards) => {
     });
 };
 
-export { capitalizeFirstLetter, createSubjects };
+const useQuery = () => {
+  return new URLSearchParams(useLocation().search);
+};
+
+export { capitalizeFirstLetter, createSubjects, useQuery };

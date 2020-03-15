@@ -17,10 +17,10 @@ const useStyles = makeStyles(() => ({
     margin: 15,
     minWidth: 300,
     transition: "transform .3s",
-    '&:hover': {
+    "&:hover": {
       transform: "scale(1.1)",
-      cursor: "pointer",
-    },
+      cursor: "pointer"
+    }
   },
   top: {
     display: "flex",
@@ -35,7 +35,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: "space-between",
     padding: 10,
     borderTop: "1px solid",
-    height: 50,
+    height: 50
   },
   percent: {
     border: "1px solid",
@@ -53,14 +53,15 @@ const useStyles = makeStyles(() => ({
 export default function LessonCard(props) {
   const classes = useStyles();
   const history = useHistory();
-	
-	const defaultLanguage = props.user.languages !== undefined ? Object.keys(props.user.languages)[0] : "french";
+
+  const defaultLanguage =
+    props.user.languages !== undefined
+      ? Object.keys(props.user.languages)[0]
+      : "french";
 
   let currentChap = undefined;
   try {
-    currentChap =
-      props.user.languages[defaultLanguage][props.type]
-        .current;
+    currentChap = props.user.languages[defaultLanguage][props.type].current;
   } catch {}
 
   const buildChapter = chap => {
@@ -86,7 +87,11 @@ export default function LessonCard(props) {
             <Typography key={i} style={{ color: "#939393" }}>
               {key.title}
             </Typography>
-            <CheckIcon key={i+1} fontSize="small" style={{ color: "#939393" }} />
+            <CheckIcon
+              key={i + 1}
+              fontSize="small"
+              style={{ color: "#939393" }}
+            />
           </div>
         );
       } else {
@@ -102,7 +107,24 @@ export default function LessonCard(props) {
   };
 
   const chooseSubject = () => {
-    history.push("/" + props.type)
+    const defaultSourceLanguage =
+      props.user.languages !== undefined
+        ? Object.keys(props.user.languages)[0]
+        : "english";
+    const defaultDestLanguage =
+      props.user.languages !== undefined
+        ? Object.keys(props.user.languages[defaultSourceLanguage])[0]
+        : "french";
+    history.push(
+      "/" +
+        defaultSourceLanguage.slice(0, 2) +
+        defaultDestLanguage.slice(0, 2) +
+        "/" +
+        props.type +
+        "/" +
+      (currentChap !== undefined ? currentChap : props.chapters[0].title) +
+      "?id=0"
+    );
   };
 
   return (
@@ -113,14 +135,12 @@ export default function LessonCard(props) {
           {capitalizeFirstLetter(props.type)}
         </Typography>
         <Typography variant="h6" className={classes.percent}>
-					{
-						( props.user.languages !== undefined ? (props.user.languages[defaultLanguage][
-            props.type
-          ] !== undefined
-            ? props.user.languages[defaultLanguage][
-                props.type
-              ].progression
-          + "%" : "0%") : "0%")}
+          {props.user.languages !== undefined
+            ? props.user.languages[defaultLanguage][props.type] !== undefined
+              ? props.user.languages[defaultLanguage][props.type].progression +
+                "%"
+              : "0%"
+            : "0%"}
         </Typography>
       </div>
     </div>

@@ -25,6 +25,7 @@ import { Fade } from "react-reveal";
 import DashBoard from "./components/DashBoard";
 import Home from "./components/Home";
 import Sidebar from "./components/Sidebar";
+import Exercise from "./components/Exercise";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -195,6 +196,9 @@ export default function App() {
                   <Settings />
                 </Fade>
               </Route>
+                <Route path="/:lang/:subject/:chapter">
+                  <Exercise user={values.user} />
+                </Route>
               <Route path="/">
                   <Home
                     values={[values, setValues]}
