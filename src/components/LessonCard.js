@@ -66,11 +66,11 @@ export default function LessonCard(props) {
   const buildChapter = chap => {
     let chapters = [];
     let i = 0;
-    for (const key of Object.keys(chap)) {
+    for (const key of chap) {
       if (currentChap === key || (i === 0 && currentChap === undefined)) {
         chapters.push(
           <Typography key={i} style={{ fontSize: 30 }}>
-            {key.slice(1)}
+            {key.title}
           </Typography>
         );
       } else if (currentChap !== undefined && currentChap[0] > i) {
@@ -84,7 +84,7 @@ export default function LessonCard(props) {
             key={i}
           >
             <Typography key={i} style={{ color: "#939393" }}>
-              {key.slice(1)}
+              {key.title}
             </Typography>
             <CheckIcon key={i+1} fontSize="small" style={{ color: "#939393" }} />
           </div>
@@ -92,11 +92,11 @@ export default function LessonCard(props) {
       } else {
         chapters.push(
           <Typography key={i} style={{ color: "#939393" }}>
-            {key.slice(1)}
+            {key.title}
           </Typography>
         );
       }
-      i+=2;
+      i++;
     }
     return chapters;
   };
