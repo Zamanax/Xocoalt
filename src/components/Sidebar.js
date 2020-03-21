@@ -25,7 +25,8 @@ const useStyles = makeStyles(theme => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: "nowrap"
+    whiteSpace: "nowrap",
+    background: "#D9CB9E"
   },
   drawerOpen: {
     width: drawerWidth,
@@ -72,7 +73,7 @@ export default function Sidebar(props) {
         [classes.drawerClose]: !open
       })}
       classes={{
-        paper: clsx({
+        paper: clsx(classes.drawer,{ 
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open
         })

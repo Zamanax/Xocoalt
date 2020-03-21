@@ -87,13 +87,13 @@ const useStyles = makeStyles(theme => ({
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: "#2f2f2f"
+      main: "#374140"
     },
     secondary: {
-      main: "#fff"
+      main: "#D9CB9E"
     },
     background: {
-      default: "#2f2f2f"
+      default: "#374140"
     }
   }
 });

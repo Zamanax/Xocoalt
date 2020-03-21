@@ -43,11 +43,11 @@ const languages = {
   fr: "french"
 };
 
-const WhiteRadio = withStyles({
+const SecondaryRadio = withStyles({
   root: {
-    color: "#FFF"
+    color: "#D9CB9E"
   }
-})(props => <Radio color="default" {...props} />);
+})(props => <Radio {...props} />);
 
 export default function Exercise(props) {
   const classes = useStyles();
@@ -158,8 +158,8 @@ export default function Exercise(props) {
                 {exercise.possibleAnswers.map((word, i) => (
                   <FormControlLabel
                     value={word}
-                    control={<WhiteRadio />}
-                    label={<span style={{ fontSize: 35 }}>{word}</span>}
+                    control={<SecondaryRadio />}
+                    label={<span style={{ fontSize: 35, color: "#D9CB9E" }}>{word}</span>}
                     style={{ color: "#FFF" }}
                     key={i}
                   />

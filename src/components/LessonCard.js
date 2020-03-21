@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
     padding: 2,
     borderRadius: 10,
     color: "#000",
-    background: "#FFF",
+    background: "#D9CB9E",
     margin: 15,
     minWidth: 300,
     transition: "transform .3s",
@@ -84,19 +84,19 @@ export default function LessonCard(props) {
             }}
             key={i}
           >
-            <Typography key={i} style={{ color: "#939393" }}>
+            <Typography key={i} style={{ color: "#374140" }}>
               {key.title}
             </Typography>
             <CheckIcon
               key={i + 1}
               fontSize="small"
-              style={{ color: "#939393" }}
+              style={{ color: "#374140" }}
             />
           </div>
         );
       } else {
         chapters.push(
-          <Typography key={i} style={{ color: "#939393" }}>
+          <Typography key={i} style={{ color: "#374140" }}>
             {key.title}
           </Typography>
         );
