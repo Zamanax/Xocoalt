@@ -46,7 +46,7 @@ const languages = {
 const WhiteRadio = withStyles({
   root: {
     color: "#FFF"
-  },
+  }
 })(props => <Radio color="default" {...props} />);
 
 export default function Exercise(props) {
@@ -57,13 +57,27 @@ export default function Exercise(props) {
 
   // const { user } = props;
   const { lang, subject, chapter } = useParams();
-  const id = useQuery().get("id");
+  const id = parseInt(useQuery().get("id"),10);
 
-  const [exercise, setExercise] = React.useState(<CircularProgress />);
+  const [exercise, setExercise] = React.useState({
+    done: false,
+    title: "",
+    sentence: "",
+    possibleAnswers: []
+  });
   const [fetching, setFecthing] = React.useState(true);
+  const [answer, setAnswer] = React.useState("_____");
 
   const sourceLang = languages[lang.slice(0, 2)];
   const destLang = languages[lang.slice(2)];
+
+  const handleChange = event => {
+    setAnswer(event.target.value);
+  };
+
+  const handleValidate = () => {
+    history.push(window.location.pathname.split("?")[0] + "?id=" + (id+1))
+  };
 
   const generateExercise = () => {
     setFecthing(false);
@@ -96,46 +110,70 @@ export default function Exercise(props) {
           }
         }
 
-        setExercise(
-          <Fade bottom cascade>
-            <div className={classes.exercise}>
-              <Typography
-                color="secondary"
-                variant="h2"
-                className={classes.chap}
-              >
-                {fetchedData.title}
-              </Typography>
-              <Typography
-                color="secondary"
-                variant="h3"
-                className={classes.wording}
-              >
-                {sentence}
-              </Typography>
-                <FormControl style={{ marginBottom: 40 }}>
-                  <RadioGroup>
-                    {possibleAnswers.map((word, i) => (
-                      <FormControlLabel
-                        value={word}
-                        control={<WhiteRadio />}
-                        label={<span style={{ fontSize: 25 }}>{word}</span>}
-                        style={{ color: "#FFF" }}
-                        key={i}
-                      />
-                    ))}
-                  </RadioGroup>
-                </FormControl>
-              <Button color="secondary" size="large" variant="contained">
-                Validate
-              </Button>
-            </div>
-          </Fade>
-        );
+        setExercise({
+          done: true,
+          title: fetchedData.title,
+          sentence: sentence,
+          possibleAnswers: possibleAnswers
+        });
       });
   };
   if (fetching) {
     generateExercise();
   }
-  return <div className={classes.frame}>{exercise}</div>;
+  return (
+    <div className={classes.frame}>
+      {exercise.done ? (
+        <Fade bottom cascade>
+          <div className={classes.exercise}>
+            <Typography color="secondary" variant="h2" className={classes.chap}>
+              {exercise.title}
+            </Typography>
+            <Fade bottom>
+              <Fade spy={answer}>
+                <Typography
+                  color="secondary"
+                  variant="h3"
+                  className={classes.wording}
+                >
+                  {exercise.sentence.split(/_____/gi).map(
+                    (text, i) =>
+                      (text =
+                        i !== exercise.sentence.split(/_____/gi).length - 1 ? (
+                          <span key={i}>
+                            {text + " "}
+                            <span style={{ fontStyle: "oblique 40deg", fontWeight: "bold", textDecoration: "underline" }}>
+                              {answer}
+                            </span>
+                          </span>
+                        ) : (
+                          <span key={i}>{text}</span>
+                        ))
+                  )}
+                </Typography>
+              </Fade>
+            </Fade>
+            <FormControl style={{ marginBottom: 40 }}>
+              <RadioGroup value={answer} onChange={handleChange}>
+                {exercise.possibleAnswers.map((word, i) => (
+                  <FormControlLabel
+                    value={word}
+                    control={<WhiteRadio />}
+                    label={<span style={{ fontSize: 35 }}>{word}</span>}
+                    style={{ color: "#FFF" }}
+                    key={i}
+                  />
+                ))}
+              </RadioGroup>
+            </FormControl>
+            <Button color="secondary" size="large" variant="contained" onClick={handleValidate}>
+              Validate
+            </Button>
+          </div>
+        </Fade>
+      ) : (
+        <CircularProgress color="secondary" />
+      )}
+    </div>
+  );
 }
