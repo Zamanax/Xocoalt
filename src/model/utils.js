@@ -45,4 +45,15 @@ const useQuery = () => {
   return new URLSearchParams(useLocation().search);
 };
 
-export { capitalizeFirstLetter, createSubjects, useQuery };
+const getChapter = (subject, title) => {
+  for (const chapter of subject) {
+    if(chapter.title===title){return chapter}
+  }
+  return undefined;
+};
+
+const choice = (arr) => {
+  return arr[Math.floor(Math.random() *arr.length)]
+}
+
+export { capitalizeFirstLetter, createSubjects, useQuery, getChapter, choice };
