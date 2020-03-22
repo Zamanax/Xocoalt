@@ -36,8 +36,8 @@ const useStyles = makeStyles(theme => ({
   rectangle: {
     padding: 2,
     borderRadius: 10,
-    color: "#000",
-    background: "#FFF",
+    color: theme.palette.primary.main,
+    background: theme.palette.secondary.main,
     width: 300,
     paddingBottom: 15
   },
@@ -139,7 +139,7 @@ export default function Login(props) {
       </Typography>
       <div className={classes.rectangle}>
         <div>
-          <h3>Please enter your credentials</h3>
+          <Typography variant="h6" style={{ margin:10}}>Please enter your credentials</Typography>
           <FormControl noValidate autoComplete="on">
             <TextField
               variant="outlined"

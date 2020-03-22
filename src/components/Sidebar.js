@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: "nowrap",
-    background: "#D9CB9E"
+    background: theme.palette.secondary.main,
   },
   drawerOpen: {
     width: drawerWidth,

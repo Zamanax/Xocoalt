@@ -9,7 +9,8 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
-  Button
+  Button,
+  useTheme
 } from "@material-ui/core";
 import { useQuery, getChapter, choice } from "../model/utils";
 import { Fade } from "react-reveal";
@@ -43,12 +44,6 @@ const languages = {
   fr: "french"
 };
 
-const SecondaryRadio = withStyles({
-  root: {
-    color: "#D9CB9E"
-  }
-})(props => <Radio {...props} />);
-
 export default function Exercise(props) {
   const classes = useStyles();
   const history = useHistory();
@@ -57,7 +52,14 @@ export default function Exercise(props) {
 
   // const { user } = props;
   const { lang, subject, chapter } = useParams();
-  const id = parseInt(useQuery().get("id"),10);
+  const id = parseInt(useQuery().get("id"), 10);
+
+  const theme = useTheme();
+  const SecondaryRadio = withStyles({
+    root: {
+      color: theme.palette.secondary.main
+    }
+  })(props => <Radio {...props} />);
 
   const [exercise, setExercise] = React.useState({
     done: false,
@@ -77,7 +79,7 @@ export default function Exercise(props) {
 
   const handleValidate = () => {
     setFecthing(true);
-    history.push(window.location.pathname.split("?")[0] + "?id=" + (id+1))
+    history.push(window.location.pathname.split("?")[0] + "?id=" + (id + 1));
   };
 
   const generateExercise = () => {
@@ -143,7 +145,13 @@ export default function Exercise(props) {
                         i !== exercise.sentence.split(/_____/gi).length - 1 ? (
                           <span key={i}>
                             {text + " "}
-                            <span style={{ fontStyle: "oblique 40deg", fontWeight: "bold", textDecoration: "underline" }}>
+                            <span
+                              style={{
+                                fontStyle: "oblique 40deg",
+                                fontWeight: "bold",
+                                textDecoration: "underline"
+                              }}
+                            >
                               {answer}
                             </span>
                           </span>
@@ -160,14 +168,22 @@ export default function Exercise(props) {
                   <FormControlLabel
                     value={word}
                     control={<SecondaryRadio />}
-                    label={<span style={{ fontSize: 35, color: "#D9CB9E" }}>{word}</span>}
-                    style={{ color: "#FFF" }}
+                    label={
+                      <span style={{ fontSize: 35, color: theme.palette.secondary.main}}>
+                        {word}
+                      </span>
+                    }
                     key={i}
                   />
                 ))}
               </RadioGroup>
             </FormControl>
-            <Button color="secondary" size="large" variant="contained" onClick={handleValidate}>
+            <Button
+              color="secondary"
+              size="large"
+              variant="contained"
+              onClick={handleValidate}
+            >
               Validate
             </Button>
           </div>

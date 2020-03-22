@@ -1,19 +1,19 @@
 import React from "react";
-import { Typography, makeStyles } from "@material-ui/core";
+import { Typography, makeStyles, useTheme } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 
 import { useHistory } from "react-router-dom";
 
 import { capitalizeFirstLetter } from "../model/utils";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   card: {
     display: "flex",
     flexDirection: "column",
     padding: 2,
     borderRadius: 10,
-    color: "#000",
-    background: "#D9CB9E",
+    color: theme.palette.primary.main,
+    background: theme.palette.secondary.main,
     margin: 15,
     minWidth: 300,
     transition: "transform .3s",
@@ -53,6 +53,7 @@ const useStyles = makeStyles(() => ({
 export default function LessonCard(props) {
   const classes = useStyles();
   const history = useHistory();
+  const theme = useTheme();
 
   const defaultLanguage =
     props.user.languages !== undefined
@@ -84,19 +85,19 @@ export default function LessonCard(props) {
             }}
             key={i}
           >
-            <Typography key={i} style={{ color: "#374140" }}>
+            <Typography key={i} style={{ color: theme.palette.primary.main }}>
               {key.title}
             </Typography>
             <CheckIcon
               key={i + 1}
               fontSize="small"
-              style={{ color: "#374140" }}
+              style={{ color: theme.palette.primary.main }}
             />
           </div>
         );
       } else {
         chapters.push(
-          <Typography key={i} style={{ color: "#374140" }}>
+          <Typography key={i} style={{ color: theme.palette.primary.main }}>
             {key.title}
           </Typography>
         );
