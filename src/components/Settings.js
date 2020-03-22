@@ -41,10 +41,12 @@ const themes = {
 
 export default function Settings(props) {
   const classes = useStyles();
-  const [theme, setTheme] = props.theme;
-  const user = props.user;
+  const setTheme = props.theme;
+  const [themeIndex, setIndex] = React.useState(0);
+  // const user = props.user;
   
   const handleChange = (event) => {
+    setIndex(Object.keys(themes).indexOf(event.target.value))
     setTheme(createMuiTheme(themes[event.target.value]));
   }
 
@@ -56,8 +58,9 @@ export default function Settings(props) {
       <FormControl className={classes.formControl}>
         <InputLabel>Theme</InputLabel>
         <Select
-          value={theme}
+        value={Object.keys(themes)[themeIndex]}
           onChange={handleChange}
+          color="secondary"
         >
           {Object.keys(themes).map((name, i) => (<MenuItem value={name} key={i}>{name}</MenuItem>))}
         </Select>

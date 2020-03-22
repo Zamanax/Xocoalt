@@ -193,7 +193,7 @@ export default function App() {
               </Route>
               <Route path="/Settings">
                 <Fade bottom duration={1000}>
-                  <Settings user={values.user} theme={[theme, setTheme]} />
+                  <Settings user={values.user} theme={setTheme} />
                 </Fade>
               </Route>
                 <Route path="/:lang/:subject/:chapter">
