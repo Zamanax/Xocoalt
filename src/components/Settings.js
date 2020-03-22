@@ -13,6 +13,8 @@ import {
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 
+import DatabaseTree from "./DatabaseTree"
+
 const useStyles = makeStyles(theme => ({
   center: {
     display: "flex",
@@ -92,6 +94,7 @@ export default function Settings(props) {
         </Select>
       </FormControl>
       <div className={classes.formControl}>
+        <DatabaseTree/>
         <input type="file" accept="application/JSON" id="uploadButton" style={{display:"none"}}/>
         <label htmlFor="uploadButton">
           <Button variant="contained" component="span">Upload</Button>
