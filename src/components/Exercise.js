@@ -76,6 +76,7 @@ export default function Exercise(props) {
   };
 
   const handleValidate = () => {
+    setFecthing(true);
     history.push(window.location.pathname.split("?")[0] + "?id=" + (id+1))
   };
 
