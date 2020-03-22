@@ -84,25 +84,25 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#5E7880"
-    },
-    secondary: {
-      main: "#BDF0FF"
-    },
-    background: {
-      default: "#386F80"
-    }
-  }
-});
-
 export default function App() {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
   const classes = useStyles();
+
+  const [theme, setTheme] = React.useState(createMuiTheme({
+    palette: {
+      primary: {
+        main: "#5E7880"
+      },
+      secondary: {
+        main: "#BDF0FF"
+      },
+      background: {
+        default: "#386F80"
+      }
+    }
+  }));
 
   const [values, setValues] = React.useState({
     login: "",
@@ -193,7 +193,7 @@ export default function App() {
               </Route>
               <Route path="/Settings">
                 <Fade bottom duration={1000}>
-                  <Settings />
+                  <Settings user={values.user} theme={[theme, setTheme]} />
                 </Fade>
               </Route>
                 <Route path="/:lang/:subject/:chapter">
