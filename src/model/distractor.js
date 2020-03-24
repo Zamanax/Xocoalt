@@ -1,1 +1,83 @@
-import r from stemmer.js
+w = "reading"
+ww = "read"
+
+suffixes_v = [
+    "able",
+    "ac",
+    "acity",
+    "ocity",
+    "ade",
+    "age",
+    "aholic",
+    "oholic",
+    "al",
+    "algia",
+    "an",
+    "ian",
+    "ance",
+    "ant",
+    "ar",
+    "ard",
+    "arian",
+    "arium",
+    "orium",
+    "ary",
+    "ate",
+    "ation",
+    "ative",
+    "ectomy",
+    "ed",
+    "ee",
+    "eer",
+    "emia",
+    "en",
+    "ence",
+    "ency",
+    "ent",
+    "er",
+    "ern",
+    "escence",
+    "ese",
+    "est",
+    "etic",
+    "ette",
+    "ial",
+    "ian",
+    "iasis",
+    "iatric",
+    "ible",
+    "ic",
+    "ical",
+    "ile",
+    "ily",
+    "ine",
+    "ing",
+    "ion",
+    "ious",
+    "ish",
+    
+]
+
+suffixes_c = [
+    "cide",
+    "cracy",
+    "crat",
+    "cule",
+    "cy",
+    "cycle",
+    "dom",
+    "dox",
+    "ful",
+    "fy",
+    "gam",
+    "gamy",
+    "gon",
+    "gonic",
+    "hood",
+
+]
+
+function distractor(ww){
+    n = Math.floor(Math.random() * 100);
+    
+}

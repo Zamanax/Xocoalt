@@ -1,6 +1,6 @@
 // Somehow this only works with suffixes and not prefixes, careful
 
-w = "reading"
+w = "constitution"
 
 var stemmer = (function(){
 	var step2list = {
@@ -179,5 +179,3 @@ var stemmer = (function(){
 })();
 
 console.log(stemmer(w))
-let r = stemmer(w)
-export default r
