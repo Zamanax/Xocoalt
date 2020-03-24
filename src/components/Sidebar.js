@@ -7,7 +7,7 @@ import {
   makeStyles
 } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
-import TimeLineIcon from "@material-ui/icons/Timeline"
+import TimeLineIcon from "@material-ui/icons/Timeline";
 import MapIcon from "@material-ui/icons/Map";
 import SettingsIcon from "@material-ui/icons/Settings";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -25,7 +25,11 @@ const useStyles = makeStyles(theme => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
-    whiteSpace: "nowrap"
+    whiteSpace: "nowrap",
+    background:
+      theme.palette.type === "light"
+        ? theme.palette.secondary.main
+        : theme.palette.primary.main
   },
   drawerOpen: {
     width: drawerWidth,
@@ -72,7 +76,7 @@ export default function Sidebar(props) {
         [classes.drawerClose]: !open
       })}
       classes={{
-        paper: clsx({
+        paper: clsx(classes.drawer, {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open
         })

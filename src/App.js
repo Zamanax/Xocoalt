@@ -25,6 +25,7 @@ import { Fade } from "react-reveal";
 import DashBoard from "./components/DashBoard";
 import Home from "./components/Home";
 import Sidebar from "./components/Sidebar";
+import Exercise from "./components/Exercise";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -83,25 +84,31 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#2f2f2f"
-    },
-    secondary: {
-      main: "#fff"
-    },
-    background: {
-      default: "#2f2f2f"
-    }
-  }
-});
-
 export default function App() {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
   const classes = useStyles();
+
+  const [theme, setTheme] = React.useState(
+    createMuiTheme(
+      localStorage.getItem("theme") !== null
+        ? JSON.parse(localStorage.getItem("theme"))
+        : {
+            palette: {
+              primary: {
+                main: "#5E7880"
+              },
+              secondary: {
+                main: "#BDF0FF"
+              },
+              background: {
+                default: "#386F80"
+              }
+            }
+          }
+    )
+  );
 
   const [values, setValues] = React.useState({
     login: "",
@@ -185,24 +192,27 @@ export default function App() {
             <Switch>
               <Route path="/DashBoard">
                 {firebase.auth().currentUser ? (
-                    <DashBoard />
+                  <DashBoard />
                 ) : (
                   <Redirect to="/" />
                 )}
               </Route>
               <Route path="/Settings">
                 <Fade bottom duration={1000}>
-                  <Settings />
+                  <Settings user={values.user} theme={setTheme} />
                 </Fade>
               </Route>
+              <Route path="/:lang/:subject/:chapter">
+                <Exercise user={values.user} />
+              </Route>
               <Route path="/">
-                  <Home
-                    values={[values, setValues]}
-                    cards={[cards, setCards]}
-                    auth={authInit}
-                    err={[err, setError]}
-                    setOpenAlert={setOpenAlert}
-                  />
+                <Home
+                  values={[values, setValues]}
+                  cards={[cards, setCards]}
+                  auth={authInit}
+                  err={[err, setError]}
+                  setOpenAlert={setOpenAlert}
+                />
               </Route>
             </Switch>
             <Snackbar
