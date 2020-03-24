@@ -9,6 +9,7 @@ import {
   createMuiTheme,
   Button
 } from "@material-ui/core";
+import clsx from "clsx";
 
 import * as firebase from "firebase/app";
 import "firebase/firestore";
@@ -20,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    height: "100%"
+    height: "100%",
   },
   formControl: {
     margin: 15
@@ -43,7 +44,6 @@ const themes = {
   },
   Dark: {
     palette: {
-      type: "dark",
       primary: {
         main: "#2f2f2f"
       },
@@ -93,10 +93,10 @@ export default function Settings(props) {
           ))}
         </Select>
       </FormControl>
-      <div className={classes.formControl}>
+      <div className={clsx(classes.formControl, classes.center)}>
         <DatabaseTree/>
         <input type="file" accept="application/JSON" id="uploadButton" style={{display:"none"}}/>
-        <label htmlFor="uploadButton">
+        <label htmlFor="uploadButton" style={{margin:15}}>
           <Button variant="contained" component="span">Upload</Button>
         </label>
       </div>
