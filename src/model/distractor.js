@@ -143,7 +143,7 @@ l2 = suffixesC.length - 1
 
 function distractor(ww){
     f = ww.charAt(-1)
-    if ((f == "a") || (f == "e") || (f == "i") || (f == "o") || (f == "u") || (f == "y")){
+    if (["a","e","i","o","u","y"].includes(f)){
         n = Math.floor(Math.random() * l2);
         ww = ww.concat(suffixesC[n])
     } else {
@@ -153,4 +153,4 @@ function distractor(ww){
     return ww
 }
 
-console.log(distractor(w))
+console.log(distractor(ww))
