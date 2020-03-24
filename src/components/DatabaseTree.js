@@ -1,5 +1,12 @@
 import React from "react";
-import { makeStyles, CircularProgress, Typography } from "@material-ui/core";
+import {
+  makeStyles,
+  CircularProgress,
+  Typography,
+  FormGroup,
+  FormControlLabel,
+  Switch
+} from "@material-ui/core";
 import { TreeView, TreeItem } from "@material-ui/lab";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -22,13 +29,17 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: grey[500]
     }
   },
-  selected: {}
+  selected: {},
+  formControl: {
+    margin: 20
+  }
 }));
 
 export default function DatabaseTree() {
   const classes = useStyles();
   const db = firebase.firestore();
   const [fetching, setFetching] = React.useState(true);
+  const [exercise, setExercise] = React.useState(false);
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState("");
   const [treeItems, setTreeItems] = React.useState([]);
@@ -71,18 +82,47 @@ export default function DatabaseTree() {
     });
   };
 
-  if (fetching) {
+  const loadTree = () => {if (fetching) {
     setFetching(false);
-    db.collection("sources")
-      .doc("english")
-      .get()
-      .then(snap => {
-        setTreeItems(getTreeItemsFromData(snap.data()));
-      });
-  }
+    if (!exercise) {
+      db.collection("sources")
+        .doc("english")
+        .get()
+        .then(snap => {
+          setTreeItems(getTreeItemsFromData(snap.data()));
+        });
+    } else {
+      db.collection("sources")
+        .doc("english")
+        .collection("exercises")
+        .doc("french")
+        .get()
+        .then(snap => {
+          setTreeItems(getTreeItemsFromData(snap.data()));
+        });
+    }
+  }}
+
+  loadTree();
 
   return treeItems.length !== 0 ? (
     <div>
+      <FormGroup className={classes.formControl}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={exercise}
+              onChange={() => {
+                setExercise(!exercise);
+                setFetching(true);
+                loadTree();
+              }}
+              name="checkedA"
+            />
+          }
+          label={<Typography color="secondary" variant="h5">Exercise</Typography>}
+        />
+      </FormGroup>
       <TreeView
         className={classes.root}
         defaultCollapseIcon={<ExpandMoreIcon />}
@@ -94,7 +134,9 @@ export default function DatabaseTree() {
       >
         {treeItems}
       </TreeView>
-      <Typography variant="h4" color="secondary">{selected}</Typography>
+      <Typography variant="h4" color="secondary">
+        {selected}
+      </Typography>
     </div>
   ) : (
     <CircularProgress color="secondary" />
