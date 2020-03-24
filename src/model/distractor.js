@@ -1,7 +1,7 @@
 w = "reading"
 ww = "read"
 
-suffixes_v = [
+suffixesV = [
     "able",
     "ac",
     "acity",
@@ -55,10 +55,33 @@ suffixes_v = [
     "ion",
     "ious",
     "ish",
-    
+    "ism",
+    "ist",
+    "ite",
+    "itis",
+    "ity",
+    "ive",
+    "ization",
+    "ize",
+    "oid",
+    "ology",
+    "oma",
+    "onym",
+    "opia",
+    "opsy",
+    "or",
+    "ory",
+    "osis",
+    "ostomy",
+    "otomy",
+    "ous",
+    "ular",
+    "uous",
+    "ure",
+    "y"
 ]
 
-suffixes_c = [
+suffixesC = [
     "cide",
     "cracy",
     "crat",
@@ -74,10 +97,60 @@ suffixes_c = [
     "gon",
     "gonic",
     "hood",
-
+    "less",
+    "let",
+    "like",
+    "ling",
+    "loger",
+    "loger",
+    "log",
+    "ly",
+    "ment",
+    "ness",
+    "path",
+    "pathy",
+    "phile",
+    "phobia",
+    "phone",
+    "phyte",
+    "plegia",
+    "plegic",
+    "pnea",
+    "scopy",
+    "scope",
+    "scribe",
+    "script",
+    "sect",
+    "ship",
+    "sion",
+    "some",
+    "sophy",
+    "sophic",
+    "th",
+    "tion",
+    "tome",
+    "tomy",
+    "trophy",
+    "tude",
+    "ty",
+    "ward",
+    "ware",
+    "wise",
 ]
 
+l1 = suffixesV.length - 1
+l2 = suffixesC.length - 1
+
 function distractor(ww){
-    n = Math.floor(Math.random() * 100);
-    
+    f = ww.charAt(-1)
+    if ((f == "a") || (f == "e") || (f == "i") || (f == "o") || (f == "u") || (f == "y")){
+        n = Math.floor(Math.random() * l2);
+        ww = ww.concat(suffixesC[n])
+    } else {
+        m = Math.floor(Math.random() * l1);
+        ww = ww.concat(suffixesV[m])
+    }
+    return ww
 }
+
+console.log(distractor(w))
