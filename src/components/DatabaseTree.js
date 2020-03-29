@@ -5,11 +5,13 @@ import {
   Typography,
   FormGroup,
   FormControlLabel,
-  Switch
+  Switch,
+  Button
 } from "@material-ui/core";
 import { TreeView, TreeItem } from "@material-ui/lab";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import WarningIcon from "@material-ui/icons/Warning";
 
 import * as firebase from "firebase/app";
 import "firebase/firestore";
@@ -17,11 +19,10 @@ import { grey } from "@material-ui/core/colors";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    margin: 30,
     width: 400,
     overflow: "scroll",
     scrollbarWidth: "none",
-    maxHeight: 400,
+    maxHeight: 300,
     color: theme.palette.secondary.main
   },
   rootTree: {
@@ -31,7 +32,9 @@ const useStyles = makeStyles(theme => ({
   },
   selected: {},
   formControl: {
-    margin: 20
+    margin: 20,
+    display: "flex",
+    flexDirection: "row"
   }
 }));
 
@@ -40,68 +43,99 @@ export default function DatabaseTree() {
   const db = firebase.firestore();
   const [fetching, setFetching] = React.useState(true);
   const [exercise, setExercise] = React.useState(false);
+  const [erase, setErase] = React.useState(false);
   const [expanded, setExpanded] = React.useState([]);
-  const [selected, setSelected] = React.useState("");
+  const [selected, setSelected] = React.useState([]);
   const [treeItems, setTreeItems] = React.useState([]);
+  const [file, setFile] = React.useState(null);
+  const [idMap, setIdMap] = React.useState({});
+  let map = {};
   let i = -1;
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds);
   };
 
-  const handleSelect = (event, nodeIds) => {
-    if (event.target.textContent) {
-      setSelected(event.target.textContent);
-    }
+  const handleSelect = (event, nodeId) => {
+    const text = event.target.textContent;
+    console.log(idMap[nodeId]);
+    setSelected([...selected, text]);
   };
 
-  const getTreeItemsFromData = treeItems => {
+  const handleFileSelect = e => {
+    setFile(e.target.files[0]);
+  };
+
+  const sendData = () => {
+    const reader = new FileReader();
+    reader.readAsText(file, "UTF-8");
+    reader.onloadend = e => {
+      const result = JSON.parse(e.target.result);
+    };
+  };
+
+  const getChild = (item, path, treeItemData) => {
+
+    if (typeof item === "object") {
+      return getTreeItemsFromData(item, [
+        ...path,
+        treeItemData
+      ])
+    } else if (typeof item === "string") {
+      map[i++] = [...path, treeItemData]
+      return <TreeItem
+        key={i}
+        nodeId={i.toString()}
+        label={item}
+      />
+    } else {
+      return undefined
+    }
+  }
+
+  const getTreeItemsFromData = (treeItems, path) => {
+    if (path === undefined) {
+      path = [];
+    }
     return Object.keys(treeItems).map(treeItemData => {
       i++;
+      map[i] = [...path, treeItemData];
       return (
         <TreeItem
           key={i}
           nodeId={i.toString()}
           label={treeItemData}
           classes={{ root: classes.rootTree, selected: classes.selected }}
-          children={
-            typeof treeItems[treeItemData] === "object" ? (
-              getTreeItemsFromData(treeItems[treeItemData])
-            ) : typeof treeItems[treeItemData] === "string" ? (
-              <TreeItem
-                key={i++}
-                nodeId={i.toString()}
-                label={treeItems[treeItemData]}
-              />
-            ) : (
-              undefined
-            )
-          }
+          children={getChild(treeItems[treeItemData], path, treeItemData)}
         />
       );
     });
   };
 
-  const loadTree = () => {if (fetching) {
-    setFetching(false);
-    if (!exercise) {
-      db.collection("sources")
-        .doc("english")
-        .get()
-        .then(snap => {
-          setTreeItems(getTreeItemsFromData(snap.data()));
-        });
-    } else {
-      db.collection("sources")
-        .doc("english")
-        .collection("exercises")
-        .doc("french")
-        .get()
-        .then(snap => {
-          setTreeItems(getTreeItemsFromData(snap.data()));
-        });
+  const loadTree = () => {
+    if (fetching) {
+      setFetching(false);
+      if (!exercise) {
+        db.collection("sources")
+          .doc("english")
+          .get()
+          .then(snap => {
+            setTreeItems(getTreeItemsFromData(snap.data()));
+            setIdMap(map);
+          });
+      } else {
+        db.collection("sources")
+          .doc("english")
+          .collection("exercises")
+          .doc("french")
+          .get()
+          .then(snap => {
+            setTreeItems(getTreeItemsFromData(snap.data()));
+            setIdMap(map);
+          });
+      }
     }
-  }}
+  };
 
   loadTree();
 
@@ -115,12 +149,46 @@ export default function DatabaseTree() {
               onChange={() => {
                 setExercise(!exercise);
                 setFetching(true);
+                setExpanded([]);
+                setSelected("");
                 loadTree();
               }}
               name="checkedA"
             />
           }
-          label={<Typography color="secondary" variant="h5">Exercise</Typography>}
+          label={
+            <Typography color="secondary" variant="h5">
+              Exercise
+            </Typography>
+          }
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={erase}
+              onChange={() => {
+                setErase(!erase);
+              }}
+              name="checkedB"
+            />
+          }
+          label={
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center"
+              }}
+            >
+              <WarningIcon
+                color="secondary"
+                style={{ marginLeft: -5, marginRight: 5 }}
+              />
+              <Typography color="secondary" variant="h5">
+                ERASE
+              </Typography>
+            </div>
+          }
         />
       </FormGroup>
       <TreeView
@@ -128,15 +196,35 @@ export default function DatabaseTree() {
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
         expanded={expanded}
-        selected={selected}
         onNodeToggle={handleToggle}
         onNodeSelect={handleSelect}
       >
         {treeItems}
       </TreeView>
       <Typography variant="h4" color="secondary">
-        {selected}
+        {selected[selected.length - 1]}
       </Typography>
+
+      <div style={{ margin: 10 }}>
+        <input
+          type="file"
+          accept="application/JSON"
+          id="uploadButton"
+          style={{ display: "none" }}
+          onChange={handleFileSelect}
+        />
+        <label htmlFor="uploadButton" style={{ margin: 15 }}>
+          <Button variant="contained" component="span">
+            Choose File
+          </Button>
+        </label>
+        <Typography variant="h5" color="secondary" style={{ margin: 10 }}>
+          {file !== null ? file.name : ""}
+        </Typography>
+        <Button variant="contained" onClick={sendData}>
+          Upload
+        </Button>
+      </div>
     </div>
   ) : (
     <CircularProgress color="secondary" />
