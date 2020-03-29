@@ -41,6 +41,7 @@ const useStyles = makeStyles(theme => ({
 export default function DatabaseTree() {
   const classes = useStyles();
   const db = firebase.firestore();
+  const reader = new FileReader();
   const [fetching, setFetching] = React.useState(true);
   const [exercise, setExercise] = React.useState(false);
   const [erase, setErase] = React.useState(false);
@@ -49,6 +50,7 @@ export default function DatabaseTree() {
   const [treeItems, setTreeItems] = React.useState([]);
   const [file, setFile] = React.useState(null);
   const [idMap, setIdMap] = React.useState({});
+  const [data, setData] = React.useState({});
   let map = {};
   let i = -1;
 
@@ -57,41 +59,78 @@ export default function DatabaseTree() {
   };
 
   const handleSelect = (event, nodeId) => {
-    const text = event.target.textContent;
-    console.log(idMap[nodeId]);
-    setSelected([...selected, text]);
+    setSelected(idMap[nodeId]);
   };
 
   const handleFileSelect = e => {
     setFile(e.target.files[0]);
   };
 
+  const richBuilder = (toAdd, path) => {
+    if (path === undefined) {
+      path = selected;
+    }
+    if (path.length !== 0) {
+      const [, ...rest] = path;
+      return { [path[0]]: richBuilder(toAdd, rest) };
+    } else {
+      return toAdd;
+    }
+  };
+  const isObject = item => {
+    return item && typeof item === "object" && !Array.isArray(item);
+  };
+
+  const mergeDeep = (target, ...sources) => {
+    if (!sources.length) return target;
+    const source = sources.shift();
+
+    if (isObject(target) && isObject(source)) {
+      for (const key in source) {
+        if (isObject(source[key])) {
+          if (!target[key]) Object.assign(target, { [key]: {} });
+          mergeDeep(target[key], source[key]);
+        } else {
+          Object.assign(target, { [key]: source[key] });
+        }
+      }
+    }
+
+    return mergeDeep(target, ...sources);
+  };
+
   const sendData = () => {
-    const reader = new FileReader();
     reader.readAsText(file, "UTF-8");
     reader.onloadend = e => {
-      const result = JSON.parse(e.target.result);
+      const toUpload = mergeDeep(data, richBuilder(JSON.parse(e.target.result)));
+      if (!exercise) {
+        db.collection("sources")
+          .doc("english")
+          .set(toUpload, { merge: !erase });
+      } else {
+        db.collection("sources")
+          .doc("english")
+          .collection("exercises")
+          .doc("french")
+          .set(toUpload, { merge: !erase });
+      }
+      setFetching(true);
+      setExpanded([]);
+      setSelected([]);
+      loadTree();
     };
   };
 
   const getChild = (item, path, treeItemData) => {
-
     if (typeof item === "object") {
-      return getTreeItemsFromData(item, [
-        ...path,
-        treeItemData
-      ])
+      return getTreeItemsFromData(item, [...path, treeItemData]);
     } else if (typeof item === "string") {
-      map[i++] = [...path, treeItemData]
-      return <TreeItem
-        key={i}
-        nodeId={i.toString()}
-        label={item}
-      />
+      map[i++] = [...path, treeItemData];
+      return <TreeItem key={i} nodeId={i.toString()} label={item} />;
     } else {
-      return undefined
+      return undefined;
     }
-  }
+  };
 
   const getTreeItemsFromData = (treeItems, path) => {
     if (path === undefined) {
@@ -120,7 +159,9 @@ export default function DatabaseTree() {
           .doc("english")
           .get()
           .then(snap => {
-            setTreeItems(getTreeItemsFromData(snap.data()));
+            const newData = snap.data()
+            setTreeItems(getTreeItemsFromData(newData));
+            setData(newData)
             setIdMap(map);
           });
       } else {
@@ -130,7 +171,9 @@ export default function DatabaseTree() {
           .doc("french")
           .get()
           .then(snap => {
-            setTreeItems(getTreeItemsFromData(snap.data()));
+            const newData = snap.data()
+            setTreeItems(getTreeItemsFromData(newData));
+            setData(newData)
             setIdMap(map);
           });
       }
@@ -150,7 +193,7 @@ export default function DatabaseTree() {
                 setExercise(!exercise);
                 setFetching(true);
                 setExpanded([]);
-                setSelected("");
+                setSelected([]);
                 loadTree();
               }}
               name="checkedA"
