@@ -274,14 +274,16 @@ function distractor(ww){
     return ww
 }
 
-console.log(distractor(ww))
+www = distractor(ww)
+console.log(www)
 console.log(l1)
 console.log(l2)
 
 const fs = require('fs') 
-fs.readFile('corncob_lowercase.txt', function (err, data) {
-    if (err) throw err;
-    if(data.includes(ww)){
-     console.log(data)
+fs.readFile('src/model/corncob_lowercase.txt', (err, data) => {
+    if(data.includes(www)){
+     console.log('this word exists')
+    } else {
+     console.log('no such word exists')
     }
   });
