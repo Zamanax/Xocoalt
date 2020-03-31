@@ -277,3 +277,11 @@ function distractor(ww){
 console.log(distractor(ww))
 console.log(l1)
 console.log(l2)
+
+const fs = require('fs') 
+fs.readFile('corncob_lowercase.txt', function (err, data) {
+    if (err) throw err;
+    if(data.includes(ww)){
+     console.log(data)
+    }
+  });
