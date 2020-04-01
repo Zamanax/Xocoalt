@@ -46,8 +46,8 @@ const useQuery = () => {
 };
 
 const getChapter = (subject, title) => {
-  for (const chapter of subject) {
-    if(chapter.title===title){return chapter}
+  for (const chapter of Object.keys(subject)) {
+    if(subject[chapter].title===title){return subject[chapter]}
   }
   return undefined;
 };

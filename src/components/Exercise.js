@@ -12,7 +12,12 @@ import {
   Button,
   useTheme
 } from "@material-ui/core";
-import { useQuery, getChapter, choice } from "../model/utils";
+import {
+  useQuery,
+  getChapter,
+  choice,
+  capitalizeFirstLetter
+} from "../model/utils";
 import { Fade } from "react-reveal";
 
 import * as firebase from "firebase/app";
@@ -91,6 +96,7 @@ export default function Exercise(props) {
       .get()
       .then(snap => {
         const fetchedData = getChapter(snap.data()[subject], chapter);
+        console.log(fetchedData);
         const currentWord = Object.keys(fetchedData.words)[id];
         // Add IRT for next time
         let sentence = choice(fetchedData.sentences[currentWord]);
@@ -103,16 +109,15 @@ export default function Exercise(props) {
             possibleAnswers.push(fetchedData.words[currentWord]);
           } else {
             let word = choice(Object.keys(fetchedData.words));
-            do {
-              word = choice(Object.keys(fetchedData.words));
-            } while (
+            while (
               possibleAnswers.includes(fetchedData.words[word]) ||
               word === currentWord
-            );
+            ) {
+              word = choice(Object.keys(fetchedData.words));
+            }
             possibleAnswers.push(fetchedData.words[word]);
           }
         }
-
         setExercise({
           done: true,
           title: fetchedData.title,
@@ -139,26 +144,29 @@ export default function Exercise(props) {
                   variant="h3"
                   className={classes.wording}
                 >
-                  {exercise.sentence.split(/_____/gi).map(
-                    (text, i) =>
-                      (text =
-                        i !== exercise.sentence.split(/_____/gi).length - 1 ? (
-                          <span key={i}>
-                            {text + " "}
-                            <span
-                              style={{
-                                fontStyle: "oblique 40deg",
-                                fontWeight: "bold",
-                                textDecoration: "underline"
-                              }}
-                            >
-                              {answer}
+                  {capitalizeFirstLetter(exercise.sentence)
+                    .split(/_____/gi)
+                    .map(
+                      (text, i) =>
+                        (text =
+                          i !==
+                          exercise.sentence.split(/_____/gi).length - 1 ? (
+                            <span key={i}>
+                              {text + " "}
+                              <span
+                                style={{
+                                  fontStyle: "oblique 40deg",
+                                  fontWeight: "bold",
+                                  textDecoration: "underline"
+                                }}
+                              >
+                                {answer}
+                              </span>
                             </span>
-                          </span>
-                        ) : (
-                          <span key={i}>{text}</span>
-                        ))
-                  )}
+                          ) : (
+                            <span key={i}>{text}</span>
+                          ))
+                    )}
                 </Typography>
               </Fade>
             </Fade>
@@ -169,7 +177,12 @@ export default function Exercise(props) {
                     value={word}
                     control={<SecondaryRadio />}
                     label={
-                      <span style={{ fontSize: 35, color: theme.palette.secondary.main}}>
+                      <span
+                        style={{
+                          fontSize: 35,
+                          color: theme.palette.secondary.main
+                        }}
+                      >
                         {word}
                       </span>
                     }

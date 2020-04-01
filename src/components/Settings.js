@@ -52,6 +52,19 @@ const themes = {
         default: "#2f2f2f"
       }
     }
+  },
+  "Constant Rambling": {
+    palette: {
+      primary: {
+        main: "#fc8c8a",
+      },
+      secondary: {
+        main: "#fee6c2"
+      },
+      background: {
+        default: "#fc8c8a"
+      },
+    }
   }
 };
 
