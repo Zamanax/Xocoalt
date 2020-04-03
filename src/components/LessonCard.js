@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.primary.main,
     background: theme.palette.secondary.main,
     margin: 15,
-    minWidth: 300,
+    width: 400,
     transition: "transform .3s",
     "&:hover": {
       transform: "scale(1.1)",
@@ -71,7 +71,7 @@ export default function LessonCard(props) {
     for (const key of chap) {
       if (currentChap === key || (i === 0 && currentChap === undefined)) {
         chapters.push(
-          <Typography key={i} style={{ fontSize: 30 }}>
+          <Typography variant="h4" key={i}>
             {key.title}
           </Typography>
         );
