@@ -11,7 +11,6 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    overflowY: "auto",
     justifyContent: "center",
     alignItems: "center",
     scrollbarWidth: "none",

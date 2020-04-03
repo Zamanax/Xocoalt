@@ -36,7 +36,6 @@ const useStyles = makeStyles(theme => ({
   rectangle: {
     padding: 2,
     borderRadius: 10,
-    color: theme.palette.primary.main,
     background: theme.palette.secondary.main,
     width: 300,
     paddingBottom: 15

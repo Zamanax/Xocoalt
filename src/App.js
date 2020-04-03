@@ -54,7 +54,9 @@ const useStyles = makeStyles(theme => ({
   },
   main: {
     display: "flex",
-    overflow: "hidden",
+    overflowX: "hidden",
+    overflowY: "auto",
+    scrollbarWidth: "none",
     flexDirection: "column",
     alignItems: "center",
     height: "100%",

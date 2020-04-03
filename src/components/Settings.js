@@ -30,13 +30,13 @@ const themes = {
   Beach: {
     palette: {
       primary: {
-        main: "#5E7880"
+        main: "#24454c"
       },
       secondary: {
-        main: "#BDF0FF"
+        main: "#1093a7"
       },
       background: {
-        default: "#386F80"
+        default: "#def2f3"
       }
     }
   },

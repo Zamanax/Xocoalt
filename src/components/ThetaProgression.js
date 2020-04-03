@@ -1,4 +1,5 @@
 import React from "react";
+import { useTheme } from "@material-ui/core";
 import {
   LineChart,
   Line,
@@ -26,15 +27,16 @@ const data = [
 ];
 
 export default function ThetaProgression() {
+  const theme = useTheme();
   const [state, setState] = React.useState({
     opacity: {
-        progress: 1
-      }
+      progress: 1
+    }
   });
 
-  const legendColor = (value,entry) => {
-      const {color} = entry;
-      return <span style={{color}}>{value}</span>
+  const legendColor = (value, entry) => {
+    const { color } = entry;
+    return <span style={{ color }}>{value}</span>;
   };
 
   const handleMouseEnter = o => {
@@ -66,8 +68,8 @@ export default function ThetaProgression() {
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" stroke="#FFF"/>
-        <YAxis stroke="#FFF"/>
+        <XAxis dataKey="name" stroke={theme.palette.secondary.main} />
+        <YAxis stroke={theme.palette.secondary.main} />
         <Tooltip />
         <Legend
           onMouseEnter={handleMouseEnter}
