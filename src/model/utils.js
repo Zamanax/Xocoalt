@@ -56,4 +56,10 @@ const choice = (arr) => {
   return arr[Math.floor(Math.random() *arr.length)]
 }
 
-export { capitalizeFirstLetter, createSubjects, useQuery, getChapter, choice };
+const languages = {
+  en: "english",
+  fr: "french"
+};
+
+
+export { capitalizeFirstLetter, createSubjects, useQuery, getChapter, choice, languages };

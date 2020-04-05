@@ -27,9 +27,11 @@ const useStyles = makeStyles(theme => ({
     flexShrink: 0,
     whiteSpace: "nowrap",
     background:
-      theme.palette.type === "light"
-        ? theme.palette.secondary.main
-        : theme.palette.primary.main
+      "linear-gradient(45deg," +
+      theme.palette.secondary.main +
+      " 30%," +
+      theme.palette.primary.main +
+      " 90%)"
   },
   drawerOpen: {
     width: drawerWidth,

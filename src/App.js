@@ -3,15 +3,14 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect
+  Redirect,
 } from "react-router-dom";
 import clsx from "clsx";
 
 import {
-  Typography,
   CssBaseline,
   CircularProgress,
-  Snackbar
+  Snackbar,
 } from "@material-ui/core";
 import {
   makeStyles,
@@ -33,6 +32,8 @@ import "firebase/firestore";
 
 import { createSubjects } from "./model/utils";
 import Settings from "./components/Settings";
+import Account from "./components/Account";
+import Header from "./components/Header";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD7-UB8z5eI4NqdTKk06U4QLCagAu4Z3fQ",
@@ -58,7 +59,6 @@ const useStyles = makeStyles(theme => ({
     overflowY: "auto",
     scrollbarWidth: "none",
     flexDirection: "column",
-    alignItems: "center",
     height: "100%",
     marginLeft: theme.spacing(7) + 1,
     zIndex: theme.zIndex.drawer + 1,
@@ -79,18 +79,14 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     padding: theme.spacing(3)
   },
-  title: {
-    margin: 20,
-    textAlign: "center",
-    height: 72
-  }
 }));
 
 export default function App() {
+  const classes = useStyles();
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
-  const classes = useStyles();
+  const db = firebase.firestore();
 
   const [theme, setTheme] = React.useState(
     createMuiTheme(
@@ -145,8 +141,6 @@ export default function App() {
     setOpenAlert(false);
   };
 
-  const db = firebase.firestore();
-
   if (authInit) {
     firebase.auth().onAuthStateChanged(user => {
       setAuthInit(false);
@@ -183,15 +177,16 @@ export default function App() {
             className={clsx(classes.main, {
               [classes.mainShift]: open
             })}
-          >
-            <Typography
-              variant="h2"
-              className={classes.title}
-              color="secondary"
             >
-              XOCOALT
-            </Typography>
+              <Header user={values.user}/>
             <Switch>
+              <Route path="/Account">
+                {firebase.auth().currentUser ? (
+                  <Account user={values.user} />
+                ) : (
+                  <Redirect to="/" />
+                )}
+              </Route>
               <Route path="/DashBoard">
                 {firebase.auth().currentUser ? (
                   <DashBoard />

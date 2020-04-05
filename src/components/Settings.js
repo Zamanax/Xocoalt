@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Typography,
   makeStyles,
   FormControl,
   InputLabel,
@@ -27,16 +26,37 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const themes = {
-  Beach: {
+  "The One Good Theme": {
     palette: {
       primary: {
-        main: "#24454c"
+        main: "#FFE376"
       },
       secondary: {
-        main: "#1093a7"
+        main: "#FFB467"
+      },
+    }
+  },
+  "The One Good Theme (Dark)": {
+    palette: {
+      primary: {
+        main: "#FFE376"
+      },
+      secondary: {
+        main: "#FFB467"
+      },
+    type: "dark"
+  },
+  },
+  Negative: {
+    palette: {
+      primary: {
+        main: "#fff"
+      },
+      secondary: {
+        main: "#2f2f2f"
       },
       background: {
-        default: "#def2f3"
+        default: "#fff"
       }
     }
   },
@@ -50,6 +70,19 @@ const themes = {
       },
       background: {
         default: "#2f2f2f"
+      }
+    }
+  },
+  Beach: {
+    palette: {
+      primary: {
+        main: "#24454c"
+      },
+      secondary: {
+        main: "#1093a7"
+      },
+      background: {
+        default: "#def2f3"
       }
     }
   },
@@ -86,9 +119,6 @@ export default function Settings(props) {
 
   return (
     <div className={classes.center}>
-      <Typography variant="h2" color="secondary">
-        Settings
-      </Typography>
       <FormControl className={classes.formControl}>
         <InputLabel>Theme</InputLabel>
         <Select

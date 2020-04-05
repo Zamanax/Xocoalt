@@ -23,31 +23,26 @@ import { Fade } from "react-reveal";
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 
+import { languages } from "../model/utils";
+
 const useStyles = makeStyles(theme => ({
   frame: {
-    textAlign: "center",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
+    flexDirection: "column",
   },
   exercise: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
+    textAlign: "center"
   },
   chap: {
-    marginTop: -15,
-    marginBottom: 15
+    margin: "2% 7.5% 1% 7.5%",
   },
   wording: {
     margin: 40
   }
 }));
-
-const languages = {
-  en: "english",
-  fr: "french"
-};
 
 export default function Exercise(props) {
   const classes = useStyles();
@@ -133,10 +128,10 @@ export default function Exercise(props) {
     <div className={classes.frame}>
       {exercise.done ? (
         <Fade bottom cascade>
-          <div className={classes.exercise}>
-            <Typography color="secondary" variant="h2" className={classes.chap}>
+          <Typography color="secondary" variant="h2" className={classes.chap}>
               {exercise.title}
             </Typography>
+          <div className={classes.exercise}>
             <Fade bottom>
               <Fade spy={answer}>
                 <Typography
@@ -197,7 +192,7 @@ export default function Exercise(props) {
               variant="contained"
               onClick={handleValidate}
             >
-              Validate
+              Confirm
             </Button>
           </div>
         </Fade>

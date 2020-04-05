@@ -21,7 +21,7 @@ export default function Camembert() {
 
   return (
     <div className={classes.container}>
-      <PieChart width={300} height={300}>
+      <PieChart width={300} height={200}>
         <Pie
           data={data}
           dataKey="value"
@@ -36,7 +36,7 @@ export default function Camembert() {
           ))}
         </Pie>
       </PieChart>
-      <Typography color="secondary">Completion</Typography>
+      <Typography variant="h4" color="secondary">Completion</Typography>
     </div>
   );
 }

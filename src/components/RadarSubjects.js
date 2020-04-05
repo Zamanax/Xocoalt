@@ -6,7 +6,7 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis
 } from "recharts";
-import { makeStyles, useTheme } from "@material-ui/core";
+import { makeStyles, useTheme, Typography } from "@material-ui/core";
 
 const data = [
   { subject: "Grammar", A: 130, fullMark: 150 },
@@ -31,7 +31,7 @@ export default function RadarSubject() {
   const theme = useTheme();
   return (
     <div className={classes.container}>
-      <RadarChart outerRadius={150} width={500} height={500} data={data}>
+      <RadarChart outerRadius={150} width={500} height={350} data={data}>
         <PolarGrid />
         <PolarAngleAxis
           dataKey="subject"
@@ -46,7 +46,7 @@ export default function RadarSubject() {
           fillOpacity={0.6}
         />
       </RadarChart>
-      <p className={classes.title}>Subjects</p>
+      <Typography variant="h4" color="secondary">Subjects</Typography>
     </div>
   );
 }

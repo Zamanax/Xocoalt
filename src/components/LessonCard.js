@@ -12,11 +12,17 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     padding: 2,
     borderRadius: 10,
-    color: theme.palette.primary.main,
-    background: theme.palette.secondary.main,
+    background:
+      "linear-gradient(45deg," +
+      theme.palette.secondary.main +
+      " 30%," +
+      theme.palette.primary.main +
+      " 90%)",
+    border: "solid 1px " + theme.palette.primary.main,
     margin: 15,
     width: 400,
     transition: "transform .3s",
+    textAlign: "center",
     "&:hover": {
       transform: "scale(1.1)",
       cursor: "pointer"
@@ -85,7 +91,7 @@ export default function LessonCard(props) {
             }}
             key={i}
           >
-            <Typography key={i} style={{ color: theme.palette.primary.main }}>
+            <Typography key={i} variant="h6">
               {key.title}
             </Typography>
             <CheckIcon
@@ -97,7 +103,7 @@ export default function LessonCard(props) {
         );
       } else {
         chapters.push(
-          <Typography key={i} style={{ color: theme.palette.primary.main }}>
+          <Typography key={i} variant="h6">
             {key.title}
           </Typography>
         );
@@ -123,8 +129,8 @@ export default function LessonCard(props) {
         "/" +
         props.type +
         "/" +
-      (currentChap !== undefined ? currentChap : props.chapters[0].title) +
-      "?id=0"
+        (currentChap !== undefined ? currentChap : props.chapters[0].title) +
+        "?id=0"
     );
   };
 
