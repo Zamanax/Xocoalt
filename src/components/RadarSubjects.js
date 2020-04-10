@@ -38,12 +38,17 @@ export default function RadarSubject() {
           stroke={theme.palette.secondary.main}
         />
         <PolarRadiusAxis />
+        <defs>
+        <radialGradient id="radarchartColorToRed">
+          <stop offset="5%" stopColor={theme.palette.primary.main} />
+          <stop offset="95%" stopColor={theme.palette.secondary.main} />
+        </radialGradient>
+      </defs>
         <Radar
           name="Mike"
           dataKey="A"
-          stroke="#fcbd86"
-          fill="#fcbd86"
-          fillOpacity={0.6}
+        fill="url(#radarchartColorToRed)"
+        fillOpacity={0.6}
         />
       </RadarChart>
       <Typography variant="h4" color="secondary">Subjects</Typography>

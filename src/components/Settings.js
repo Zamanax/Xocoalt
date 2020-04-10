@@ -60,17 +60,15 @@ const themes = {
       }
     }
   },
-  Dark: {
+  "Cyberpunk 2077": {
     palette: {
       primary: {
-        main: "#2f2f2f"
+        main: "#3f51b5"
       },
       secondary: {
-        main: "#fff"
+        main: "#f50057"
       },
-      background: {
-        default: "#2f2f2f"
-      }
+      type:"dark"
     }
   },
   Beach: {
@@ -115,6 +113,7 @@ export default function Settings(props) {
     setIndex(index);
     localStorage.setItem("themeIndex", index);
     setTheme(createMuiTheme(themes[event.target.value]));
+    console.log(createMuiTheme(themes[event.target.value]))
   };
 
   return (

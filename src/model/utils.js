@@ -6,7 +6,7 @@ import LessonCard from "../components/LessonCard";
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 
-function capitalizeFirstLetter(s) {
+const capitalizeFirstLetter = (s) => {
   return s[0].toUpperCase() + s.slice(1);
 }
 
@@ -62,4 +62,16 @@ const languages = {
 };
 
 
-export { capitalizeFirstLetter, createSubjects, useQuery, getChapter, choice, languages };
+const linearGradient = (theme) => "linear-gradient(45deg," +
+  theme.palette.secondary.main +
+  " 30%," +
+  theme.palette.primary.main +
+  " 90%)";
+
+const reverseGradient = (theme) => "linear-gradient(45deg," +
+  theme.palette.primary.main +
+  " 30%," +
+  theme.palette.secondary.main +
+  " 90%)";
+
+export { capitalizeFirstLetter, createSubjects, useQuery, getChapter, choice, languages, linearGradient, reverseGradient };

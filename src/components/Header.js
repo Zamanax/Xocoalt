@@ -7,14 +7,18 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { languages, capitalizeFirstLetter } from "../model/utils";
 
 const useStyles = makeStyles((theme) => ({
-  title: {
+  header: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     height: 110,
     margin: "2% 7.5% 1% 7.5%",
   },
-
+  title: {
+    background: "-webkit-linear-gradient(" + theme.palette.secondary.main + ", " + theme.palette.primary.main + ")",
+    "-webkit-background-clip": "text",
+    "-webkit-text-fill-color": "transparent",
+  },
   button: {
     height: "50%",
   },
@@ -39,8 +43,8 @@ export default function Header(props) {
   }
 
   return (
-    <div className={classes.title}>
-      <Typography variant="h2" color="secondary">
+    <div className={classes.header}>
+      <Typography variant="h2" color="secondary" className={classes.title}>
         {title}
       </Typography>
       {user && (

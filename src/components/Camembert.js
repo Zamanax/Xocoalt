@@ -1,12 +1,11 @@
 import React from "react";
 import { PieChart, Pie, Cell } from "recharts";
-import { makeStyles, Typography } from "@material-ui/core";
+import { makeStyles, Typography, useTheme } from "@material-ui/core";
 
 const data = [
   { name: "Completed", value: 23 },
   { name: "Uncompleted", value: 77 }
 ];
-const COLORS = ["#00C49F", "#FCBD86"];
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -18,6 +17,8 @@ const useStyles = makeStyles(theme => ({
 
 export default function Camembert() {
   const classes = useStyles();
+  const theme = useTheme();
+  const COLORS = [theme.palette.primary.main, theme.palette.secondary.main];
 
   return (
     <div className={classes.container}>

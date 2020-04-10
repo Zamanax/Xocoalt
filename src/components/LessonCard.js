@@ -4,7 +4,7 @@ import CheckIcon from "@material-ui/icons/Check";
 
 import { useHistory } from "react-router-dom";
 
-import { capitalizeFirstLetter } from "../model/utils";
+import { capitalizeFirstLetter, linearGradient } from "../model/utils";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -12,12 +12,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     padding: 2,
     borderRadius: 10,
-    background:
-      "linear-gradient(45deg," +
-      theme.palette.secondary.main +
-      " 30%," +
-      theme.palette.primary.main +
-      " 90%)",
+    background: linearGradient(theme),
     border: "solid 1px " + theme.palette.primary.main,
     margin: 15,
     width: 400,
@@ -34,6 +29,13 @@ const useStyles = makeStyles(theme => ({
     fontWeight: "normal",
     height: 175,
     justifyContent: "center"
+  },
+  chap: {
+    transition: "transform .3s",
+    "&:hover": {
+      transform: "scale(1.1)",
+      cursor: "pointer"
+    }
   },
   bottom: {
     display: "flex",
@@ -77,7 +79,7 @@ export default function LessonCard(props) {
     for (const key of chap) {
       if (currentChap === key || (i === 0 && currentChap === undefined)) {
         chapters.push(
-          <Typography variant="h4" key={i}>
+          <Typography variant="h4" key={i} className={classes.chap}>
             {key.title}
           </Typography>
         );
@@ -91,7 +93,7 @@ export default function LessonCard(props) {
             }}
             key={i}
           >
-            <Typography key={i} variant="h6">
+            <Typography key={i} variant="h6" className={classes.chap}>
               {key.title}
             </Typography>
             <CheckIcon
@@ -103,7 +105,7 @@ export default function LessonCard(props) {
         );
       } else {
         chapters.push(
-          <Typography key={i} variant="h6">
+          <Typography key={i} variant="h6" className={classes.chap}>
             {key.title}
           </Typography>
         );
