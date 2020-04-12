@@ -22,7 +22,8 @@ const useStyles = makeStyles( theme => ({
     overflow: "scroll",
     scrollbarWidth: "none",
     maxHeight: 300,
-    color: theme.palette.secondary.main
+    color: theme.palette.secondary.main,
+    margin: 20,
   },
   rootTree: {
     "&$selected": {
@@ -31,7 +32,7 @@ const useStyles = makeStyles( theme => ({
   },
   selected: {},
   formControl: {
-    margin: 20,
+    marginLeft: 10,
     display: "flex",
     flexDirection: "row"
   }

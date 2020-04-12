@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
   result: {
     display: "flex",
-    minHeight: "100%",
+    minHeight: "calc(100% - 110)",
     flexDirection: "column",
     justifyContent: "space-evenly",
     alignItems: "center",
@@ -182,8 +182,7 @@ export default function Exercise(props) {
             {exercise.title}
           </Typography>
       {results.result ? (
-        <Fade bottom cascade >
-          
+        <div>
           <Typography
               className={classes.center}
               variant="h4"
@@ -194,7 +193,7 @@ export default function Exercise(props) {
           <div className={classes.result}>
             {showAnswersResult()}
           </div>
-        </Fade>
+        </div>
       ) : exercise.fetching ? (
         <Fade bottom cascade>
           <div className={classes.exercise}>

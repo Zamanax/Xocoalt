@@ -4,42 +4,52 @@ import { useLocation, useHistory } from "react-router-dom";
 import { Typography, makeStyles, Button } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
-import { languages, capitalizeFirstLetter } from "../model/utils";
+import { languages, capitalizeFirstLetter, linearGradient } from "../model/utils";
 
 const useStyles = makeStyles((theme) => ({
   header: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     height: 110,
     margin: "2% 7.5% 1% 7.5%",
   },
   title: {
-    background: "-webkit-linear-gradient(" + theme.palette.secondary.main + ", " + theme.palette.primary.main + ")",
+    background: linearGradient(theme),
     "-webkit-background-clip": "text",
     "-webkit-text-fill-color": "transparent",
+    animation: "$title 5s infinite ease-in-out",
+  },
+  "@keyframes title": {
+    from: { transform: " translate(0,  0px)" },
+    "50%": { transform: "translate(0, 3px)" },
+    to: { transform: "translate(0, -0px)" },
   },
   button: {
-    height: "50%",
+    height: 40,
   },
 }));
 
 export default function Header(props) {
   const classes = useStyles();
 
-    const { user } = props;
-    const location = useLocation();
+  const { user } = props;
+  const location = useLocation();
   const history = useHistory();
-  
-  let title = ""
+
+  let title = "";
 
   if (location.pathname === "/") {
-    title = "XOCOALT"
+    title = "XOCOALT";
   } else if (location.pathname.slice(1).split("/").length !== 1) {
-    let lang = location.pathname.slice(1).split("/")[0]
-    title = capitalizeFirstLetter(languages[lang.slice(0,2)]) + "→" + capitalizeFirstLetter(languages[lang.slice(2)])
+    let lang = location.pathname.slice(1).split("/")[0];
+    title =
+      capitalizeFirstLetter(languages[lang.slice(0, 2)]) +
+      "→" +
+      capitalizeFirstLetter(languages[lang.slice(2)]);
   } else {
-    title = location.pathname.slice(1).split("/")[0]
+    title = location.pathname.slice(1).split("/")[0];
   }
 
   return (
@@ -53,8 +63,8 @@ export default function Header(props) {
           startIcon={<AccountCircleIcon />}
           variant="contained"
           className={classes.button}
-                  onClick={() => {
-              history.push("/Account")
+          onClick={() => {
+            history.push("/Account");
           }}
         >
           <Typography>{user.name}</Typography>
