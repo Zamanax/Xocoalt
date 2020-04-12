@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Typography,
   makeStyles,
   FormControl,
   InputLabel,
@@ -27,30 +26,75 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const themes = {
-  Beach: {
+  "The One Good Theme": {
     palette: {
       primary: {
-        main: "#5E7880"
+        main: "#FFE376"
       },
       secondary: {
-        main: "#BDF0FF"
+        main: "#FFB467"
+      },
+    }
+  },
+  "The One Good Theme (Dark)": {
+    palette: {
+      primary: {
+        main: "#FFE376"
+      },
+      secondary: {
+        main: "#FFB467"
+      },
+    type: "dark"
+  },
+  },
+  Negative: {
+    palette: {
+      primary: {
+        main: "#fff"
+      },
+      secondary: {
+        main: "#2f2f2f"
       },
       background: {
-        default: "#386F80"
+        default: "#fff"
       }
     }
   },
-  Dark: {
+  "Cyberpunk 2077": {
     palette: {
       primary: {
-        main: "#2f2f2f"
+        main: "#3f51b5"
       },
       secondary: {
-        main: "#fff"
+        main: "#f50057"
+      },
+      type:"dark"
+    }
+  },
+  Beach: {
+    palette: {
+      primary: {
+        main: "#24454c"
+      },
+      secondary: {
+        main: "#1093a7"
       },
       background: {
-        default: "#2f2f2f"
+        default: "#def2f3"
       }
+    }
+  },
+  "Constant Rambling": {
+    palette: {
+      primary: {
+        main: "#fc8c8a",
+      },
+      secondary: {
+        main: "#fee6c2"
+      },
+      background: {
+        default: "#fc8c8a"
+      },
     }
   }
 };
@@ -69,13 +113,11 @@ export default function Settings(props) {
     setIndex(index);
     localStorage.setItem("themeIndex", index);
     setTheme(createMuiTheme(themes[event.target.value]));
+    console.log(createMuiTheme(themes[event.target.value]))
   };
 
   return (
     <div className={classes.center}>
-      <Typography variant="h2" color="secondary">
-        Settings
-      </Typography>
       <FormControl className={classes.formControl}>
         <InputLabel>Theme</InputLabel>
         <Select

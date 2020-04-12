@@ -9,15 +9,19 @@ const useStyles = makeStyles(theme => ({
     height: "100%"
   },
   header: {
-    height: 110
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    height: 110,
+    margin: "0 7.5% 0 7.5%"
   },
   cardContainer: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     height: "calc(80% - 110px)"
-  }
+  },
 }));
 
 export default function Hub(props) {
@@ -28,9 +32,6 @@ export default function Hub(props) {
     <div className={classes.hub}>
       <div className={classes.header}>
         <Typography variant="h3" color="secondary">
-          Welcome {values.user.name} !
-        </Typography>
-        <Typography variant="h3" color="secondary">
           {capitalizeFirstLetter(
             values.user.languages !== undefined
               ? Object.keys(values.user.languages)[0]
@@ -38,9 +39,7 @@ export default function Hub(props) {
           )}
         </Typography>
       </div>
-      <div className={classes.cardContainer}>
-        {cards.list}
-      </div>
+      <div className={classes.cardContainer}>{cards.list}</div>
     </div>
   );
 }

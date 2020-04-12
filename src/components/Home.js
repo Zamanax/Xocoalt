@@ -12,8 +12,9 @@ import { Fade } from "react-reveal";
 const useStyles = makeStyles(theme => ({
   center: {
     justifyContent: "center",
-    textAlign: "center",
-    height: "100%"
+    height: "100%",
+    width: "100%",
+    textAlign: "center"
   }
 }));
 

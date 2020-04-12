@@ -18,6 +18,7 @@ import clsx from "clsx";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import { reverseGradient } from "../model/utils";
 
 const drawerWidth = 240;
 
@@ -27,9 +28,7 @@ const useStyles = makeStyles(theme => ({
     flexShrink: 0,
     whiteSpace: "nowrap",
     background:
-      theme.palette.type === "light"
-        ? theme.palette.secondary.main
-        : theme.palette.primary.main
+      reverseGradient(theme)
   },
   drawerOpen: {
     width: drawerWidth,

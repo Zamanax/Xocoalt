@@ -22,6 +22,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import { linearGradient } from "../model/utils";
 
 const useStyles = makeStyles(theme => ({
   container : {
@@ -36,10 +37,9 @@ const useStyles = makeStyles(theme => ({
   rectangle: {
     padding: 2,
     borderRadius: 10,
-    color: theme.palette.primary.main,
-    background: theme.palette.secondary.main,
+    background: linearGradient(theme),
     width: 300,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   buttons: {
     display: "flex",

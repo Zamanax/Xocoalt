@@ -6,7 +6,7 @@ import LessonCard from "../components/LessonCard";
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 
-function capitalizeFirstLetter(s) {
+const capitalizeFirstLetter = (s) => {
   return s[0].toUpperCase() + s.slice(1);
 }
 
@@ -46,8 +46,8 @@ const useQuery = () => {
 };
 
 const getChapter = (subject, title) => {
-  for (const chapter of subject) {
-    if(chapter.title===title){return chapter}
+  for (const chapter of Object.keys(subject)) {
+    if(subject[chapter].title===title){return subject[chapter]}
   }
   return undefined;
 };
@@ -56,4 +56,22 @@ const choice = (arr) => {
   return arr[Math.floor(Math.random() *arr.length)]
 }
 
-export { capitalizeFirstLetter, createSubjects, useQuery, getChapter, choice };
+const languages = {
+  en: "english",
+  fr: "french"
+};
+
+
+const linearGradient = (theme) => "linear-gradient(45deg," +
+  theme.palette.secondary.main +
+  " 30%," +
+  theme.palette.primary.main +
+  " 90%)";
+
+const reverseGradient = (theme) => "linear-gradient(45deg," +
+  theme.palette.primary.main +
+  " 30%," +
+  theme.palette.secondary.main +
+  " 90%)";
+
+export { capitalizeFirstLetter, createSubjects, useQuery, getChapter, choice, languages, linearGradient, reverseGradient };

@@ -4,7 +4,7 @@ import CheckIcon from "@material-ui/icons/Check";
 
 import { useHistory } from "react-router-dom";
 
-import { capitalizeFirstLetter } from "../model/utils";
+import { capitalizeFirstLetter, linearGradient } from "../model/utils";
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -12,11 +12,12 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     padding: 2,
     borderRadius: 10,
-    color: theme.palette.primary.main,
-    background: theme.palette.secondary.main,
+    background: linearGradient(theme),
+    border: "solid 1px " + theme.palette.primary.main,
     margin: 15,
-    minWidth: 300,
+    width: 400,
     transition: "transform .3s",
+    textAlign: "center",
     "&:hover": {
       transform: "scale(1.1)",
       cursor: "pointer"
@@ -28,6 +29,13 @@ const useStyles = makeStyles(theme => ({
     fontWeight: "normal",
     height: 175,
     justifyContent: "center"
+  },
+  chap: {
+    transition: "transform .3s",
+    "&:hover": {
+      transform: "scale(1.1)",
+      cursor: "pointer"
+    }
   },
   bottom: {
     display: "flex",
@@ -71,7 +79,7 @@ export default function LessonCard(props) {
     for (const key of chap) {
       if (currentChap === key || (i === 0 && currentChap === undefined)) {
         chapters.push(
-          <Typography key={i} style={{ fontSize: 30 }}>
+          <Typography variant="h4" key={i} className={classes.chap}>
             {key.title}
           </Typography>
         );
@@ -85,7 +93,7 @@ export default function LessonCard(props) {
             }}
             key={i}
           >
-            <Typography key={i} style={{ color: theme.palette.primary.main }}>
+            <Typography key={i} variant="h6" className={classes.chap}>
               {key.title}
             </Typography>
             <CheckIcon
@@ -97,7 +105,7 @@ export default function LessonCard(props) {
         );
       } else {
         chapters.push(
-          <Typography key={i} style={{ color: theme.palette.primary.main }}>
+          <Typography key={i} variant="h6" className={classes.chap}>
             {key.title}
           </Typography>
         );
@@ -123,8 +131,8 @@ export default function LessonCard(props) {
         "/" +
         props.type +
         "/" +
-      (currentChap !== undefined ? currentChap : props.chapters[0].title) +
-      "?id=0"
+        (currentChap !== undefined ? currentChap : props.chapters[0].title) +
+        "?id=0"
     );
   };
 

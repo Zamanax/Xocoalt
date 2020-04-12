@@ -15,9 +15,8 @@ import WarningIcon from "@material-ui/icons/Warning";
 
 import * as firebase from "firebase/app";
 import "firebase/firestore";
-import { grey } from "@material-ui/core/colors";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles( theme => ({
   root: {
     width: 400,
     overflow: "scroll",
@@ -27,7 +26,7 @@ const useStyles = makeStyles(theme => ({
   },
   rootTree: {
     "&$selected": {
-      backgroundColor: grey[500]
+      backgroundColor: theme.palette.primary.light,
     }
   },
   selected: {},
