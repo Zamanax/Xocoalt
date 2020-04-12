@@ -71,7 +71,7 @@ const themes = {
       type:"dark"
     }
   },
-  Beach: {
+  "I'm blue": {
     palette: {
       primary: {
         main: "#24454c"
@@ -105,7 +105,7 @@ export default function Settings(props) {
   const [themeIndex, setIndex] = React.useState(
     localStorage.getItem("themeIndex") || 0
   );
-  // const user = props.user;
+  const { user } = props;
 
   const handleChange = event => {
     localStorage.setItem("theme", JSON.stringify(themes[event.target.value]));
@@ -132,9 +132,9 @@ export default function Settings(props) {
           ))}
         </Select>
       </FormControl>
-      <div className={clsx(classes.formControl, classes.center)}>
+      {user.admin && <div className={clsx(classes.formControl, classes.center)}>
         <DatabaseTree/>
-      </div>
+      </div>}
     </div>
   );
 }

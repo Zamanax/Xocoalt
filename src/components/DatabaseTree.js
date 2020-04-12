@@ -42,7 +42,6 @@ export default function DatabaseTree() {
   const db = firebase.firestore();
   const reader = new FileReader();
   const [fetching, setFetching] = React.useState(true);
-  const [exercise, setExercise] = React.useState(false);
   const [erase, setErase] = React.useState(false);
   const [expanded, setExpanded] = React.useState([]);
   const [selected, setSelected] = React.useState([]);
@@ -102,17 +101,11 @@ export default function DatabaseTree() {
     reader.readAsText(file, "UTF-8");
     reader.onloadend = e => {
       const toUpload = mergeDeep(data, richBuilder(JSON.parse(e.target.result)));
-      if (!exercise) {
-        db.collection("sources")
-          .doc("english")
-          .set(toUpload, { merge: !erase });
-      } else {
         db.collection("sources")
           .doc("english")
           .collection("exercises")
           .doc("french")
           .set(toUpload, { merge: !erase });
-      }
       setFetching(true);
       setExpanded([]);
       setSelected([]);
@@ -153,17 +146,6 @@ export default function DatabaseTree() {
   const loadTree = () => {
     if (fetching) {
       setFetching(false);
-      if (!exercise) {
-        db.collection("sources")
-          .doc("english")
-          .get()
-          .then(snap => {
-            const newData = snap.data()
-            setTreeItems(getTreeItemsFromData(newData));
-            setData(newData)
-            setIdMap(map);
-          });
-      } else {
         db.collection("sources")
           .doc("english")
           .collection("exercises")
@@ -175,7 +157,6 @@ export default function DatabaseTree() {
             setData(newData)
             setIdMap(map);
           });
-      }
     }
   };
 
@@ -184,26 +165,6 @@ export default function DatabaseTree() {
   return treeItems.length !== 0 ? (
     <div>
       <FormGroup className={classes.formControl}>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={exercise}
-              onChange={() => {
-                setExercise(!exercise);
-                setFetching(true);
-                setExpanded([]);
-                setSelected([]);
-                loadTree();
-              }}
-              name="checkedA"
-            />
-          }
-          label={
-            <Typography color="secondary" variant="h5">
-              Exercise
-            </Typography>
-          }
-        />
         <FormControlLabel
           control={
             <Switch

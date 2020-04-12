@@ -8,7 +8,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     transition: "transform .3s",
     "&:hover": {
-      transform: "scale(1.2)",
+      transform: "scale(1.1)",
     }
   }
 }))

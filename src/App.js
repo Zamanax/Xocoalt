@@ -182,7 +182,7 @@ export default function App() {
             <Switch>
               <Route path="/Account">
                 {firebase.auth().currentUser ? (
-                  <Account user={values.user} />
+                  <Account user={[values,setValues]} />
                 ) : (
                   <Redirect to="/" />
                 )}
