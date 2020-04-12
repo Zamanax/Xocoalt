@@ -24,14 +24,17 @@ import * as firebase from "firebase/app";
 import "firebase/firestore";
 
 import { languages } from "../model/utils";
+import AnswerCard from "./AnswerCard";
 
 const useStyles = makeStyles((theme) => ({
   frame: {
     display: "flex",
     flexDirection: "column",
+    height: "100%",
   },
   center: {
     textAlign: "center",
+    margin: 10,
   },
   exercise: {
     display: "flex",
@@ -39,13 +42,18 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     textAlign: "center",
   },
+  form: {
+    maxHeight: 200,
+  },
   result: {
     display: "flex",
+    minHeight: "100%",
     flexDirection: "column",
     justifyContent: "space-evenly",
+    alignItems: "center",
   },
   chap: {
-    margin: "2% 7.5% 1% 7.5%",
+    margin: "0% 7.5% 0% 7.5%",
   },
   wording: {
     margin: 40,
@@ -74,6 +82,7 @@ export default function Exercise(props) {
     title: "",
     sentence: "",
     possibleAnswers: [],
+    goodAnswer: "",
   });
   const [results, setResults] = React.useState({
     result: false,
@@ -94,13 +103,11 @@ export default function Exercise(props) {
 
   const handleValidate = () => {
     setFecthing(true);
-    console.log(exercise.goodAnswer)
-    console.log(answer)
     setResults({
       ...results,
       question: [...results.question, exercise.sentence],
       goodAnswers: [...results.goodAnswers, exercise.goodAnswer],
-      answers: [results.answers, answer],
+      answers: [...results.answers, answer],
       score: exercise.goodAnswer === answer ? ++results.score : results.score,
     });
     // Also IRT
@@ -108,11 +115,17 @@ export default function Exercise(props) {
   };
 
   const showAnswersResult = () => {
-    console.log(results)
+    console.log(results);
     let toReturn = [];
     for (let i = 0; i < results.question.length; i++) {
-      const question = results.question[i];
-      const answer = results.answers[i];
+      toReturn.push(
+        <AnswerCard
+          question={results.question[i]}
+          goodAnswer={results.goodAnswers[i]}
+          answer={results.answers[i]}
+          key={i}
+        />
+      );
     }
     return toReturn;
   };
@@ -130,7 +143,6 @@ export default function Exercise(props) {
           setResults({ ...results, result: true });
         } else {
           const currentWord = Object.keys(fetchedData.words)[id];
-          console.log(currentWord)
           // Add IRT for next time
           let sentence = choice(fetchedData.sentences[currentWord]);
 
@@ -156,6 +168,7 @@ export default function Exercise(props) {
             title: fetchedData.title,
             sentence: capitalizeFirstLetter(sentence),
             possibleAnswers: possibleAnswers,
+            goodAnswer: fetchedData.words[currentWord],
           });
         }
       });
@@ -165,27 +178,26 @@ export default function Exercise(props) {
   }
   return (
     <div className={classes.frame}>
+      <Typography color="secondary" variant="h2" className={classes.chap}>
+            {exercise.title}
+          </Typography>
       {results.result ? (
-        <Fade bottom cascade>
-          <div className={classes.result}>
-            <Typography
+        <Fade bottom cascade >
+          
+          <Typography
               className={classes.center}
-              variant="h3"
+              variant="h4"
               color="secondary"
             >
               Results
             </Typography>
+          <div className={classes.result}>
             {showAnswersResult()}
           </div>
         </Fade>
       ) : exercise.fetching ? (
         <Fade bottom cascade>
-          <Typography color="secondary" variant="h2" className={classes.chap}>
-            {exercise.title}
-          </Typography>
           <div className={classes.exercise}>
-            <Fade bottom>
-              <Fade spy={answer}>
                 <Typography
                   color="secondary"
                   variant="h3"
@@ -212,9 +224,7 @@ export default function Exercise(props) {
                         ))
                   )}
                 </Typography>
-              </Fade>
-            </Fade>
-            <FormControl style={{ marginBottom: 40 }}>
+            <FormControl className={classes.form}>
               <RadioGroup value={answer} onChange={handleChange}>
                 {exercise.possibleAnswers.map((word, i) => (
                   <FormControlLabel

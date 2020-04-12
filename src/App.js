@@ -57,7 +57,6 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     overflowX: "hidden",
     overflowY: "auto",
-    scrollbarWidth: "none",
     flexDirection: "column",
     height: "100%",
     marginLeft: theme.spacing(7) + 1,
