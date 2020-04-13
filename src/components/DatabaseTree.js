@@ -6,17 +6,22 @@ import {
   FormGroup,
   FormControlLabel,
   Switch,
-  Button
+  Button,
 } from "@material-ui/core";
 import { TreeView, TreeItem } from "@material-ui/lab";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import WarningIcon from "@material-ui/icons/Warning";
+import GetAppIcon from "@material-ui/icons/GetApp";
+import PublishIcon from "@material-ui/icons/Publish";
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 
-const useStyles = makeStyles( theme => ({
+import { saveAs } from "file-saver";
+
+const useStyles = makeStyles((theme) => ({
   root: {
     width: 400,
     overflow: "scroll",
@@ -28,14 +33,19 @@ const useStyles = makeStyles( theme => ({
   rootTree: {
     "&$selected": {
       backgroundColor: theme.palette.primary.light,
-    }
+    },
   },
   selected: {},
   formControl: {
     marginLeft: 10,
     display: "flex",
-    flexDirection: "row"
-  }
+    flexDirection: "row",
+  },
+  buttons: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
 }));
 
 export default function DatabaseTree() {
@@ -61,8 +71,25 @@ export default function DatabaseTree() {
     setSelected(idMap[nodeId]);
   };
 
-  const handleFileSelect = e => {
+  const handleFileSelect = (e) => {
     setFile(e.target.files[0]);
+  };
+
+  const extractFromRich = (arr, obj) => {
+    if (arr.length > 0) {
+      const [, ...rest] = arr;
+      return extractFromRich(rest, obj[arr[0]]);
+    } else {
+      return obj;
+    }
+  };
+
+  const exportToJson = () => {
+    var blob = new Blob([JSON.stringify(extractFromRich(selected, data))], {
+      type: "text/plain;charset=utf-8",
+    });
+
+    saveAs(blob, selected[selected.length - 1] + ".json");
   };
 
   const richBuilder = (toAdd, path) => {
@@ -76,7 +103,7 @@ export default function DatabaseTree() {
       return toAdd;
     }
   };
-  const isObject = item => {
+  const isObject = (item) => {
     return item && typeof item === "object" && !Array.isArray(item);
   };
 
@@ -100,13 +127,16 @@ export default function DatabaseTree() {
 
   const sendData = () => {
     reader.readAsText(file, "UTF-8");
-    reader.onloadend = e => {
-      const toUpload = mergeDeep(data, richBuilder(JSON.parse(e.target.result)));
-        db.collection("sources")
-          .doc("english")
-          .collection("exercises")
-          .doc("french")
-          .set(toUpload, { merge: !erase });
+    reader.onloadend = (e) => {
+      const toUpload = mergeDeep(
+        data,
+        richBuilder(JSON.parse(e.target.result))
+      );
+      db.collection("sources")
+        .doc("english")
+        .collection("exercises")
+        .doc("french")
+        .set(toUpload, { merge: !erase });
       setFetching(true);
       setExpanded([]);
       setSelected([]);
@@ -129,7 +159,7 @@ export default function DatabaseTree() {
     if (path === undefined) {
       path = [];
     }
-    return Object.keys(treeItems).map(treeItemData => {
+    return Object.keys(treeItems).map((treeItemData) => {
       i++;
       map[i] = [...path, treeItemData];
       return (
@@ -147,17 +177,17 @@ export default function DatabaseTree() {
   const loadTree = () => {
     if (fetching) {
       setFetching(false);
-        db.collection("sources")
-          .doc("english")
-          .collection("exercises")
-          .doc("french")
-          .get()
-          .then(snap => {
-            const newData = snap.data()
-            setTreeItems(getTreeItemsFromData(newData));
-            setData(newData)
-            setIdMap(map);
-          });
+      db.collection("sources")
+        .doc("english")
+        .collection("exercises")
+        .doc("french")
+        .get()
+        .then((snap) => {
+          const newData = snap.data();
+          setTreeItems(getTreeItemsFromData(newData));
+          setData(newData);
+          setIdMap(map);
+        });
     }
   };
 
@@ -181,7 +211,7 @@ export default function DatabaseTree() {
               style={{
                 display: "flex",
                 flexDirection: "row",
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               <WarningIcon
@@ -210,24 +240,43 @@ export default function DatabaseTree() {
       </Typography>
 
       <div style={{ margin: 10 }}>
-        <input
-          type="file"
-          accept="application/JSON"
-          id="uploadButton"
-          style={{ display: "none" }}
-          onChange={handleFileSelect}
-        />
-        <label htmlFor="uploadButton" style={{ margin: 15 }}>
-          <Button variant="contained" component="span">
-            Choose File
+        <div
+          className={classes.buttons}
+        >
+          <input
+            type="file"
+            accept="application/JSON"
+            id="uploadButton"
+            style={{ display: "none" }}
+            onChange={handleFileSelect}
+          />
+          <label htmlFor="uploadButton" style={{ margin: 15 }}>
+            <Button variant="contained" component="span" startIcon={<InsertDriveFileIcon/>}>
+              Choose File
+            </Button>
+          </label>
+          <Button
+            variant="contained"
+            onClick={sendData}
+            style={{ margin: 15 }}
+            startIcon={<PublishIcon />}
+            disabled={file === null || selected.length === 0}
+          >
+            Upload
           </Button>
-        </label>
+          <Button
+            variant="contained"
+            style={{ margin: 15 }}
+            disabled={selected.length === 0}
+            onClick={exportToJson}
+            startIcon={<GetAppIcon />}
+          >
+            Export
+          </Button>
+        </div>
         <Typography variant="h5" color="secondary" style={{ margin: 10 }}>
           {file !== null ? file.name : ""}
         </Typography>
-        <Button variant="contained" onClick={sendData}>
-          Upload
-        </Button>
       </div>
     </div>
   ) : (
