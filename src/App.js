@@ -57,6 +57,8 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     overflowX: "hidden",
     overflowY: "auto",
+    scrollbarWidth: "thin",
+    scrollbarColor: "auto",
     flexDirection: "column",
     height: "100%",
     marginLeft: theme.spacing(7) + 1,
@@ -194,7 +196,7 @@ export default function App() {
                 )}
               </Route>
               <Route path="/Settings">
-                <Fade bottom duration={1000}>
+                <Fade duration={1000}>
                   <Settings user={values.user} theme={setTheme} />
                 </Fade>
               </Route>

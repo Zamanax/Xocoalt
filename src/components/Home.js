@@ -9,13 +9,13 @@ import Hub from "./Hub";
 import Login from "./Login";
 import { Fade } from "react-reveal";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   center: {
     justifyContent: "center",
     height: "100%",
     width: "100%",
-    textAlign: "center"
-  }
+    textAlign: "center",
+  },
 }));
 
 export default function Welcome(props) {
@@ -33,12 +33,10 @@ export default function Welcome(props) {
 
   return (
     <div className={classes.center}>
-      {firebase.auth().currentUser || authInit ? (
-        <Fade bottom duration={1000}>
+      <Fade duration={1000}>
+        {firebase.auth().currentUser || authInit ? (
           <Hub values={values} cards={cards} setCards={setCards} />
-        </Fade>
-      ) : (
-        <Fade bottom duration={1000}>
+        ) : (
           <Login
             values={values}
             setValues={setValues}
@@ -46,8 +44,8 @@ export default function Welcome(props) {
             setError={setError}
             setOpenAlert={setOpenAlert}
           />
-        </Fade>
-      )}
+        )}
+      </Fade>
     </div>
   );
 }

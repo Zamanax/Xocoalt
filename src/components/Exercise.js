@@ -12,6 +12,8 @@ import {
   Button,
   useTheme,
 } from "@material-ui/core";
+import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
+import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 import {
   useQuery,
   getChapter,
@@ -31,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     height: "100%",
+    margin: "0% 7.5% 0% 7.5%",
   },
   center: {
     textAlign: "center",
@@ -92,6 +95,7 @@ export default function Exercise(props) {
     score: 0,
   });
   const [fetching, setFecthing] = React.useState(true);
+  const [answered, setAnswered] = React.useState(false);
   const [answer, setAnswer] = React.useState("_____");
 
   const sourceLang = languages[lang.slice(0, 2)];
@@ -101,8 +105,7 @@ export default function Exercise(props) {
     setAnswer(event.target.value);
   };
 
-  const handleValidate = () => {
-    setFecthing(true);
+  const updateResults = () => {
     setResults({
       ...results,
       question: [...results.question, exercise.sentence],
@@ -110,8 +113,18 @@ export default function Exercise(props) {
       answers: [...results.answers, answer],
       score: exercise.goodAnswer === answer ? ++results.score : results.score,
     });
+  };
+
+  const handleValidate = () => {
+    if (answered) {
+      setFecthing(true);
+      setAnswered(false);
+      history.push(window.location.pathname.split("?")[0] + "?id=" + (id + 1));
+    } else {
+      setAnswered(true);
+      updateResults();
+    }
     // Also IRT
-    history.push(window.location.pathname.split("?")[0] + "?id=" + (id + 1));
   };
 
   const showAnswersResult = () => {
@@ -179,68 +192,88 @@ export default function Exercise(props) {
   return (
     <div className={classes.frame}>
       <Typography color="secondary" variant="h2" className={classes.chap}>
-            {exercise.title}
-          </Typography>
+        {exercise.title}
+      </Typography>
       {results.result ? (
-        <div>
-          <Typography
-              className={classes.center}
-              variant="h4"
-              color="secondary"
-            >
-              Results
-            </Typography>
-          <div className={classes.result}>
-            {showAnswersResult()}
-          </div>
+        <div className={classes.frame}>
+          <Typography className={classes.center} variant="h4" color="secondary">
+            Results
+          </Typography>
+          <Typography variant="h5" color="secondary">
+            Score:
+            <span>
+              {results.score}/{results.question.length}
+            </span>
+          </Typography>
+          <div className={classes.result}>{showAnswersResult()}</div>
         </div>
       ) : exercise.fetching ? (
         <Fade bottom cascade>
           <div className={classes.exercise}>
-                <Typography
-                  color="secondary"
-                  variant="h3"
-                  className={classes.wording}
-                >
-                  {exercise.sentence.split(/_____/gi).map(
-                    (text, i) =>
-                      (text =
-                        i !== exercise.sentence.split(/_____/gi).length - 1 ? (
-                          <span key={i}>
-                            {text + " "}
-                            <span
-                              style={{
-                                fontStyle: "oblique 40deg",
-                                fontWeight: "bold",
-                                textDecoration: "underline",
-                              }}
-                            >
-                              {answer}
-                            </span>
-                          </span>
-                        ) : (
-                          <span key={i}>{text}</span>
-                        ))
-                  )}
-                </Typography>
+            <Typography
+              color="secondary"
+              variant="h3"
+              className={classes.wording}
+            >
+              {exercise.sentence.split(/_____/gi).map(
+                (text, i) =>
+                  (text =
+                    i !== exercise.sentence.split(/_____/gi).length - 1 ? (
+                      <span key={i}>
+                        {text + " "}
+                        <span
+                          style={{
+                            fontStyle: "oblique 40deg",
+                            fontWeight: "bold",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          {answer}
+                        </span>
+                      </span>
+                    ) : (
+                      <span key={i}>{text}</span>
+                    ))
+              )}
+            </Typography>
             <FormControl className={classes.form}>
               <RadioGroup value={answer} onChange={handleChange}>
                 {exercise.possibleAnswers.map((word, i) => (
-                  <FormControlLabel
-                    value={word}
-                    control={<SecondaryRadio />}
-                    label={
-                      <span
-                        style={{
-                          fontSize: 35,
-                          color: theme.palette.secondary.main,
-                        }}
-                      >
-                        {word}
-                      </span>
-                    }
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
                     key={i}
-                  />
+                  >
+                    {answered && word === exercise.goodAnswer && (
+                      <CheckRoundedIcon style={{ color: "green" }} />
+                    )}
+                    {answered &&
+                      word === answer &&
+                      exercise.goodAnswer !== answer && (
+                        <CloseRoundedIcon style={{ color: "red" }} />
+                      )}
+                    <FormControlLabel
+                      value={word}
+                      control={<SecondaryRadio />}
+                      disabled={answered}
+                      label={
+                        <span
+                          style={{
+                            display: "inline-block",
+                            fontSize: 35,
+                            color: theme.palette.secondary.main,
+                            width: 200,
+                          }}
+                        >
+                          {word}
+                        </span>
+                      }
+                      key={i}
+                    />
+                  </div>
                 ))}
               </RadioGroup>
             </FormControl>
@@ -249,6 +282,7 @@ export default function Exercise(props) {
               size="large"
               variant="contained"
               onClick={handleValidate}
+              style={{ margin: 20 }}
             >
               Confirm
             </Button>

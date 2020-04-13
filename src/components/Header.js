@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
   header: {
     display: "flex",
     flexDirection: "row",
+    flexWrap: "wrap",
     justifyContent: "space-between",
     alignItems: "center",
     height: 110,
