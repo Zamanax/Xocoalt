@@ -1,10 +1,10 @@
 import React from "react";
+import { useLocation, } from "react-router";
 import {
   Drawer,
   List,
-  ListItem,
-  ListItemIcon,
-  makeStyles
+  makeStyles,
+  Divider,
 } from "@material-ui/core";
 import HomeIcon from "@material-ui/icons/Home";
 import TimeLineIcon from "@material-ui/icons/Timeline";
@@ -22,34 +22,34 @@ import { reverseGradient } from "../model/utils";
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: "nowrap",
-    background:
-      reverseGradient(theme)
+    background: reverseGradient(theme),
   },
   drawerOpen: {
     width: drawerWidth,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   drawerClose: {
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
+      duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: "hidden",
-    width: theme.spacing(7) + 1
-  }
+    width: theme.spacing(7) + 1,
+  },
 }));
 
 export default function Sidebar(props) {
   const { open, setOpen, setValues, authInit } = props;
   const classes = useStyles();
+  const location = useLocation();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -72,21 +72,23 @@ export default function Sidebar(props) {
       variant="permanent"
       className={clsx(classes.drawer, {
         [classes.drawerOpen]: open,
-        [classes.drawerClose]: !open
+        [classes.drawerClose]: !open,
       })}
       classes={{
         paper: clsx(classes.drawer, {
           [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open
-        })
+          [classes.drawerClose]: !open,
+        }),
       }}
     >
       <List>
-        <ListItem button onClick={handleDrawer}>
-          <ListItemIcon>
-            {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </ListItemIcon>
-        </ListItem>
+        <ListItemLink
+          button
+          onClick={handleDrawer}
+          to={location}
+          icon={open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+        />
+        <Divider/>
         {["Home", "DashBoard", "Map", "Settings"].map((text, index) => (
           <ListItemLink
             key={text}
@@ -114,7 +116,7 @@ export default function Sidebar(props) {
                   password: "",
                   showPassword: false,
                   user: false,
-                  fetching: false
+                  fetching: false,
                 });
               });
           }}

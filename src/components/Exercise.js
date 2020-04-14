@@ -87,7 +87,7 @@ export default function Exercise(props) {
     possibleAnswers: [],
     goodAnswer: "",
   });
-  const [results, setResults] = React.useState({
+  const [results, setResults] = React.useState(localStorage.results !== undefined ? JSON.parse(localStorage.results) : {
     result: false,
     question: [],
     goodAnswers: [],
@@ -117,6 +117,7 @@ export default function Exercise(props) {
 
   const handleValidate = () => {
     if (answered) {
+      localStorage.results = JSON.stringify(results);
       setFecthing(true);
       setAnswered(false);
       history.push(window.location.pathname.split("?")[0] + "?id=" + (id + 1));
@@ -128,7 +129,6 @@ export default function Exercise(props) {
   };
 
   const showAnswersResult = () => {
-    console.log(results);
     let toReturn = [];
     for (let i = 0; i < results.question.length; i++) {
       toReturn.push(
@@ -153,9 +153,10 @@ export default function Exercise(props) {
       .then((snap) => {
         const fetchedData = getChapter(snap.data()[subject], chapter);
         if (Object.keys(fetchedData.sentences).length <= id) {
+          localStorage.results = JSON.stringify({...results, result:true});
           setResults({ ...results, result: true });
         } else {
-          const currentWord = Object.keys(fetchedData.words)[id];
+          const currentWord = Object.keys(fetchedData.words).sort()[id];
           // Add IRT for next time
           let sentence = choice(fetchedData.sentences[currentWord]);
 
@@ -186,9 +187,10 @@ export default function Exercise(props) {
         }
       });
   };
-  if (fetching) {
+  if (fetching && !results.result) {
     generateExercise();
   }
+
   return (
     <div className={classes.frame}>
       <Typography color="secondary" variant="h2" className={classes.chap}>

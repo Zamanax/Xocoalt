@@ -124,6 +124,12 @@ export default function LessonCard(props) {
       props.user.languages !== undefined
         ? Object.keys(props.user.languages[defaultSourceLanguage])[0]
         : "french";
+    if (localStorage.getItem("results")) {
+      localStorage.removeItem("results")
+    }
+    if (localStorage.getItem("exercise")) {
+      localStorage.removeItem("exercise")
+    }
     history.push(
       "/" +
         defaultSourceLanguage.slice(0, 2) +

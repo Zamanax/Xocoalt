@@ -10,8 +10,9 @@ const useStyles = makeStyles((theme) => ({
     width: "50%,",
     display: "flex",
     flexDirection: "column",
-    background: theme.palette.type === "light" ? "#E6E6E6" : "#3D3D3D",
+    background: theme.palette.background.paper,
     padding: 10,
+    margin: 20,
   },
   title: {
     textTransform: "uppercase",
