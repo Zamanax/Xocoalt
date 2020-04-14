@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "2% 7.5% 1% 7.5%",
   },
   title: {
+    wordBreak: "break-word",
     background: linearGradient(theme),
     "-webkit-background-clip": "text",
     "-webkit-text-fill-color": "transparent",

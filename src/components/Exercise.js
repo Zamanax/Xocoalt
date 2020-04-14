@@ -18,6 +18,7 @@ import {
   useQuery,
   getChapter,
   choice,
+  shuffle,
   capitalizeFirstLetter,
 } from "../model/utils";
 import { Fade } from "react-reveal";
@@ -156,33 +157,19 @@ export default function Exercise(props) {
           localStorage.results = JSON.stringify({...results, result:true});
           setResults({ ...results, result: true });
         } else {
-          const currentWord = Object.keys(fetchedData.words).sort()[id];
+          const currentWord = fetchedData.words[Object.keys(fetchedData.words).sort()[id]];
           // Add IRT for next time
           let sentence = choice(fetchedData.sentences[currentWord]);
-
-          const goodIndex = Math.floor(Math.random() * 4);
-          const possibleAnswers = [];
-
-          for (let index = 0; index < 4; index++) {
-            if (index === goodIndex) {
-              possibleAnswers.push(fetchedData.words[currentWord]);
-            } else {
-              let word = choice(Object.keys(fetchedData.words));
-              while (
-                possibleAnswers.includes(fetchedData.words[word]) ||
-                word === currentWord
-              ) {
-                word = choice(Object.keys(fetchedData.words));
-              }
-              possibleAnswers.push(fetchedData.words[word]);
-            }
+          const possibleAnswers = shuffle(Object.values(fetchedData.words));
+          if (!possibleAnswers.includes(currentWord)) {
+            possibleAnswers[Math.floor(Math.random() * 4)] = currentWord;
           }
           setExercise({
             fetching: true,
             title: fetchedData.title,
             sentence: capitalizeFirstLetter(sentence),
             possibleAnswers: possibleAnswers,
-            goodAnswer: fetchedData.words[currentWord],
+            goodAnswer: currentWord,
           });
         }
       });
@@ -198,10 +185,10 @@ export default function Exercise(props) {
       </Typography>
       {results.result ? (
         <div className={classes.frame}>
-          <Typography className={classes.center} variant="h4" color="secondary">
+          <Typography className={classes.center} variant="h3" color="secondary">
             Results
           </Typography>
-          <Typography variant="h5" color="secondary">
+          <Typography variant="h4" color="secondary">
             Score:
             <span>
               {results.score}/{results.question.length}

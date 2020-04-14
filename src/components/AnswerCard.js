@@ -1,16 +1,14 @@
 import React from "react";
 
-import { makeStyles, Typography } from "@material-ui/core";
+import { makeStyles, Typography, Paper } from "@material-ui/core";
 import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 
 const useStyles = makeStyles((theme) => ({
   rectangle: {
-    borderRadius: 5,
     width: "50%,",
     display: "flex",
     flexDirection: "column",
-    background: theme.palette.background.paper,
     padding: 10,
     margin: 20,
   },
@@ -28,7 +26,7 @@ export default function AnswerCard(props) {
   const { question, goodAnswer, answer } = props;
 
   return (
-    <div className={classes.rectangle}>
+    <Paper elevation={3} className={classes.rectangle} >
       <Typography className={classes.title}>{goodAnswer}</Typography>
       <Typography className={classes.question}>{question}</Typography>
       <div className={classes.answer}>
@@ -39,6 +37,6 @@ export default function AnswerCard(props) {
         )}
         <Typography>{answer}</Typography>
       </div>
-    </div>
+    </Paper>
   );
 }

@@ -13,8 +13,8 @@ lcnt = 0
 match = 0
 y=[]
 W = input("Choose the word you want to work with.\n")
-nbLign = int(input("Choose the number of lines to process (or 0 to process them all!).\n"))
-nbMatch = int(input("Choose the number of match you desire.\n"))
+nbLign = int(input("Choose the number of lines to process (or 0 to process them all).\n"))
+nbMatch = int(input("Choose the number of match you desire (or 0 to process them all).\n"))
 if nbMatch == 0:
     nbMatch = -1
 for k,v in existingLanguages.items():
@@ -29,7 +29,12 @@ for row in csv_reader:
         # print(x)
         match += 1
     lcnt += 1
-    percent = int(lcnt/ nbLign)*100 if nbLign>0 else  int(lcnt/ 8208251)*100
+    if nbLign > 0:
+        percent = (lcnt // nbLign) * 100
+    elif nbMatch > 0:
+        percent = (match // nbMatch) * 100
+    else:
+        percent = (lcnt // 8208251) * 100
     print("Match: " + str(match) + " - " + str(percent) + "%", end="\r")
     if lcnt == nbLign or (nbMatch == match):
         break

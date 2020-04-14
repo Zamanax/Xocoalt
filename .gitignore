@@ -25,3 +25,4 @@ yarn-error.log*
 .firebase/*
 scripts/sentences.csv
 .firebase/*.*.cache
+scripts/json/*
