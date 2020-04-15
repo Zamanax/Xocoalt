@@ -6,7 +6,7 @@ import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
 
 const useStyles = makeStyles((theme) => ({
   rectangle: {
-    width: "50%,",
+    width: "75%",
     display: "flex",
     flexDirection: "column",
     padding: 10,

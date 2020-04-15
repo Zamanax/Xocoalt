@@ -11,9 +11,11 @@ import {
   Radio,
   Button,
   useTheme,
+  LinearProgress,
 } from "@material-ui/core";
 import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
+import PublishIcon from '@material-ui/icons/Publish';
 import {
   useQuery,
   getChapter,
@@ -33,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
   frame: {
     display: "flex",
     flexDirection: "column",
+    alignItems: "center",
     height: "100%",
     margin: "0% 7.5% 0% 7.5%",
   },
@@ -81,6 +84,7 @@ export default function Exercise(props) {
     },
   })((props) => <Radio {...props} />);
 
+  const [listOfExercises, setListOfExercises] = React.useState([]);
   const [exercise, setExercise] = React.useState({
     fetching: false,
     title: "",
@@ -88,13 +92,17 @@ export default function Exercise(props) {
     possibleAnswers: [],
     goodAnswer: "",
   });
-  const [results, setResults] = React.useState(localStorage.results !== undefined ? JSON.parse(localStorage.results) : {
-    result: false,
-    question: [],
-    goodAnswers: [],
-    answers: [],
-    score: 0,
-  });
+  const [results, setResults] = React.useState(
+    localStorage.results !== undefined
+      ? JSON.parse(localStorage.results)
+      : {
+          result: false,
+          question: [],
+          goodAnswers: [],
+          answers: [],
+          score: 0,
+        }
+  );
   const [fetching, setFecthing] = React.useState(true);
   const [answered, setAnswered] = React.useState(false);
   const [answer, setAnswer] = React.useState("_____");
@@ -154,10 +162,25 @@ export default function Exercise(props) {
       .then((snap) => {
         const fetchedData = getChapter(snap.data()[subject], chapter);
         if (Object.keys(fetchedData.sentences).length <= id) {
-          localStorage.results = JSON.stringify({...results, result:true});
+          localStorage.results = JSON.stringify({ ...results, result: true });
           setResults({ ...results, result: true });
         } else {
-          const currentWord = fetchedData.words[Object.keys(fetchedData.words).sort()[id]];
+          if (listOfExercises.length === 0) {
+            const toPush = [];
+            Object.values(fetchedData.words).forEach((word) => {
+              for (let i = 0; i < 3; i++) {
+                toPush.push({
+                  sentence: choice(fetchedData.sentences[word]),
+                  word: word,
+                  done: false,
+                });
+              }
+            });
+            console.log(toPush);
+            setListOfExercises(toPush);
+          }
+          const currentWord =
+            fetchedData.words[Object.keys(fetchedData.words).sort()[id]];
           // Add IRT for next time
           let sentence = choice(fetchedData.sentences[currentWord]);
           const possibleAnswers = shuffle(Object.values(fetchedData.words));
@@ -195,10 +218,23 @@ export default function Exercise(props) {
             </span>
           </Typography>
           <div className={classes.result}>{showAnswersResult()}</div>
+          <Button
+            variant="contained"
+            color="secondary"
+            style={{ margin: 10, width: 200 }}
+            startIcon={<PublishIcon/>}
+          >
+            Well Done !
+          </Button>
         </div>
       ) : exercise.fetching ? (
         <Fade bottom cascade>
           <div className={classes.exercise}>
+            <LinearProgress
+              style={{ width: "25%" }}
+              variant="determinate"
+              value={results.answers.length / listOfExercises.length *100}
+            />
             <Typography
               color="secondary"
               variant="h3"

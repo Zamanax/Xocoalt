@@ -60,7 +60,7 @@ export default function ThetaProgression() {
   const { opacity } = state;
 
   return (
-    <ResponsiveContainer height="20%" width="100%">
+    <ResponsiveContainer height="20%" width="99%">
       <LineChart
         width={1000}
         height={300}
@@ -81,7 +81,7 @@ export default function ThetaProgression() {
           type="monotone"
           dataKey="progress"
           strokeOpacity={opacity.progress}
-          stroke="#82ca9d"
+          stroke={theme.palette.primary.main}
         />
       </LineChart>
     </ResponsiveContainer>
