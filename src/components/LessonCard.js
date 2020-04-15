@@ -127,9 +127,6 @@ export default function LessonCard(props) {
     if (localStorage.getItem("results")) {
       localStorage.removeItem("results")
     }
-    if (localStorage.getItem("exercise")) {
-      localStorage.removeItem("exercise")
-    }
     history.push(
       "/" +
         defaultSourceLanguage.slice(0, 2) +
@@ -137,8 +134,7 @@ export default function LessonCard(props) {
         "/" +
         props.type +
         "/" +
-        (currentChap !== undefined ? currentChap : props.chapters[0].title) +
-        "?id=0"
+        (currentChap !== undefined ? currentChap : props.chapters[0].title)
     );
   };
 

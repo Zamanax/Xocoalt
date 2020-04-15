@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Typography,
   CircularProgress,
@@ -15,9 +15,8 @@ import {
 } from "@material-ui/core";
 import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
-import PublishIcon from '@material-ui/icons/Publish';
+import PublishIcon from "@material-ui/icons/Publish";
 import {
-  useQuery,
   getChapter,
   choice,
   shuffle,
@@ -69,13 +68,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Exercise(props) {
   const classes = useStyles();
-  const history = useHistory();
-
   const db = firebase.firestore();
 
   // const { user } = props;
   const { lang, subject, chapter } = useParams();
-  const id = parseInt(useQuery().get("id"), 10);
 
   const theme = useTheme();
   const SecondaryRadio = withStyles({
@@ -114,6 +110,31 @@ export default function Exercise(props) {
     setAnswer(event.target.value);
   };
 
+  const isEveryExerciseDone = () => {
+    if (listOfExercises.length === 0) {
+      return false;
+    }
+    for (const exercise of listOfExercises) {
+      if (!exercise.done) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const chooseExercise = (exerciseArray, fetchedData) => {
+    const chosenExercise = choice(
+      exerciseArray.filter((exercise) => !exercise.done)
+    );
+    setExercise({
+      fetching: true,
+      title: fetchedData.title,
+      sentence: capitalizeFirstLetter(chosenExercise.sentence),
+      possibleAnswers: shuffle(Object.values(fetchedData.words)),
+      goodAnswer: chosenExercise.word,
+    });
+  };
+
   const updateResults = () => {
     setResults({
       ...results,
@@ -129,10 +150,14 @@ export default function Exercise(props) {
       localStorage.results = JSON.stringify(results);
       setFecthing(true);
       setAnswered(false);
-      history.push(window.location.pathname.split("?")[0] + "?id=" + (id + 1));
     } else {
       setAnswered(true);
       updateResults();
+      if (exercise.goodAnswer === answer) {
+        setListOfExercises(listOfExercises.map(question => (
+          { ...question, done: (capitalizeFirstLetter(question.sentence) === exercise.sentence) || question.done}
+        )));
+      }
     }
     // Also IRT
   };
@@ -161,39 +186,24 @@ export default function Exercise(props) {
       .get()
       .then((snap) => {
         const fetchedData = getChapter(snap.data()[subject], chapter);
-        if (Object.keys(fetchedData.sentences).length <= id) {
+        if (listOfExercises.length === 0) {
+          const toPush = [];
+          Object.values(fetchedData.words).forEach((word) => {
+            for (let i = 0; i < 3; i++) {
+              toPush.push({
+                sentence: choice(fetchedData.sentences[word]),
+                word: word,
+                done: false,
+              });
+            }
+          });
+          setListOfExercises(toPush);
+          chooseExercise(toPush, fetchedData);
+        } else if (isEveryExerciseDone()) {
           localStorage.results = JSON.stringify({ ...results, result: true });
           setResults({ ...results, result: true });
         } else {
-          if (listOfExercises.length === 0) {
-            const toPush = [];
-            Object.values(fetchedData.words).forEach((word) => {
-              for (let i = 0; i < 3; i++) {
-                toPush.push({
-                  sentence: choice(fetchedData.sentences[word]),
-                  word: word,
-                  done: false,
-                });
-              }
-            });
-            console.log(toPush);
-            setListOfExercises(toPush);
-          }
-          const currentWord =
-            fetchedData.words[Object.keys(fetchedData.words).sort()[id]];
-          // Add IRT for next time
-          let sentence = choice(fetchedData.sentences[currentWord]);
-          const possibleAnswers = shuffle(Object.values(fetchedData.words));
-          if (!possibleAnswers.includes(currentWord)) {
-            possibleAnswers[Math.floor(Math.random() * 4)] = currentWord;
-          }
-          setExercise({
-            fetching: true,
-            title: fetchedData.title,
-            sentence: capitalizeFirstLetter(sentence),
-            possibleAnswers: possibleAnswers,
-            goodAnswer: currentWord,
-          });
+          chooseExercise(listOfExercises, fetchedData);
         }
       });
   };
@@ -222,7 +232,7 @@ export default function Exercise(props) {
             variant="contained"
             color="secondary"
             style={{ margin: 10, width: 200 }}
-            startIcon={<PublishIcon/>}
+            startIcon={<PublishIcon />}
           >
             Well Done !
           </Button>
@@ -233,7 +243,7 @@ export default function Exercise(props) {
             <LinearProgress
               style={{ width: "25%" }}
               variant="determinate"
-              value={results.answers.length / listOfExercises.length *100}
+              value={(results.answers.length / listOfExercises.length) * 100}
             />
             <Typography
               color="secondary"
