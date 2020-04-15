@@ -99,7 +99,7 @@ export default function Hub(props) {
         <Button variant="contained" onClick={()=>{chooseSubject(false)}}>Resume</Button>
       )}
       <Dialog open={openDialog} onClose={handleDialogCloseCancel}>
-        <DialogTitle>Register</DialogTitle>
+        <DialogTitle>Found Previous Exercise</DialogTitle>
         <DialogContent>
           <DialogContentText>
             If you confirm, all data about the previous exercise you did not

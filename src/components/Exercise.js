@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import {
   Typography,
   CircularProgress,
@@ -36,11 +36,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     height: "100%",
-    margin: "0% 7.5% 0% 7.5%",
-  },
-  center: {
-    textAlign: "center",
-    margin: 10,
+    width: "100%",
   },
   exercise: {
     display: "flex",
@@ -52,10 +48,12 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 200,
   },
   result: {
+    width: "calc(100% - 57px)",
+    padding: "0% 7.5% 0% 7.5%",
+  },
+  cardContainer: {
     display: "flex",
-    minHeight: "calc(100% - 110)",
     flexDirection: "column",
-    justifyContent: "space-evenly",
     alignItems: "center",
   },
   chap: {
@@ -69,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Exercise(props) {
   const classes = useStyles();
   const db = firebase.firestore();
+  const history = useHistory();
 
   // const { user } = props;
   const { lang, subject, chapter } = useParams();
@@ -80,7 +79,11 @@ export default function Exercise(props) {
     },
   })((props) => <Radio {...props} />);
 
-  const [listOfExercises, setListOfExercises] = React.useState([]);
+  const [listOfExercises, setListOfExercises] = React.useState(
+    localStorage.listOfExercises !== undefined
+      ? JSON.parse(localStorage.listOfExercises)
+      : []
+  );
   const [exercise, setExercise] = React.useState({
     fetching: false,
     title: "",
@@ -150,14 +153,25 @@ export default function Exercise(props) {
       localStorage.results = JSON.stringify(results);
       setFecthing(true);
       setAnswered(false);
-      setAnswer("_____")
+      setAnswer("_____");
     } else {
       setAnswered(true);
       updateResults();
       if (exercise.goodAnswer === answer) {
-        setListOfExercises(listOfExercises.map(question => (
-          { ...question, done: (capitalizeFirstLetter(question.sentence) === exercise.sentence) || question.done}
-        )));
+        localStorage.listOfExercises = JSON.stringify(listOfExercises.map((question) => ({
+          ...question,
+          done:
+            capitalizeFirstLetter(question.sentence) === exercise.sentence ||
+            question.done,
+        })))
+        setListOfExercises(
+          listOfExercises.map((question) => ({
+            ...question,
+            done:
+              capitalizeFirstLetter(question.sentence) === exercise.sentence ||
+              question.done,
+          }))
+        );
       }
     }
     // Also IRT
@@ -198,6 +212,7 @@ export default function Exercise(props) {
               });
             }
           });
+          localStorage.listOfExercises = JSON.stringify(toPush);
           setListOfExercises(toPush);
           chooseExercise(toPush, fetchedData);
         } else if (isEveryExerciseDone()) {
@@ -218,8 +233,8 @@ export default function Exercise(props) {
         {exercise.title}
       </Typography>
       {results.result ? (
-        <div className={classes.frame}>
-          <Typography className={classes.center} variant="h3" color="secondary">
+        <div className={classes.result}>
+          <Typography variant="h3" color="secondary">
             Results
           </Typography>
           <Typography variant="h4" color="secondary">
@@ -228,12 +243,17 @@ export default function Exercise(props) {
               {results.score}/{results.question.length}
             </span>
           </Typography>
-          <div className={classes.result}>{showAnswersResult()}</div>
+          <div className={classes.cardContainer}>{showAnswersResult()}</div>
           <Button
             variant="contained"
             color="secondary"
             style={{ margin: 10, width: 200 }}
             startIcon={<PublishIcon />}
+            onClick={() => {
+              localStorage.removeItem("results")
+              localStorage.removeItem("listOfExercises")
+              history.push("/")
+            }}
           >
             Well Done !
           </Button>
@@ -244,7 +264,7 @@ export default function Exercise(props) {
             <LinearProgress
               style={{ width: "25%" }}
               variant="determinate"
-              value={(results.answers.length / listOfExercises.length) * 100}
+              value={(results.score / listOfExercises.length) * 100}
             />
             <Typography
               color="secondary"

@@ -143,7 +143,6 @@ export default function LessonCard(props) {
 
   const passInfo = () => {
     if (localStorage.results !== undefined) {
-      console.log("sure");
       setOpenDialog(true);
       setOpenLesson({type:props.type, chapters: props.chapters});
     } else {
