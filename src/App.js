@@ -7,15 +7,11 @@ import {
 } from "react-router-dom";
 import clsx from "clsx";
 
-import {
-  CssBaseline,
-  CircularProgress,
-  Snackbar,
-} from "@material-ui/core";
+import { CssBaseline, CircularProgress, Snackbar } from "@material-ui/core";
 import {
   makeStyles,
   createMuiTheme,
-  ThemeProvider
+  ThemeProvider,
 } from "@material-ui/core/styles";
 import MuiAlert from "@material-ui/lab/Alert";
 
@@ -43,15 +39,15 @@ const firebaseConfig = {
   storageBucket: "xocoalt-e94d3.appspot.com",
   messagingSenderId: "1087340054105",
   appId: "1:1087340054105:web:5d3179367a76e340bd9348",
-  measurementId: "G-GT09MEM2G2"
+  measurementId: "G-GT09MEM2G2",
 };
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    height: "100%"
+    height: "100%",
   },
   main: {
     display: "flex",
@@ -65,20 +61,20 @@ const useStyles = makeStyles(theme => ({
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
+      duration: theme.transitions.duration.leavingScreen,
+    }),
   },
   mainShift: {
     marginLeft: theme.spacing(11) + 1 + drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3)
+    padding: theme.spacing(3),
   },
 }));
 
@@ -96,15 +92,15 @@ export default function App() {
         : {
             palette: {
               primary: {
-                main: "#5E7880"
+                main: "#5E7880",
               },
               secondary: {
-                main: "#BDF0FF"
+                main: "#BDF0FF",
               },
               background: {
-                default: "#386F80"
-              }
-            }
+                default: "#386F80",
+              },
+            },
           }
     )
   );
@@ -114,22 +110,29 @@ export default function App() {
     password: "",
     showPassword: false,
     user: false,
-    fetching: false
+    fetching: false,
   });
 
   const [cards, setCards] = React.useState({
     list: [],
-    fetching: false
+    fetching: false,
   });
 
   const [open, setOpen] = React.useState(false);
+
+  const [openDialog, setOpenDialog] = React.useState(false);
+
+  const [openLesson, setOpenLesson] = React.useState({
+    type: "",
+    chapters: [],
+  });
 
   const [authInit, setAuthInit] = React.useState(true);
 
   const [err, setError] = React.useState({
     name: false,
     password: false,
-    reason: ""
+    reason: "",
   });
 
   const [openAlert, setOpenAlert] = React.useState(false);
@@ -143,15 +146,15 @@ export default function App() {
   };
 
   if (authInit) {
-    firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged((user) => {
       setAuthInit(false);
       if (user) {
         db.collection("users")
           .doc(user.email)
           .get()
-          .then(snap => {
+          .then((snap) => {
             const val = snap.data();
-            createSubjects(val, cards, setCards);
+            createSubjects(val, cards, setCards, setOpenDialog, setOpenLesson);
             setValues({ ...values, user: val });
           });
       }
@@ -176,14 +179,14 @@ export default function App() {
         ) : (
           <main
             className={clsx(classes.main, {
-              [classes.mainShift]: open
+              [classes.mainShift]: open,
             })}
-            >
-              <Header user={values.user}/>
+          >
+            <Header user={values.user} />
             <Switch>
               <Route path="/Account">
                 {firebase.auth().currentUser ? (
-                  <Account user={[values,setValues]} />
+                  <Account user={[values, setValues]} />
                 ) : (
                   <Redirect to="/" />
                 )}
@@ -210,6 +213,8 @@ export default function App() {
                   auth={authInit}
                   err={[err, setError]}
                   setOpenAlert={setOpenAlert}
+                  openDialog={[openDialog, setOpenDialog]}
+                  openLesson={openLesson}
                 />
               </Route>
             </Switch>

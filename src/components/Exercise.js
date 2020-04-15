@@ -150,6 +150,7 @@ export default function Exercise(props) {
       localStorage.results = JSON.stringify(results);
       setFecthing(true);
       setAnswered(false);
+      setAnswer("_____")
     } else {
       setAnswered(true);
       updateResults();

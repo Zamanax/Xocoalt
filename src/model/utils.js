@@ -10,7 +10,7 @@ const capitalizeFirstLetter = (s) => {
   return s[0].toUpperCase() + s.slice(1);
 }
 
-const createSubjects = (user, cards, setCards) => {
+const createSubjects = (user, cards, setCards, setOpenDialog, setOpenLesson) => {
   setCards({ ...cards, fetching: true });
   const db = firebase.firestore();
   const defaultSourceLanguage =
@@ -35,6 +35,8 @@ const createSubjects = (user, cards, setCards) => {
             type={subject}
             user={user}
             chapters={val[subject]}
+            setOpenDialog={setOpenDialog}
+            setOpenLesson={setOpenLesson}
             key={i++}
           />
         );

@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 
 import { capitalizeFirstLetter, linearGradient } from "../model/utils";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   card: {
     display: "flex",
     flexDirection: "column",
@@ -20,22 +20,22 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
     "&:hover": {
       transform: "scale(1.1)",
-      cursor: "pointer"
-    }
+      cursor: "pointer",
+    },
   },
   top: {
     display: "flex",
     flexDirection: "column",
     fontWeight: "normal",
     height: 175,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   chap: {
     transition: "transform .3s",
     "&:hover": {
       transform: "scale(1.1)",
-      cursor: "pointer"
-    }
+      cursor: "pointer",
+    },
   },
   bottom: {
     display: "flex",
@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "space-between",
     padding: 10,
     borderTop: "1px solid",
-    height: 50
+    height: 50,
   },
   percent: {
     border: "1px solid",
@@ -54,14 +54,17 @@ const useStyles = makeStyles(theme => ({
     height: 30,
     fontSize: 10,
     textAlign: "center",
-    verticalAlign: "middle"
-  }
+    verticalAlign: "middle",
+  },
 }));
 
 export default function LessonCard(props) {
   const classes = useStyles();
   const history = useHistory();
   const theme = useTheme();
+
+  const setOpenDialog = props.setOpenDialog;
+  const setOpenLesson = props.setOpenLesson;
 
   const defaultLanguage =
     props.user.languages !== undefined
@@ -73,7 +76,7 @@ export default function LessonCard(props) {
     currentChap = props.user.languages[defaultLanguage][props.type].current;
   } catch {}
 
-  const buildChapter = chap => {
+  const buildChapter = (chap) => {
     let chapters = [];
     let i = 0;
     for (const key of Object.keys(chap)) {
@@ -89,7 +92,7 @@ export default function LessonCard(props) {
             style={{
               display: "flex",
               flexDirection: "row",
-              justifyContent: "center"
+              justifyContent: "center",
             }}
             key={i}
           >
@@ -125,7 +128,7 @@ export default function LessonCard(props) {
         ? Object.keys(props.user.languages[defaultSourceLanguage])[0]
         : "french";
     if (localStorage.getItem("results")) {
-      localStorage.removeItem("results")
+      localStorage.removeItem("results");
     }
     history.push(
       "/" +
@@ -138,8 +141,18 @@ export default function LessonCard(props) {
     );
   };
 
+  const passInfo = () => {
+    if (localStorage.results !== undefined) {
+      console.log("sure");
+      setOpenDialog(true);
+      setOpenLesson({type:props.type, chapters: props.chapters});
+    } else {
+      chooseSubject();
+    }
+  };
+
   return (
-    <div className={classes.card} onClick={chooseSubject}>
+    <div className={classes.card} onClick={passInfo}>
       <div className={classes.top}>{buildChapter(props.chapters)}</div>
       <div className={classes.bottom}>
         <Typography variant="h5">
