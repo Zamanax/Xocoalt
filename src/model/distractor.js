@@ -277,7 +277,7 @@ function distractorMakr(ww){
     if(data.includes(www)){
      return www
     } else {
-     distractorMakr(ww)
+     return distractorMakr(ww)
     }
   });
 }
