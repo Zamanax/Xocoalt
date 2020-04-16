@@ -243,11 +243,12 @@ export default function Exercise(props) {
               {results.score}/{results.question.length}
             </span>
           </Typography>
-          <div className={classes.cardContainer}>{showAnswersResult()}</div>
+          <div className={classes.cardContainer}>{showAnswersResult()}
+          
           <Button
             variant="contained"
             color="secondary"
-            style={{ margin: 10, width: 200 }}
+            style={{ marginBottom: 20, width: 200 }}
             startIcon={<PublishIcon />}
             onClick={() => {
               localStorage.removeItem("results")
@@ -255,8 +256,9 @@ export default function Exercise(props) {
               history.push("/")
             }}
           >
-            Well Done !
+              Well Done !
           </Button>
+          </div>
         </div>
       ) : exercise.fetching ? (
         <Fade bottom cascade>
