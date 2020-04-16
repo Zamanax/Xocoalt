@@ -273,13 +273,12 @@ function distractorMakr(ww) {
     www = ww.concat(suffixesV[m]);
   }
   const fs = require("fs");
-  fs.readFile("src/model/corncob_lowercase.txt", (err, data) => {
-    if (data.includes(www)) {
+  const data = fs.readFileSync("src/model/corncob_lowercase.txt")
+  if (data.includes(www) && www != ww){
       return www;
     } else {
       return distractorMakr(ww);
     }
-  });
 }
 
 let distractor = distractorMakr(ww);
