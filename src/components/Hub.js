@@ -64,14 +64,15 @@ export default function Hub(props) {
     if (localStorage.getItem("results") && remove) {
       localStorage.removeItem("results");
     }
+    const chapToResume = JSON.parse(localStorage.chapToResume)
     history.push(
       "/" +
         defaultSourceLanguage.slice(0, 2) +
         defaultDestLanguage.slice(0, 2) +
         "/" +
-        openLesson.type +
+        chapToResume.type +
         "/" +
-        (currentChap !== undefined ? currentChap : openLesson.chapters[0].title)
+        (currentChap !== undefined ? currentChap : chapToResume.title)
     );
   };
 
