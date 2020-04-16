@@ -263,26 +263,24 @@ suffixesC = [
 l1 = suffixesV.length - 1
 l2 = suffixesC.length - 1
 
-function distractor(ww){
+function distractorMakr(ww){
     f = ww.charAt(-1)
     if (["a","e","i","o","u","y"].includes(f)){
         n = Math.floor(Math.random() * l2);
-        ww = ww.concat(suffixesC[n])
+        www = ww.concat(suffixesC[n])
     } else {
         m = Math.floor(Math.random() * l1);
-        ww = ww.concat(suffixesV[m])
+        www = ww.concat(suffixesV[m])
     }
-    return ww
-}
-
-www = distractor(ww)
-console.log(www)
-
-const fs = require('fs') 
-fs.readFile('src/model/corncob_lowercase.txt', (err, data) => {
+    const fs = require('fs') 
+    fs.readFile('src/model/corncob_lowercase.txt', (err, data) => {
     if(data.includes(www)){
-     console.log('this word exists')
+     return www
     } else {
-     console.log('no such word exists')
+     distractorMakr(ww)
     }
   });
+}
+
+let distractor = distractorMakr(ww)
+console.log(distractor)
