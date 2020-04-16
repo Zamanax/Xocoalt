@@ -142,7 +142,8 @@ export default function LessonCard(props) {
   };
 
   const passInfo = () => {
-    if (localStorage.results !== undefined) {
+      localStorage.chapToResume = JSON.stringify({...props.chapters[0], type: props.type});
+      if (localStorage.results !== undefined) {
       setOpenDialog(true);
       setOpenLesson({type:props.type, chapters: props.chapters});
     } else {
