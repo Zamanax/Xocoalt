@@ -21,6 +21,7 @@ import {
   choice,
   shuffle,
   capitalizeFirstLetter,
+  randomMinMax,
 } from "../model/utils";
 import { Fade } from "react-reveal";
 
@@ -28,6 +29,7 @@ import * as firebase from "firebase/app";
 import "firebase/firestore";
 
 import { languages } from "../model/utils";
+import { createDistractorOrtho } from "../model/distractor_ortho";
 import AnswerCard from "./AnswerCard";
 
 const useStyles = makeStyles((theme) => ({
@@ -129,11 +131,25 @@ export default function Exercise(props) {
     const chosenExercise = choice(
       exerciseArray.filter((exercise) => !exercise.done)
     );
+    const possibleAnswers = shuffle(
+      Object.values(fetchedData.words).slice(0, randomMinMax(0, 4))
+    );
+    if (!possibleAnswers.includes(chosenExercise.word)) {
+      possibleAnswers[randomMinMax(0, possibleAnswers.length)] =
+        chosenExercise.word;
+    }
+    for (let i = 0; i < 4 - possibleAnswers.length; i++) {
+      possibleAnswers.splice(
+        randomMinMax(0, possibleAnswers.length),
+        0,
+        createDistractorOrtho(choice(possibleAnswers))
+      );
+    }
     setExercise({
       fetching: true,
       title: fetchedData.title,
       sentence: capitalizeFirstLetter(chosenExercise.sentence),
-      possibleAnswers: shuffle(Object.values(fetchedData.words)),
+      possibleAnswers: possibleAnswers,
       goodAnswer: chosenExercise.word,
     });
   };
@@ -158,12 +174,14 @@ export default function Exercise(props) {
       setAnswered(true);
       updateResults();
       if (exercise.goodAnswer === answer) {
-        localStorage.listOfExercises = JSON.stringify(listOfExercises.map((question) => ({
-          ...question,
-          done:
-            capitalizeFirstLetter(question.sentence) === exercise.sentence ||
-            question.done,
-        })))
+        localStorage.listOfExercises = JSON.stringify(
+          listOfExercises.map((question) => ({
+            ...question,
+            done:
+              capitalizeFirstLetter(question.sentence) === exercise.sentence ||
+              question.done,
+          }))
+        );
         setListOfExercises(
           listOfExercises.map((question) => ({
             ...question,
@@ -243,21 +261,22 @@ export default function Exercise(props) {
               {results.score}/{results.question.length}
             </span>
           </Typography>
-          <div className={classes.cardContainer}>{showAnswersResult()}
-          
-          <Button
-            variant="contained"
-            color="secondary"
-            style={{ marginBottom: 20, width: 200 }}
-            startIcon={<PublishIcon />}
-            onClick={() => {
-              localStorage.removeItem("results")
-              localStorage.removeItem("listOfExercises")
-              history.push("/")
-            }}
-          >
+          <div className={classes.cardContainer}>
+            {showAnswersResult()}
+
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ marginBottom: 20, width: 200 }}
+              startIcon={<PublishIcon />}
+              onClick={() => {
+                localStorage.removeItem("results");
+                localStorage.removeItem("listOfExercises");
+                history.push("/");
+              }}
+            >
               Well Done !
-          </Button>
+            </Button>
           </div>
         </div>
       ) : exercise.fetching ? (

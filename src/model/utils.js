@@ -10,6 +10,10 @@ const capitalizeFirstLetter = (s) => {
   return s[0].toUpperCase() + s.slice(1);
 }
 
+function randomMinMax(min = 0, max = 1) {
+  return Math.floor((Math.random() * max) - min)
+}
+
 const createSubjects = (user, cards, setCards, setOpenDialog, setOpenLesson) => {
   setCards({ ...cards, fetching: true });
   const db = firebase.firestore();
@@ -97,4 +101,4 @@ const reverseGradient = (theme) => "linear-gradient(45deg," +
   theme.palette.secondary.main +
   " 90%)";
 
-export { capitalizeFirstLetter, createSubjects, useQuery, getChapter, choice, shuffle, languages, linearGradient, reverseGradient };
+export { capitalizeFirstLetter, randomMinMax, createSubjects, useQuery, getChapter, choice, shuffle, languages, linearGradient, reverseGradient };
