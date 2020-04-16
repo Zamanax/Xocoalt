@@ -1,6 +1,6 @@
 let natural = require("natural");
 let w = "participation";
-let ww = natural.PorterStemmerFr.stem(w);
+let ww = natural.PorterStemmer.stem(w);
 
 suffixesV = [
   "able",
@@ -263,7 +263,11 @@ suffixesC = [
 l1 = suffixesV.length - 1;
 l2 = suffixesC.length - 1;
 
-function distractorMakr(ww) {
+function distractorMakr(ww, data) {
+  const fs = require("fs");
+  if (data === undefined) {
+    data = fs.readFileSync("src/model/corncob_lowercase.txt");
+  }
   f = ww.charAt(-1);
   if (["a", "e", "i", "o", "u", "y"].includes(f)) {
     n = Math.floor(Math.random() * l2);
@@ -272,14 +276,23 @@ function distractorMakr(ww) {
     m = Math.floor(Math.random() * l1);
     www = ww.concat(suffixesV[m]);
   }
-  const fs = require("fs");
-  const data = fs.readFileSync("src/model/corncob_lowercase.txt")
-  if (data.includes(www) && www != ww){
-      return www;
-    } else {
-      return distractorMakr(ww);
-    }
+  if (data.includes(www + "\r") && www != ww) {
+    return www;
+  } else {
+    return distractorMakr(ww, data);
+  }
 }
 
-let distractor = distractorMakr(ww);
-console.log(distractor);
+function end(ww) {
+  const choices = [];
+  for (let i = 0; i < 3; i++) {
+    let temp = distractorMakr(ww);
+    while (choices.includes(temp)) {
+      temp = distractorMakr(ww);
+    }
+    choices[i] = temp;
+  }
+  return choices;
+}
+
+console.log(end(ww));
