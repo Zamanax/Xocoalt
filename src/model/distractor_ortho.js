@@ -16,7 +16,6 @@ function createDistractorOrtho(w) {
   const spellChecker = new natural.Spellcheck([w]);
   let ww = randomizeWord(w);
     while (spellChecker.getCorrections(ww, 1)[0] !== w || ww === w) {
-      console.log(ww)
     ww = randomizeWord(w);
   }
   return ww;

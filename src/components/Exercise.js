@@ -66,6 +66,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const availableTypesOfExercises = ["MCQ", "Voltaire", "Fill"];
+
 export default function Exercise(props) {
   const classes = useStyles();
   const db = firebase.firestore();
@@ -92,6 +94,7 @@ export default function Exercise(props) {
     sentence: "",
     possibleAnswers: [],
     goodAnswer: "",
+    type: "",
   });
   const [results, setResults] = React.useState(
     localStorage.results !== undefined
@@ -131,19 +134,31 @@ export default function Exercise(props) {
     const chosenExercise = choice(
       exerciseArray.filter((exercise) => !exercise.done)
     );
-    const possibleAnswers = shuffle(
-      Object.values(fetchedData.words).slice(0, randomMinMax(0, 4))
-    );
-    if (!possibleAnswers.includes(chosenExercise.word)) {
-      possibleAnswers[randomMinMax(0, possibleAnswers.length)] =
-        chosenExercise.word;
-    }
-    for (let i = 0; i < 4 - possibleAnswers.length; i++) {
-      possibleAnswers.splice(
-        randomMinMax(0, possibleAnswers.length),
-        0,
-        createDistractorOrtho(choice(possibleAnswers))
-      );
+    // const typeOfExercise = availableTypesOfExercises[randomMinMax(0, 3)];
+    const typeOfExercise = "Voltaire";
+    let possibleAnswers;
+    switch (typeOfExercise) {
+      case "Voltaire":
+        break;
+
+      case "Fill":
+        break;
+      default:
+        possibleAnswers = shuffle(
+          Object.values(fetchedData.words).slice(0, randomMinMax(0, 4))
+        );
+        if (!possibleAnswers.includes(chosenExercise.word)) {
+          possibleAnswers[randomMinMax(0, possibleAnswers.length)] =
+            chosenExercise.word;
+        }
+        for (let i = 0; i < 4 - possibleAnswers.length; i++) {
+          possibleAnswers.splice(
+            randomMinMax(0, possibleAnswers.length),
+            0,
+            createDistractorOrtho(choice(possibleAnswers))
+          );
+        }
+        break;
     }
     setExercise({
       fetching: true,
@@ -151,6 +166,7 @@ export default function Exercise(props) {
       sentence: capitalizeFirstLetter(chosenExercise.sentence),
       possibleAnswers: possibleAnswers,
       goodAnswer: chosenExercise.word,
+      type: typeOfExercise,
     });
   };
 
@@ -160,8 +176,18 @@ export default function Exercise(props) {
       question: [...results.question, exercise.sentence],
       goodAnswers: [...results.goodAnswers, exercise.goodAnswer],
       answers: [...results.answers, answer],
-      score: exercise.goodAnswer === answer ? ++results.score : results.score,
+      score: checkAnswer() ? ++results.score : results.score,
     });
+  };
+
+  const checkAnswer = () => {
+    return (
+      (exercise.type === "MCQ" && exercise.goodAnswer === answer) ||
+      (exercise.type === "Voltaire" &&
+        ((answer === "_____" &&
+          exercise.possibleAnswers === exercise.goodAnswer) ||
+          exercise.possibleAnswers === answer))
+    );
   };
 
   const handleValidate = () => {
@@ -173,7 +199,7 @@ export default function Exercise(props) {
     } else {
       setAnswered(true);
       updateResults();
-      if (exercise.goodAnswer === answer) {
+      if (checkAnswer()) {
         localStorage.listOfExercises = JSON.stringify(
           listOfExercises.map((question) => ({
             ...question,
@@ -208,6 +234,91 @@ export default function Exercise(props) {
       );
     }
     return toReturn;
+  };
+
+  const generateMCQSentence = () => {
+    return exercise.sentence.split(/_____/gi).map(
+      (text, i) =>
+        (text =
+          i !== exercise.sentence.split(/_____/gi).length - 1 ? (
+            <span key={i}>
+              {text + " "}
+              <span
+                style={{
+                  fontStyle: "oblique 40deg",
+                  fontWeight: "bold",
+                  textDecoration: "underline",
+                }}
+              >
+                {answer}
+              </span>
+            </span>
+          ) : (
+            <span key={i}>{text}</span>
+          ))
+    );
+  };
+
+  const generateMCQAnswers = () => {
+    return exercise.possibleAnswers.map((word, i) => (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+        key={i}
+      >
+        {answered && word === exercise.goodAnswer && (
+          <CheckRoundedIcon style={{ color: "green" }} />
+        )}
+        {answered && word === answer && exercise.goodAnswer !== answer && (
+          <CloseRoundedIcon style={{ color: "red" }} />
+        )}
+        <FormControlLabel
+          value={word}
+          control={<SecondaryRadio />}
+          disabled={answered}
+          label={
+            <span
+              style={{
+                display: "inline-block",
+                fontSize: 35,
+                color: theme.palette.secondary.main,
+                width: 200,
+              }}
+            >
+              {word}
+            </span>
+          }
+          key={i}
+        />
+      </div>
+    ));
+  };
+
+  const generateVoltaireSentence = () => {
+    return exercise.sentence.split(/ /gi).map(function (text, i) {
+      if (text.includes("_____") && exercise.possibleAnswers === undefined) {
+        text =
+          Math.random() < 0.75
+            ? createDistractorOrtho(exercise.goodAnswer)
+            : exercise.goodAnswer;
+        setExercise({ ...exercise, possibleAnswers: text });
+      } else if (text.includes("_____")) {
+        text = exercise.possibleAnswers;
+      }
+      return (
+        <span
+          key={i}
+          onClick={() => {
+            setAnswer(text);
+          }}
+        >
+          {text + " "}
+        </span>
+      );
+    });
   };
 
   const generateExercise = () => {
@@ -292,68 +403,21 @@ export default function Exercise(props) {
               variant="h3"
               className={classes.wording}
             >
-              {exercise.sentence.split(/_____/gi).map(
-                (text, i) =>
-                  (text =
-                    i !== exercise.sentence.split(/_____/gi).length - 1 ? (
-                      <span key={i}>
-                        {text + " "}
-                        <span
-                          style={{
-                            fontStyle: "oblique 40deg",
-                            fontWeight: "bold",
-                            textDecoration: "underline",
-                          }}
-                        >
-                          {answer}
-                        </span>
-                      </span>
-                    ) : (
-                      <span key={i}>{text}</span>
-                    ))
-              )}
+              {exercise.type === "MCQ"
+                ? generateMCQSentence()
+                : generateVoltaireSentence()}
             </Typography>
             <FormControl className={classes.form}>
               <RadioGroup value={answer} onChange={handleChange}>
-                {exercise.possibleAnswers.map((word, i) => (
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                    key={i}
-                  >
-                    {answered && word === exercise.goodAnswer && (
-                      <CheckRoundedIcon style={{ color: "green" }} />
-                    )}
-                    {answered &&
-                      word === answer &&
-                      exercise.goodAnswer !== answer && (
-                        <CloseRoundedIcon style={{ color: "red" }} />
-                      )}
-                    <FormControlLabel
-                      value={word}
-                      control={<SecondaryRadio />}
-                      disabled={answered}
-                      label={
-                        <span
-                          style={{
-                            display: "inline-block",
-                            fontSize: 35,
-                            color: theme.palette.secondary.main,
-                            width: 200,
-                          }}
-                        >
-                          {word}
-                        </span>
-                      }
-                      key={i}
-                    />
-                  </div>
-                ))}
+                {exercise.type === "MCQ" ? generateMCQAnswers() : ""}
               </RadioGroup>
             </FormControl>
+            {((exercise.type === "Voltaire" && answer !== "_____") ||
+              answered) && (
+              <Typography variant="h3">
+                {!answered ? answer : checkAnswer() ? "Well Done !" : "Wrong"}
+              </Typography>
+            )}
             <Button
               color="secondary"
               size="large"
@@ -363,6 +427,20 @@ export default function Exercise(props) {
             >
               {answered ? "Next" : "Confirm"}
             </Button>
+            {exercise.type === "Voltaire" && !answered && (
+              <Button
+                color="secondary"
+                size="large"
+                variant="contained"
+                onClick={() => {
+                  setAnswer("_____");
+                  handleValidate();
+                }}
+                style={{ margin: 20 }}
+              >
+                There is no Error
+              </Button>
+            )}
           </div>
         </Fade>
       ) : (
