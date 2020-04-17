@@ -361,7 +361,7 @@ export default function Exercise(props) {
               onClick={handleValidate}
               style={{ margin: 20 }}
             >
-              Confirm
+              {answered ? "Next" : "Confirm"}
             </Button>
           </div>
         </Fade>
