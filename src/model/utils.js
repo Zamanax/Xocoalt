@@ -14,6 +14,16 @@ function randomMinMax(min = 0, max = 1) {
   return Math.floor((Math.random() * max) - min)
 }
 
+const checkAnswer = (exercise, answer) => {
+  return (
+    (exercise.type === "MCQ" && exercise.goodAnswer === answer) ||
+    (exercise.type === "Voltaire" &&
+      ((answer === "_____" &&
+        exercise.possibleAnswers === exercise.goodAnswer) ||
+        exercise.possibleAnswers === answer))
+  );
+};
+
 const createSubjects = (user, cards, setCards, setOpenDialog, setOpenLesson) => {
   setCards({ ...cards, fetching: true });
   const db = firebase.firestore();
@@ -101,4 +111,4 @@ const reverseGradient = (theme) => "linear-gradient(45deg," +
   theme.palette.secondary.main +
   " 90%)";
 
-export { capitalizeFirstLetter, randomMinMax, createSubjects, useQuery, getChapter, choice, shuffle, languages, linearGradient, reverseGradient };
+export { capitalizeFirstLetter, randomMinMax, checkAnswer, createSubjects, useQuery, getChapter, choice, shuffle, languages, linearGradient, reverseGradient };

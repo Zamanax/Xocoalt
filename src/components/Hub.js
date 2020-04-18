@@ -61,8 +61,9 @@ export default function Hub(props) {
       values.user.languages !== undefined
         ? Object.keys(values.user.languages[defaultSourceLanguage])[0]
         : "french";
-    if (localStorage.getItem("results") && remove) {
+    if (remove) {
       localStorage.removeItem("results");
+      localStorage.removeItem("listOfExercises");
     }
     const chapToResume = JSON.parse(localStorage.chapToResume)
     history.push(

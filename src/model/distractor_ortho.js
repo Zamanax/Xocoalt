@@ -1,5 +1,4 @@
 import { randomMinMax } from "./utils";
-// eslint-disable-next-line
 import natural from "natural";
 
 function randomizeWord(w) {
@@ -12,12 +11,16 @@ function randomizeWord(w) {
 }
 
 function createDistractorOrtho(w) {
-    // eslint-disable-next-line
   const spellChecker = new natural.Spellcheck([w]);
   let ww = randomizeWord(w);
-    while (spellChecker.getCorrections(ww, 1)[0] !== w || ww === w) {
+  while (spellChecker.getCorrections(ww, 1)[0] !== w || ww === w) {
     ww = randomizeWord(w);
   }
   return ww;
 }
-export { createDistractorOrtho };
+
+function isSimilarWord(s, w) {
+  const spellChecker = new natural.Spellcheck([s]);
+  return spellChecker.getCorrections(w, 1)[0] === s;
+}
+export { createDistractorOrtho, isSimilarWord };
