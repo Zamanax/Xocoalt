@@ -8,23 +8,29 @@ import "firebase/firestore";
 
 const capitalizeFirstLetter = (s) => {
   return s[0].toUpperCase() + s.slice(1);
-}
+};
 
 function randomMinMax(min = 0, max = 1) {
-  return Math.floor((Math.random() * max) - min)
+  return Math.floor(Math.random() * max - min);
 }
 
 const checkAnswer = (exercise, answer) => {
   return (
-    (exercise.type === "MCQ" && exercise.goodAnswer === answer) ||
     (exercise.type === "Voltaire" &&
       ((answer === "_____" &&
         exercise.possibleAnswers === exercise.goodAnswer) ||
-        exercise.possibleAnswers === answer))
+        exercise.possibleAnswers === answer)) ||
+    exercise.goodAnswer === answer
   );
 };
 
-const createSubjects = (user, cards, setCards, setOpenDialog, setOpenLesson) => {
+const createSubjects = (
+  user,
+  cards,
+  setCards,
+  setOpenDialog,
+  setOpenLesson
+) => {
   setCards({ ...cards, fetching: true });
   const db = firebase.firestore();
   const defaultSourceLanguage =
@@ -39,7 +45,7 @@ const createSubjects = (user, cards, setCards, setOpenDialog, setOpenLesson) => 
     .collection("exercises")
     .doc(defaultDestLanguage)
     .get()
-    .then(snap => {
+    .then((snap) => {
       const val = snap.data();
       let cards = [];
       let i = 0;
@@ -65,21 +71,24 @@ const useQuery = () => {
 
 const getChapter = (subject, title) => {
   for (const chapter of Object.keys(subject)) {
-    if(subject[chapter].title===title){return subject[chapter]}
+    if (subject[chapter].title === title) {
+      return subject[chapter];
+    }
   }
   return undefined;
 };
 
 const choice = (arr) => {
-  return arr[Math.floor(Math.random() *arr.length)]
-}
+  return arr[Math.floor(Math.random() * arr.length)];
+};
 
 const shuffle = (array) => {
-  var currentIndex = array.length, temporaryValue, randomIndex;
+  var currentIndex = array.length,
+    temporaryValue,
+    randomIndex;
 
   // While there remain elements to shuffle...
   while (0 !== currentIndex) {
-
     // Pick a remaining element...
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex -= 1;
@@ -91,24 +100,37 @@ const shuffle = (array) => {
   }
 
   return array;
-}
+};
 
 const languages = {
   en: "english",
-  fr: "french"
+  fr: "french",
 };
 
-
-const linearGradient = (theme) => "linear-gradient(45deg," +
+const linearGradient = (theme) =>
+  "linear-gradient(45deg," +
   theme.palette.secondary.main +
   " 30%," +
   theme.palette.primary.main +
   " 90%)";
 
-const reverseGradient = (theme) => "linear-gradient(45deg," +
+const reverseGradient = (theme) =>
+  "linear-gradient(45deg," +
   theme.palette.primary.main +
   " 30%," +
   theme.palette.secondary.main +
   " 90%)";
 
-export { capitalizeFirstLetter, randomMinMax, checkAnswer, createSubjects, useQuery, getChapter, choice, shuffle, languages, linearGradient, reverseGradient };
+export {
+  capitalizeFirstLetter,
+  randomMinMax,
+  checkAnswer,
+  createSubjects,
+  useQuery,
+  getChapter,
+  choice,
+  shuffle,
+  languages,
+  linearGradient,
+  reverseGradient,
+};

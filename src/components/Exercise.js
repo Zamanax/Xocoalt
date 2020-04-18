@@ -12,6 +12,7 @@ import {
   Button,
   useTheme,
   LinearProgress,
+  TextField,
 } from "@material-ui/core";
 import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
 import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
@@ -119,6 +120,9 @@ export default function Exercise(props) {
   const handleChange = (event) => {
     setAnswer(event.target.value);
   };
+  const handleFocus = () => {
+    setAnswer("");
+  };
 
   const isEveryExerciseDone = () => {
     if (listOfExercises.length === 0) {
@@ -136,8 +140,7 @@ export default function Exercise(props) {
     const chosenExercise = choice(
       exerciseArray.filter((exercise) => !exercise.done)
     );
-    // const typeOfExercise = availableTypesOfExercises[randomMinMax(0, 3)];
-    const typeOfExercise = "Voltaire";
+    const typeOfExercise = availableTypesOfExercises[randomMinMax(0, 2.99)];
     let possibleAnswers;
     switch (typeOfExercise) {
       case "Voltaire":
@@ -319,6 +322,22 @@ export default function Exercise(props) {
     });
   };
 
+  const generateFillAnswers = () => {
+    return (
+      <TextField
+        label="Answer"
+        value={answer}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleValidate();
+          }
+        }}
+      />
+    );
+  };
+
   const generateExercise = () => {
     setFecthing(false);
     db.collection("sources")
@@ -401,20 +420,23 @@ export default function Exercise(props) {
               variant="h3"
               className={classes.wording}
             >
-              {exercise.type === "MCQ"
+              {exercise.type !== "Voltaire"
                 ? generateMCQSentence()
                 : generateVoltaireSentence()}
             </Typography>
             {exercise.type !== "Voltaire" && (
               <FormControl className={classes.form}>
-                {generateMCQAnswers()}
+                {exercise.type === "MCQ"
+                  ? generateMCQAnswers()
+                  : generateFillAnswers()}
               </FormControl>
             )}
-            {((exercise.type === "Voltaire" && answer !== "_____") ||
-              answered) && (
+            {(exercise.type === "Voltaire" || answered) && (
               <Typography variant="h3">
                 {!answered
-                  ? answer
+                  ? answer !== "_____"
+                    ? answer
+                    : "Select the word with an error"
                   : checkAnswer(exercise, answer)
                   ? "Well Done !"
                   : "Wrong"}
