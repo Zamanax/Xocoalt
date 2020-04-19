@@ -1,10 +1,20 @@
 import React from "react";
 
 import { useLocation, useHistory } from "react-router-dom";
-import { Typography, makeStyles, Button } from "@material-ui/core";
+import {
+  Typography,
+  makeStyles,
+  useMediaQuery,
+  useTheme,
+  Button,
+} from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
-import { languages, capitalizeFirstLetter, linearGradient } from "../model/utils";
+import {
+  languages,
+  capitalizeFirstLetter,
+  linearGradient,
+} from "../model/utils";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -35,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header(props) {
   const classes = useStyles();
+  const theme = useTheme();
 
   const { user } = props;
   const location = useLocation();
@@ -56,7 +67,11 @@ export default function Header(props) {
 
   return (
     <div className={classes.header}>
-      <Typography variant="h2" color="secondary" className={classes.title}>
+      <Typography
+        variant={useMediaQuery(theme.breakpoints.up("sm")) ? "h2" : "h3"}
+        color="secondary"
+        className={classes.title}
+      >
         {title}
       </Typography>
       {user && (

@@ -1,5 +1,10 @@
 import React from "react";
-import { useTheme } from "@material-ui/core";
+import {
+  Typography,
+  makeStyles,
+  useTheme,
+  useMediaQuery,
+} from "@material-ui/core";
 import {
   Radar,
   RadarChart,
@@ -47,32 +52,51 @@ const data = [
   },
 ];
 
-const radius = 150;
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+}));
+
+const radius = 125;
 
 export default function RadarLanguage() {
   const theme = useTheme();
+  const classes = useStyles();
   return (
-    <RadarChart
-      outerRadius={radius}
-      width={radius * 3}
-      height={radius * 3}
-      data={data}
-    >
-      <PolarGrid />
-      <PolarAngleAxis dataKey="subject" stroke={theme.palette.secondary.main} />
-      <PolarRadiusAxis domain={[0, 150]} />
-      <defs>
-        <radialGradient id="radarchartColorToRed">
-          <stop offset="5%" stopColor={theme.palette.primary.main} />
-          <stop offset="95%" stopColor={theme.palette.secondary.main} />
-        </radialGradient>
-      </defs>
-      <Radar
-        name="Mike"
-        dataKey="A"
-        fill="url(#radarchartColorToRed)"
-        fillOpacity={0.6}
-      />
-    </RadarChart>
+    <div className={classes.container}>
+      <RadarChart
+        outerRadius={
+          useMediaQuery(theme.breakpoints.up("sm")) ? radius : radius / 2
+        }
+        width={radius * 3}
+        height={radius * (useMediaQuery(theme.breakpoints.up("sm")) ? 3 : 1.5)}
+        data={data}
+      >
+        <PolarGrid />
+        <PolarAngleAxis
+          dataKey="subject"
+          stroke={theme.palette.secondary.main}
+        />
+        <PolarRadiusAxis domain={[0, 150]} />
+        <defs>
+          <radialGradient id="radarchartColorToRed">
+            <stop offset="5%" stopColor={theme.palette.primary.main} />
+            <stop offset="95%" stopColor={theme.palette.secondary.main} />
+          </radialGradient>
+        </defs>
+        <Radar
+          name="Mike"
+          dataKey="A"
+          fill="url(#radarchartColorToRed)"
+          fillOpacity={0.6}
+        />
+      </RadarChart>
+      <Typography variant={useMediaQuery(theme.breakpoints.up("sm")) ? "h4" : "h5"} color="secondary">
+        Languages Progression
+      </Typography>
+    </div>
   );
 }

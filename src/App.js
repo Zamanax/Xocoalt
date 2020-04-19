@@ -192,7 +192,7 @@ export default function App() {
               </Route>
               <Route path="/DashBoard">
                 {firebase.auth().currentUser ? (
-                  <DashBoard />
+                  <DashBoard user={values.user} />
                 ) : (
                   <Redirect to="/" />
                 )}

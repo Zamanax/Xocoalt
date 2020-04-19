@@ -1,5 +1,10 @@
 import React from "react";
-import { useTheme } from "@material-ui/core";
+import {
+  Typography,
+  makeStyles,
+  useTheme,
+  useMediaQuery,
+} from "@material-ui/core";
 import {
   LineChart,
   Line,
@@ -8,7 +13,6 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
 } from "recharts";
 
 const data = [
@@ -23,15 +27,24 @@ const data = [
   { name: "September", progress: 74, amt: 2100 },
   { name: "October", progress: 88, amt: 2100 },
   { name: "November", progress: 95, amt: 2100 },
-  { name: "December", uprogress: 100, amt: 2100 }
+  { name: "December", uprogress: 100, amt: 2100 },
 ];
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+  },
+}));
 
 export default function ThetaProgression() {
   const theme = useTheme();
+  const classes = useStyles();
   const [state, setState] = React.useState({
     opacity: {
-      progress: 1
-    }
+      progress: 1,
+    },
   });
 
   const legendColor = (value, entry) => {
@@ -39,33 +52,32 @@ export default function ThetaProgression() {
     return <span style={{ color }}>{value}</span>;
   };
 
-  const handleMouseEnter = o => {
+  const handleMouseEnter = (o) => {
     const { dataKey } = o;
     const { opacity } = state;
 
     setState({
-      opacity: { ...opacity, [dataKey]: 0.5 }
+      opacity: { ...opacity, [dataKey]: 0.5 },
     });
   };
 
-  const handleMouseLeave = o => {
+  const handleMouseLeave = (o) => {
     const { dataKey } = o;
     const { opacity } = state;
 
     setState({
-      opacity: { ...opacity, [dataKey]: 1 }
+      opacity: { ...opacity, [dataKey]: 1 },
     });
   };
 
   const { opacity } = state;
 
   return (
-    <ResponsiveContainer height="20%" width="99%">
+    <div className={classes.container}>
       <LineChart
-        width={1000}
+        width={useMediaQuery(theme.breakpoints.up("sm")) ? 750 : 300}
         height={300}
         data={data}
-        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" stroke={theme.palette.secondary.main} />
@@ -84,6 +96,9 @@ export default function ThetaProgression() {
           stroke={theme.palette.primary.main}
         />
       </LineChart>
-    </ResponsiveContainer>
+      <Typography variant={useMediaQuery(theme.breakpoints.up("sm")) ? "h4" : "h5"} color="secondary">
+        Level Progression
+      </Typography>
+    </div>
   );
 }
