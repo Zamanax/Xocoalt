@@ -453,17 +453,21 @@ export default function Exercise(props) {
       .then((snap) => {
         const newUser = mergeDeep(snap.data(), {
           progress: {
-            [subject]: {
-              chapters: {
-                [chapter]: {
-                  words: countGoodBadAnswers(),
-                  theta: computeChapterTheta(),
+            [sourceLang]: {
+              [destLang]: {
+                [subject]: {
+                  chapters: {
+                    [chapter]: {
+                      words: countGoodBadAnswers(),
+                      theta: computeChapterTheta(),
+                    },
+                  },
+                  theta: computeSubjectTheta(
+                    snap.data().progress[subject].chapters
+                  ),
                 },
-              },
-              theta: computeSubjectTheta(
-                snap.data().progress[subject].chapters
-              ),
-            },
+              }
+            }
           },
         });
         db.collection("users")

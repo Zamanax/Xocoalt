@@ -62,9 +62,12 @@ const useStyles = makeStyles((theme) => ({
 
 const radius = 125;
 
-export default function RadarLanguage() {
+export default function RadarLanguage(props) {
   const theme = useTheme();
   const classes = useStyles();
+
+  const { user } = props;
+  
   return (
     <div className={classes.container}>
       <RadarChart
