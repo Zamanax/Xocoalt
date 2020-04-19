@@ -40,17 +40,6 @@ export default function Hub(props) {
 
   const { values, cards } = props;
   const [openDialog, setOpenDialog] = props.openDialog;
-  const openLesson = props.openLesson;
-
-  const defaultLanguage =
-    values.user.languages !== undefined
-      ? Object.keys(values.user.languages)[0]
-      : "french";
-
-  let currentChap = undefined;
-  try {
-    currentChap = values.user.languages[defaultLanguage][openLesson.type].current;
-  } catch {}
 
   const chooseSubject = (remove) => {
     const defaultSourceLanguage =
@@ -65,7 +54,7 @@ export default function Hub(props) {
       localStorage.removeItem("results");
       localStorage.removeItem("listOfExercises");
     }
-    const chapToResume = JSON.parse(localStorage.chapToResume)
+    const chapToResume = JSON.parse(localStorage.chapToResume);
     history.push(
       "/" +
         defaultSourceLanguage.slice(0, 2) +
@@ -73,7 +62,7 @@ export default function Hub(props) {
         "/" +
         chapToResume.type +
         "/" +
-        (currentChap !== undefined ? currentChap : chapToResume.title)
+        chapToResume.title
     );
   };
 
@@ -98,7 +87,14 @@ export default function Hub(props) {
       </div>
       <div className={classes.cardContainer}>{cards.list}</div>
       {localStorage.results !== undefined && (
-        <Button variant="contained" onClick={()=>{chooseSubject(false)}}>Resume</Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            chooseSubject(false);
+          }}
+        >
+          Resume
+        </Button>
       )}
       <Dialog open={openDialog} onClose={handleDialogCloseCancel}>
         <DialogTitle>Found Previous Exercise</DialogTitle>

@@ -124,7 +124,7 @@ export default function App() {
 
   const [openLesson, setOpenLesson] = React.useState({
     type: "",
-    chapters: [],
+    chap: "",
   });
 
   const [authInit, setAuthInit] = React.useState(true);

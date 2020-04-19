@@ -51,13 +51,13 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: 200,
   },
   result: {
-    width: "calc(100% - 57px)",
-    padding: "0% 7.5% 0% 7.5%",
+    width: "100%",
   },
   cardContainer: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
+    flexWrap: "wrap",
   },
   chap: {
     margin: "0% 7.5% 0% 7.5%",
@@ -380,10 +380,10 @@ export default function Exercise(props) {
       </Typography>
       {results.result ? (
         <div className={classes.result}>
-          <Typography variant="h3" color="secondary">
+          <Typography variant="h3" color="secondary" style={{marginLeft: "7.5%"}}>
             Results
           </Typography>
-          <Typography variant="h4" color="secondary">
+          <Typography variant="h4" color="secondary" style={{marginLeft: "7.5%"}}>
             Score:
             <span>
               {results.score}/{results.question.length}
@@ -398,8 +398,8 @@ export default function Exercise(props) {
               style={{ marginBottom: 20, width: 200 }}
               startIcon={<PublishIcon />}
               onClick={() => {
-                localStorage.removeItem("results");
-                localStorage.removeItem("listOfExercises");
+                // localStorage.removeItem("results");
+                // localStorage.removeItem("listOfExercises");
                 history.push("/");
               }}
             >

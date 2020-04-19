@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, makeStyles, useTheme } from "@material-ui/core";
+import { Typography, makeStyles, useTheme, Paper } from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 
 import { useHistory } from "react-router-dom";
@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     padding: 2,
-    borderRadius: 10,
     background: linearGradient(theme),
     border: "solid 1px " + theme.palette.primary.main,
     margin: 15,
@@ -82,7 +81,15 @@ export default function LessonCard(props) {
     for (const key of Object.keys(chap)) {
       if (currentChap === chap[key] || (i === 0 && currentChap === undefined)) {
         chapters.push(
-          <Typography variant="h4" key={i} className={classes.chap}>
+          <Typography
+            variant="h4"
+            key={i}
+            className={classes.chap}
+            onClick={(e) => {
+              e.stopPropagation();
+              passInfo(chap[key].title);
+            }}
+          >
             {chap[key].title}
           </Typography>
         );
@@ -95,6 +102,10 @@ export default function LessonCard(props) {
               justifyContent: "center",
             }}
             key={i}
+            onClick={(e) => {
+              e.stopPropagation();
+              passInfo(chap[key].title);
+            }}
           >
             <Typography key={i} variant="h6" className={classes.chap}>
               {chap[key].title}
@@ -108,7 +119,15 @@ export default function LessonCard(props) {
         );
       } else {
         chapters.push(
-          <Typography key={i} variant="h6" className={classes.chap}>
+          <Typography
+            key={i}
+            variant="h6"
+            className={classes.chap}
+            onClick={(e) => {
+              e.stopPropagation();
+              passInfo(chap[key].title);
+            }}
+          >
             {chap[key].title}
           </Typography>
         );
@@ -118,7 +137,7 @@ export default function LessonCard(props) {
     return chapters;
   };
 
-  const chooseSubject = () => {
+  const chooseSubject = (chap) => {
     const defaultSourceLanguage =
       props.user.languages !== undefined
         ? Object.keys(props.user.languages)[0]
@@ -130,6 +149,7 @@ export default function LessonCard(props) {
     if (localStorage.getItem("results")) {
       localStorage.removeItem("results");
     }
+    chap = chap !== undefined ? chap : currentChap !== undefined ? currentChap : props.chapters[0].title
     history.push(
       "/" +
         defaultSourceLanguage.slice(0, 2) +
@@ -137,22 +157,22 @@ export default function LessonCard(props) {
         "/" +
         props.type +
         "/" +
-        (currentChap !== undefined ? currentChap : props.chapters[0].title)
+        chap
     );
   };
 
-  const passInfo = () => {
-      localStorage.chapToResume = JSON.stringify({...props.chapters[0], type: props.type});
-      if (localStorage.results !== undefined) {
+  const passInfo = (chap) => {
+    localStorage.chapToResume = JSON.stringify({ title: chap, type: props.type});
+    if (localStorage.results !== undefined) {
       setOpenDialog(true);
-      setOpenLesson({type:props.type, chapters: props.chapters});
+      setOpenLesson({ type: props.type, chap: chap });
     } else {
-      chooseSubject();
+      chooseSubject(chap);
     }
   };
 
   return (
-    <div className={classes.card} onClick={passInfo}>
+    <Paper elevation={3} className={classes.card} onClick={(e)=>{passInfo()}}>
       <div className={classes.top}>{buildChapter(props.chapters)}</div>
       <div className={classes.bottom}>
         <Typography variant="h5">
@@ -167,6 +187,6 @@ export default function LessonCard(props) {
             : "0%"}
         </Typography>
       </div>
-    </div>
+    </Paper>
   );
 }

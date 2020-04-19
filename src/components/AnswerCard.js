@@ -8,11 +8,16 @@ import { checkAnswer } from "../model/utils";
 
 const useStyles = makeStyles((theme) => ({
   rectangle: {
-    width: "75%",
+    flex: "1 0 30%",
+    maxWidth: "50%",
     display: "flex",
     flexDirection: "column",
     padding: 10,
     margin: 20,
+    transition: "transform .3s",
+    "&:hover": {
+      transform: "scale(1.05)",
+    },
   },
   title: {
     textTransform: "uppercase",
