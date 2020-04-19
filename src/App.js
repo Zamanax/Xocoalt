@@ -203,7 +203,7 @@ export default function App() {
                 </Fade>
               </Route>
               <Route path="/:lang/:subject/:chapter">
-                <Exercise user={values.user} />
+                <Exercise values={values} setValues={setValues} />
               </Route>
               <Route path="/">
                 <Home

@@ -77,7 +77,7 @@ export default function Exercise(props) {
   const db = firebase.firestore();
   const history = useHistory();
 
-  const { user } = props;
+  const { values, setValues } = props;
   const { lang, subject, chapter } = useParams();
 
   const theme = useTheme();
@@ -439,41 +439,43 @@ export default function Exercise(props) {
     let acc = 0;
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
-        cpt++
-        acc += data[key].theta
+        cpt++;
+        acc += data[key].theta;
       }
     }
     return acc / cpt;
-  }
+  };
 
   const uploadData = () => {
     db.collection("users")
       .doc(firebase.auth().currentUser.email)
       .get()
       .then((snap) => {
-        db.collection("users")
-          .doc(firebase.auth().currentUser.email)
-          .set(
-            mergeDeep(snap.data(), {
-              progress: {
-                [subject]: {
-                  chapters: {
-                    [chapter]: {
-                      words: countGoodBadAnswers(),
-                      theta: computeChapterTheta(),
-                    },
-                  },
-                  theta: computeSubjectTheta(snap.data().progress[subject].chapters),
+        const newUser = mergeDeep(snap.data(), {
+          progress: {
+            [subject]: {
+              chapters: {
+                [chapter]: {
+                  words: countGoodBadAnswers(),
+                  theta: computeChapterTheta(),
                 },
               },
-            }),
-            { merge: true }
-          );
+              theta: computeSubjectTheta(
+                snap.data().progress[subject].chapters
+              ),
+            },
+          },
+        });
+        db.collection("users")
+          .doc(firebase.auth().currentUser.email)
+          .set(newUser, { merge: true })
+          .then(() => {
+            setValues({ ...values, user: newUser });
+            localStorage.removeItem("results");
+            localStorage.removeItem("listOfExercises");
+            history.push("/");
+          });
       });
-    // localStorage.removeItem("results");
-    // localStorage.removeItem("listOfExercises");
-
-    // history.push("/");
   };
 
   return (
