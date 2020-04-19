@@ -33,6 +33,7 @@ import "firebase/firestore";
 import { checkAnswer, languages } from "../model/utils";
 import { createDistractorOrtho } from "../model/distractor_ortho";
 import AnswerCard from "./AnswerCard";
+import { estimateAbilityEAP } from "../model/irt";
 
 const useStyles = makeStyles((theme) => ({
   frame: {
@@ -57,8 +58,9 @@ const useStyles = makeStyles((theme) => ({
   cardContainer: {
     display: "flex",
     flexDirection: "row",
-    alignItems: "center",
     flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
   },
   chap: {
     margin: "0% 7.5% 0% 7.5%",
@@ -400,11 +402,51 @@ export default function Exercise(props) {
     return toReturn;
   };
 
-  const uploadData = () => {
-    // localStorage.removeItem("results");
-    // localStorage.removeItem("listOfExercises");
+  const computeChapterTheta = () => {
+    const estimatedZeta = [];
+    const formatedAnswers = [];
+    for (let i = 0; i < results.question.length; i++) {
+      estimatedZeta.push({
+        a: 1.7,
+        b:
+          (Math.log10(
+            results.question[i].length *
+              (results.type[i] === "MCQ" ? 1 : 3) *
+              results.goodAnswers[i].length
+          ) -
+            2) /
+          2,
+        c: 0,
+      });
+      formatedAnswers.push(
+        checkAnswer(
+          {
+            type: results.type[i],
+            possibleAnswers: results.possibleAnswers[i],
+            goodAnswer: results.goodAnswers[i],
+          },
+          results.answers[i]
+        )
+          ? 1
+          : 0
+      );
+    }
+    return estimateAbilityEAP(formatedAnswers, estimatedZeta);
+  };
 
-    console.log(countGoodBadAnswers());
+  const computeSubjectTheta = (data) => {
+    let cpt = 0;
+    let acc = 0;
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        cpt++
+        acc += data[key].theta
+      }
+    }
+    return acc / cpt;
+  }
+
+  const uploadData = () => {
     db.collection("users")
       .doc(firebase.auth().currentUser.email)
       .get()
@@ -418,17 +460,20 @@ export default function Exercise(props) {
                   chapters: {
                     [chapter]: {
                       words: countGoodBadAnswers(),
-                      theta: 0,
+                      theta: computeChapterTheta(),
                     },
                   },
-                  theta: 0,
+                  theta: computeSubjectTheta(snap.data().progress[subject].chapters),
                 },
               },
             }),
             { merge: true }
           );
       });
-    history.push("/");
+    // localStorage.removeItem("results");
+    // localStorage.removeItem("listOfExercises");
+
+    // history.push("/");
   };
 
   return (

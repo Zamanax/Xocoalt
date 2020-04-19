@@ -9,7 +9,7 @@ import { checkAnswer } from "../model/utils";
 const useStyles = makeStyles((theme) => ({
   rectangle: {
     flex: "1 0 30%",
-    maxWidth: "50%",
+    minWidth: 200,
     display: "flex",
     flexDirection: "column",
     padding: 10,

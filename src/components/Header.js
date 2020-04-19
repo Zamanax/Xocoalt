@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     justifyContent: "space-between",
     alignItems: "center",
-    height: 110,
+    minheight: 110,
     margin: "2% 7.5% 1% 7.5%",
   },
   title: {
