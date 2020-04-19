@@ -23,6 +23,7 @@ import {
   shuffle,
   capitalizeFirstLetter,
   randomMinMax,
+  mergeDeep,
 } from "../model/utils";
 import { Fade } from "react-reveal";
 
@@ -74,7 +75,7 @@ export default function Exercise(props) {
   const db = firebase.firestore();
   const history = useHistory();
 
-  // const { user } = props;
+  const { user } = props;
   const { lang, subject, chapter } = useParams();
 
   const theme = useTheme();
@@ -373,17 +374,82 @@ export default function Exercise(props) {
     generateExercise();
   }
 
+  const countGoodBadAnswers = () => {
+    const counted = [];
+    const words = listOfExercises
+      .filter((exercise) => {
+        if (counted.includes(exercise.word)) {
+          return false;
+        } else {
+          counted.push(exercise.word);
+          return true;
+        }
+      })
+      .map((exercise) => exercise.word);
+    let toReturn = {};
+    words.forEach((word) => {
+      toReturn = {
+        ...toReturn,
+        [word]: {
+          good: 3,
+          wrong:
+            results.goodAnswers.filter((answer) => answer === word).length - 3,
+        },
+      };
+    });
+    return toReturn;
+  };
+
+  const uploadData = () => {
+    // localStorage.removeItem("results");
+    // localStorage.removeItem("listOfExercises");
+
+    console.log(countGoodBadAnswers());
+    db.collection("users")
+      .doc(firebase.auth().currentUser.email)
+      .get()
+      .then((snap) => {
+        db.collection("users")
+          .doc(firebase.auth().currentUser.email)
+          .set(
+            mergeDeep(snap.data(), {
+              progress: {
+                [subject]: {
+                  chapters: {
+                    [chapter]: {
+                      words: countGoodBadAnswers(),
+                      theta: 0,
+                    },
+                  },
+                  theta: 0,
+                },
+              },
+            }),
+            { merge: true }
+          );
+      });
+    history.push("/");
+  };
+
   return (
     <div className={classes.frame}>
       <Typography color="secondary" variant="h2" className={classes.chap}>
-        {exercise.title}
+        {chapter}
       </Typography>
       {results.result ? (
         <div className={classes.result}>
-          <Typography variant="h3" color="secondary" style={{marginLeft: "7.5%"}}>
+          <Typography
+            variant="h3"
+            color="secondary"
+            style={{ marginLeft: "7.5%" }}
+          >
             Results
           </Typography>
-          <Typography variant="h4" color="secondary" style={{marginLeft: "7.5%"}}>
+          <Typography
+            variant="h4"
+            color="secondary"
+            style={{ marginLeft: "7.5%" }}
+          >
             Score:
             <span>
               {results.score}/{results.question.length}
@@ -397,11 +463,7 @@ export default function Exercise(props) {
               color="secondary"
               style={{ marginBottom: 20, width: 200 }}
               startIcon={<PublishIcon />}
-              onClick={() => {
-                // localStorage.removeItem("results");
-                // localStorage.removeItem("listOfExercises");
-                history.push("/");
-              }}
+              onClick={uploadData}
             >
               Well Done !
             </Button>
