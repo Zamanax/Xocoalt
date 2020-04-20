@@ -16,18 +16,18 @@ import {
 } from "recharts";
 
 const data = [
-  { name: "January", progress: 0, amt: 2400 },
-  { name: "February", progress: 0, amt: 2210 },
-  { name: "March", progress: 0, amt: 2290 },
-  { name: "April", progress: 23, amt: 2000 },
-  { name: "May", progress: 34, amt: 2181 },
-  { name: "June", progress: 56, amt: 2500 },
-  { name: "July", progress: 60, amt: 2100 },
-  { name: "August", progress: 68, amt: 2100 },
-  { name: "September", progress: 74, amt: 2100 },
-  { name: "October", progress: 88, amt: 2100 },
-  { name: "November", progress: 95, amt: 2100 },
-  { name: "December", uprogress: 100, amt: 2100 },
+  { progress: 0 },
+  { progress: 0 },
+  { progress: 0 },
+  { progress: 23 },
+  { progress: 34 },
+  { progress: 56 },
+  { progress: 60 },
+  { progress: 68 },
+  { progress: 74 },
+  { progress: 88 },
+  { progress: 95 },
+  { progress: 100 },
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ThetaProgression() {
+export default function ThetaProgression(props) {
   const theme = useTheme();
   const classes = useStyles();
   const [state, setState] = React.useState({
@@ -46,6 +46,19 @@ export default function ThetaProgression() {
       progress: 1,
     },
   });
+
+  const { user } = props;
+  const sourceLang = "english";
+  const language = "french";
+
+  const buildData = () => {
+    return [
+      { progress: 0 },
+      ...user.progress[sourceLang][language].vocabulary.theta.map((theta) => ({
+        progress: theta,
+      })),
+    ];
+  };
 
   const legendColor = (value, entry) => {
     const { color } = entry;
@@ -77,10 +90,10 @@ export default function ThetaProgression() {
       <LineChart
         width={useMediaQuery(theme.breakpoints.up("sm")) ? 750 : 300}
         height={300}
-        data={data}
+        data={buildData()}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" stroke={theme.palette.secondary.main} />
+        <XAxis stroke={theme.palette.secondary.main} />
         <YAxis stroke={theme.palette.secondary.main} />
         <Tooltip />
         <Legend
@@ -96,7 +109,10 @@ export default function ThetaProgression() {
           stroke={theme.palette.primary.main}
         />
       </LineChart>
-      <Typography variant={useMediaQuery(theme.breakpoints.up("sm")) ? "h4" : "h5"} color="secondary">
+      <Typography
+        variant={useMediaQuery(theme.breakpoints.up("sm")) ? "h4" : "h5"}
+        color="secondary"
+      >
         Level Progression
       </Typography>
     </div>

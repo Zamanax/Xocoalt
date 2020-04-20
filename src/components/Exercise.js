@@ -435,15 +435,19 @@ export default function Exercise(props) {
   };
 
   const computeSubjectTheta = (data) => {
-    let cpt = 0;
-    let acc = 0;
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-        cpt++;
-        acc += data[key].theta;
+    try {
+      let cpt = 0;
+      let acc = 0;
+      for (const key in data.progress[subject].chapters) {
+        if (data.hasOwnProperty(key)) {
+          cpt++;
+          acc += data[key].theta;
+        }
       }
+      return acc / cpt;
+    } catch (error) {
+      return computeChapterTheta();
     }
-    return acc / cpt;
   };
 
   const uploadData = () => {
@@ -451,7 +455,12 @@ export default function Exercise(props) {
       .doc(firebase.auth().currentUser.email)
       .get()
       .then((snap) => {
-        const newUser = mergeDeep(snap.data(), {
+        const val = snap.data();
+        let prevTheta = [];
+        try {
+          prevTheta = val.progress[sourceLang][destLang][subject].theta;
+        } catch (e) {}
+        const newUser = mergeDeep(val, {
           progress: {
             [sourceLang]: {
               [destLang]: {
@@ -462,12 +471,13 @@ export default function Exercise(props) {
                       theta: computeChapterTheta(),
                     },
                   },
-                  theta: computeSubjectTheta(
-                    snap.data().progress[subject].chapters
-                  ),
+                  theta: [
+                    ...prevTheta,
+                    computeSubjectTheta(val),
+                  ],
                 },
-              }
-            }
+              },
+            },
           },
         });
         db.collection("users")

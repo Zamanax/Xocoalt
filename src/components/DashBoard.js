@@ -25,10 +25,10 @@ export default function DashBoard(props) {
     <div>
       {user.progress !== undefined ? (
         <div className={classes.container}>
-          <RadarLanguage user={user}/>
-          <Camembert />
-          <RadarSubjects />
-          <ThetaProgression />
+          <RadarLanguage user={user} />
+          <Camembert user={user} />
+          <RadarSubjects user={user} />
+          <ThetaProgression user={user} />
         </div>
       ) : (
         <Typography variant="h3">

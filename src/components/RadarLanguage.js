@@ -12,44 +12,14 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
 } from "recharts";
+import { getLanguageProgress } from "../model/utils";
 
-const data = [
-  {
-    subject: "ELVISH",
-    A: 120,
-    B: 110,
-    fullMark: 150,
-  },
-  {
-    subject: "KLINGON",
-    A: 98,
-    B: 130,
-    fullMark: 150,
-  },
-  {
-    subject: "ENGLISH",
-    A: 86,
-    B: 130,
-    fullMark: 150,
-  },
-  {
-    subject: "FRENCH",
-    A: 99,
-    B: 100,
-    fullMark: 150,
-  },
-  {
-    subject: "RUSSIAN",
-    A: 85,
-    B: 90,
-    fullMark: 150,
-  },
-  {
-    subject: "SPANISH",
-    A: 65,
-    B: 85,
-    fullMark: 150,
-  },
+const languages = [
+  "elvish",
+  "klingon",
+  "french",
+  "russian",
+  "spanish",
 ];
 
 const useStyles = makeStyles((theme) => ({
@@ -67,7 +37,11 @@ export default function RadarLanguage(props) {
   const classes = useStyles();
 
   const { user } = props;
-  
+  const sourceLang = "english";
+
+  const buildData = () => {
+    return languages.map(language => getLanguageProgress(user, sourceLang, language));
+  };
   return (
     <div className={classes.container}>
       <RadarChart
@@ -76,14 +50,14 @@ export default function RadarLanguage(props) {
         }
         width={radius * 3}
         height={radius * (useMediaQuery(theme.breakpoints.up("sm")) ? 3 : 1.5)}
-        data={data}
+        data={buildData()}
       >
         <PolarGrid />
         <PolarAngleAxis
-          dataKey="subject"
+          dataKey="language"
           stroke={theme.palette.secondary.main}
         />
-        <PolarRadiusAxis domain={[0, 150]} />
+        <PolarRadiusAxis domain={[0, 100]} />
         <defs>
           <radialGradient id="radarchartColorToRed">
             <stop offset="5%" stopColor={theme.palette.primary.main} />
@@ -97,7 +71,10 @@ export default function RadarLanguage(props) {
           fillOpacity={0.6}
         />
       </RadarChart>
-      <Typography variant={useMediaQuery(theme.breakpoints.up("sm")) ? "h4" : "h5"} color="secondary">
+      <Typography
+        variant={useMediaQuery(theme.breakpoints.up("sm")) ? "h4" : "h5"}
+        color="secondary"
+      >
         Languages Progression
       </Typography>
     </div>

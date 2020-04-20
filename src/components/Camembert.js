@@ -6,11 +6,7 @@ import {
   useTheme,
   useMediaQuery,
 } from "@material-ui/core";
-
-const data = [
-  { name: "Completed", value: 23 },
-  { name: "Uncompleted", value: 77 },
-];
+import { getLanguageProgress } from "../model/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -20,11 +16,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Camembert() {
+export default function Camembert(props) {
   const classes = useStyles();
   const theme = useTheme();
   const COLORS = [theme.palette.primary.main, theme.palette.secondary.main];
   const radius = useMediaQuery(theme.breakpoints.up("sm")) ? 80 : 60;
+
+  const { user } = props;
+
+  const buildData = () => {
+    const completed = getLanguageProgress(user, "english", "french");
+    return [
+      { name: "Completed", value: completed.A },
+      { name: "Uncompleted", value: 100 - completed.A },
+    ];
+  };
 
   return (
     <div className={classes.container}>
@@ -33,7 +39,7 @@ export default function Camembert() {
         height={useMediaQuery(theme.breakpoints.up("sm")) ? 200 : 125}
       >
         <Pie
-          data={data}
+          data={buildData()}
           dataKey="value"
           nameKey="name"
           innerRadius={(radius * 4) / 5}
@@ -41,12 +47,15 @@ export default function Camembert() {
           paddingAngle={4}
           label
         >
-          {data.map((entry, index) => (
+          {buildData().map((entry, index) => (
             <Cell fill={COLORS[index % COLORS.length]} key={index} />
           ))}
         </Pie>
       </PieChart>
-      <Typography variant={useMediaQuery(theme.breakpoints.up("sm")) ? "h4" : "h5"} color="secondary">
+      <Typography
+        variant={useMediaQuery(theme.breakpoints.up("sm")) ? "h4" : "h5"}
+        color="secondary"
+      >
         Completion
       </Typography>
     </div>

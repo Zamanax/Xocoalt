@@ -78,6 +78,21 @@ const getChapter = (subject, title) => {
   return undefined;
 };
 
+const getLanguageProgress = (user, sourceLang, language) => {
+  let progress = 0;
+  if (user.progress[sourceLang][language] !== undefined) {
+    for (const subject in user.progress[sourceLang][language]) {
+      if (user.progress[sourceLang][language].hasOwnProperty(subject)) {
+        const element = user.progress[sourceLang][language][subject];
+        progress += element.theta[element.theta.length - 1];
+      }
+    }
+    progress *=
+      100 / (Object.keys(user.progress[sourceLang][language]).length * 3);
+  }
+  return { language: language.toUpperCase(), A: progress !== 0 ? progress : 20, fullMark:100 };
+}
+
 const choice = (arr) => {
   return arr[Math.floor(Math.random() * arr.length)];
 };
@@ -149,6 +164,7 @@ export {
   createSubjects,
   useQuery,
   getChapter,
+  getLanguageProgress,
   choice,
   shuffle,
   mergeDeep,
