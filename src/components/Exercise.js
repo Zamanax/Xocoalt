@@ -33,7 +33,7 @@ import "firebase/firestore";
 import { checkAnswer, languages } from "../model/utils";
 import { createDistractorOrtho } from "../model/distractor_ortho";
 import AnswerCard from "./AnswerCard";
-import { estimateAbilityEAP } from "../model/irt";
+import { estimateAbilityEAP, IRT } from "../model/irt";
 
 const useStyles = makeStyles((theme) => ({
   frame: {
@@ -120,6 +120,8 @@ export default function Exercise(props) {
   const sourceLang = languages[lang.slice(0, 2)];
   const destLang = languages[lang.slice(2)];
 
+  let prevTheta = [];
+
   const handleChange = (event) => {
     setAnswer(event.target.value);
   };
@@ -137,6 +139,24 @@ export default function Exercise(props) {
       }
     }
     return true;
+  };
+
+  const selectExerciseFromIRT = (arr, previouslySelected, word) => {
+    const copy = [...arr];
+    previouslySelected.forEach((exercise) => {
+      copy.splice(copy.indexOf(exercise.sentence), 1);
+    });
+    let selected = copy[0];
+    const theta = prevTheta.length !== 0 ? prevTheta[prevTheta.length - 1] : 0
+    let best = Math.abs(IRT(estimateDelta(selected[0], "MCQ", word), theta) - 0.75);
+    copy.forEach((sentence) => {
+      const current = Math.abs(IRT(estimateDelta(sentence, "MCQ", word), theta) - 0.75);
+      if (current < best) {
+        selected = sentence;
+        best = current;
+      }
+    });
+    return selected;
   };
 
   const chooseExercise = (exerciseArray, fetchedData) => {
@@ -222,7 +242,6 @@ export default function Exercise(props) {
         );
       }
     }
-    // Also IRT
   };
 
   const showAnswersResult = () => {
@@ -349,13 +368,21 @@ export default function Exercise(props) {
       .doc(destLang)
       .get()
       .then((snap) => {
-        const fetchedData = getChapter(snap.data()[subject], chapter);
+        const val = snap.data();
+        const fetchedData = getChapter(val[subject], chapter);
         if (listOfExercises.length === 0) {
+          try {
+            prevTheta = val.progress[sourceLang][destLang][subject].theta;
+          } catch (e) {}
           const toPush = [];
           Object.values(fetchedData.words).forEach((word) => {
             for (let i = 0; i < 3; i++) {
               toPush.push({
-                sentence: choice(fetchedData.sentences[word]),
+                sentence: selectExerciseFromIRT(
+                  fetchedData.sentences[word],
+                  toPush,
+                  word
+                ),
                 word: word,
                 done: false,
               });
@@ -402,20 +429,27 @@ export default function Exercise(props) {
     return toReturn;
   };
 
+  const estimateDelta = (question, type, goodAnswers) => {
+    return (
+      (Math.log10(
+        question.length * (type === "MCQ" ? 1 : 3) * goodAnswers.length
+      ) -
+        2) /
+      2
+    );
+  };
+
   const computeChapterTheta = () => {
     const estimatedZeta = [];
     const formatedAnswers = [];
     for (let i = 0; i < results.question.length; i++) {
       estimatedZeta.push({
         a: 1.7,
-        b:
-          (Math.log10(
-            results.question[i].length *
-              (results.type[i] === "MCQ" ? 1 : 3) *
-              results.goodAnswers[i].length
-          ) -
-            2) /
-          2,
+        b: estimateDelta(
+          results.question[i],
+          results.type[i],
+          results.goodAnswers[i]
+        ),
         c: 0,
       });
       formatedAnswers.push(
@@ -456,10 +490,6 @@ export default function Exercise(props) {
       .get()
       .then((snap) => {
         const val = snap.data();
-        let prevTheta = [];
-        try {
-          prevTheta = val.progress[sourceLang][destLang][subject].theta;
-        } catch (e) {}
         const newUser = mergeDeep(val, {
           progress: {
             [sourceLang]: {
@@ -471,10 +501,7 @@ export default function Exercise(props) {
                       theta: computeChapterTheta(),
                     },
                   },
-                  theta: [
-                    ...prevTheta,
-                    computeSubjectTheta(val),
-                  ],
+                  theta: [...prevTheta, computeSubjectTheta(val)],
                 },
               },
             },

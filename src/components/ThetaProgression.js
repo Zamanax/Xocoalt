@@ -15,21 +15,6 @@ import {
   Legend,
 } from "recharts";
 
-const data = [
-  { progress: 0 },
-  { progress: 0 },
-  { progress: 0 },
-  { progress: 23 },
-  { progress: 34 },
-  { progress: 56 },
-  { progress: 60 },
-  { progress: 68 },
-  { progress: 74 },
-  { progress: 88 },
-  { progress: 95 },
-  { progress: 100 },
-];
-
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
