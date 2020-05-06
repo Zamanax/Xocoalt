@@ -1,22 +1,27 @@
 import React from "react";
-import { Typography, makeStyles, useTheme, Paper } from "@material-ui/core";
+import {
+  Typography,
+  makeStyles,
+  useTheme,
+  Card,
+  CardContent,
+} from "@material-ui/core";
 import CheckIcon from "@material-ui/icons/Check";
 
 import { useHistory } from "react-router-dom";
 
-import { capitalizeFirstLetter, linearGradient } from "../model/utils";
+import { capitalizeFirstLetter, reverseGradient } from "../model/utils";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    display: "flex",
-    flexDirection: "column",
-    padding: 2,
-    background: linearGradient(theme),
-    border: "solid 1px " + theme.palette.primary.main,
+    background: reverseGradient(theme),
+    backgroundSize: "400% 400%",
+    animation: "$animatedGradient 15s linear infinite",
     margin: 15,
     width: 400,
+    height: "60%",
+    maxHeight: 250,
     transition: "transform .3s",
-    textAlign: "center",
     "&:hover": {
       transform: "scale(1.1)",
       cursor: "pointer",
@@ -25,8 +30,8 @@ const useStyles = makeStyles((theme) => ({
   top: {
     display: "flex",
     flexDirection: "column",
-    fontWeight: "normal",
-    height: 175,
+    height: "80%",
+    maxHeight: 250,
     justifyContent: "center",
   },
   chap: {
@@ -41,8 +46,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 10,
-    borderTop: "1px solid",
-    height: 50,
+    // borderTop: "1px solid",
+    height: "calc(15% + 10px)",
+    minHeight: 50,
   },
   percent: {
     border: "1px solid",
@@ -54,6 +60,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 10,
     textAlign: "center",
     verticalAlign: "middle",
+  },
+  "@keyframes animatedGradient": {
+    "0%": { backgroundPosition: "0% 50%" },
+    "50%": { backgroundPosition: "100% 50%" },
+    "100%": { backgroundPosition: "0% 50%" },
   },
 }));
 
@@ -149,7 +160,12 @@ export default function LessonCard(props) {
     if (localStorage.getItem("results")) {
       localStorage.removeItem("results");
     }
-    chap = chap !== undefined ? chap : currentChap !== undefined ? currentChap : props.chapters[0].title
+    chap =
+      chap !== undefined
+        ? chap
+        : currentChap !== undefined
+        ? currentChap
+        : props.chapters[0].title;
     history.push(
       "/" +
         defaultSourceLanguage.slice(0, 2) +
@@ -162,7 +178,10 @@ export default function LessonCard(props) {
   };
 
   const passInfo = (chap) => {
-    localStorage.chapToResume = JSON.stringify({ title: chap, type: props.type});
+    localStorage.chapToResume = JSON.stringify({
+      title: chap,
+      type: props.type,
+    });
     if (localStorage.results !== undefined) {
       setOpenDialog(true);
       setOpenLesson({ type: props.type, chap: chap });
@@ -172,21 +191,28 @@ export default function LessonCard(props) {
   };
 
   return (
-    <Paper elevation={3} className={classes.card} onClick={(e)=>{passInfo()}}>
-      <div className={classes.top}>{buildChapter(props.chapters)}</div>
+    <Card
+      className={classes.card}
+      onClick={(e) => {
+        passInfo();
+      }}
+    >
+      <CardContent className={classes.top}>
+        {buildChapter(props.chapters)}
+      </CardContent>
       <div className={classes.bottom}>
-        <Typography variant="h5">
-          {capitalizeFirstLetter(props.type)}
-        </Typography>
-        <Typography variant="h6" className={classes.percent}>
-          {props.user.languages !== undefined
-            ? props.user.languages[defaultLanguage][props.type] !== undefined
-              ? props.user.languages[defaultLanguage][props.type].progression +
-                "%"
-              : "0%"
-            : "0%"}
-        </Typography>
-      </div>
-    </Paper>
+          <Typography variant="h5">
+            {capitalizeFirstLetter(props.type)}
+          </Typography>
+          <Typography variant="h6" className={classes.percent}>
+            {props.user.languages !== undefined
+              ? props.user.languages[defaultLanguage][props.type] !== undefined
+                ? props.user.languages[defaultLanguage][props.type]
+                    .progression + "%"
+                : "0%"
+              : "0%"}
+          </Typography>
+        </div>
+    </Card>
   );
 }

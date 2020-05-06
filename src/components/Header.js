@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     animation: "$title 5s infinite ease-in-out",
   },
   "@keyframes title": {
-    from: { transform: " translate(0,  0px)" },
+    from: { transform: "translate(0,  0px)" },
     "50%": { transform: "translate(0, 3px)" },
     to: { transform: "translate(0, -0px)" },
   },

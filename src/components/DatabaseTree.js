@@ -23,10 +23,6 @@ import { saveAs, mergeDeep } from "file-saver";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: 400,
-    overflow: "scroll",
-    scrollbarWidth: "none",
-    maxHeight: 300,
     color: theme.palette.secondary.main,
     margin: 20,
   },
@@ -45,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-evenly",
+    flexWrap: "wrap",
   },
 }));
 

@@ -2,7 +2,7 @@ let natural = require("natural");
 let w = "participation";
 let ww = natural.PorterStemmer.stem(w);
 
-suffixesV = [
+const suffixesV = [
   "able",
   "able",
   "ac",
@@ -163,7 +163,7 @@ suffixesV = [
   "y",
 ];
 
-suffixesC = [
+const suffixesC = [
   "cide",
   "cracy",
   "crat",
@@ -260,23 +260,24 @@ suffixesC = [
   "wise",
 ];
 
-l1 = suffixesV.length - 1;
-l2 = suffixesC.length - 1;
+const l1 = suffixesV.length - 1;
+const l2 = suffixesC.length - 1;
 
 function distractorMakr(ww, data) {
   const fs = require("fs");
   if (data === undefined) {
     data = fs.readFileSync("src/model/corncob_lowercase.txt");
   }
-  f = ww.charAt(-1);
+  const f = ww.charAt(-1);
+  let www;
   if (["a", "e", "i", "o", "u", "y"].includes(f)) {
-    n = Math.floor(Math.random() * l2);
+    const n = Math.floor(Math.random() * l2);
     www = ww.concat(suffixesC[n]);
   } else {
-    m = Math.floor(Math.random() * l1);
+    const m = Math.floor(Math.random() * l1);
     www = ww.concat(suffixesV[m]);
   }
-  if (data.includes(www + "\r") && www != ww) {
+  if (data.includes(www + "\r") && www !== ww) {
     return www;
   } else {
     return distractorMakr(ww, data);

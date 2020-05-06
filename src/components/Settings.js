@@ -16,9 +16,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    height: "80%",
-    overflowY: "scroll",
-    scrollbarWidth: "none",
   },
   formControl: {
     margin: 15,
@@ -182,7 +179,7 @@ export default function Settings(props) {
   const classes = useStyles();
   const setTheme = props.theme;
   const [themeIndex, setIndex] = React.useState(
-    localStorage.getItem("themeIndex") || 0
+    localStorage.getItem("themeIndex") || 3
   );
   const { user } = props;
 

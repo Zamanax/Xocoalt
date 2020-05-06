@@ -14,7 +14,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
+  Paper,
 } from "@material-ui/core";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
@@ -22,7 +23,6 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import { linearGradient } from "../model/utils";
 
 const useStyles = makeStyles(theme => ({
   container : {
@@ -35,16 +35,15 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center"
   },
   rectangle: {
-    padding: 2,
-    borderRadius: 10,
-    background: linearGradient(theme),
+    background: theme.palette.secondary.main,
     width: 300,
-    paddingBottom: 15,
+    paddingBottom: 10,
   },
   buttons: {
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-evenly"
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
   },
   pageTitle: {
     margin: 20,
@@ -137,7 +136,7 @@ export default function Login(props) {
       <Typography variant="h3" color="secondary" className={classes.pageTitle}>
         Login
       </Typography>
-      <div className={classes.rectangle}>
+      <Paper className={classes.rectangle}>
         <div>
           <Typography variant="h6" style={{ margin:10}}>Please enter your credentials</Typography>
           <FormControl noValidate autoComplete="on">
@@ -190,19 +189,15 @@ export default function Login(props) {
             <CircularProgress />
           ) : (
             <div className={classes.buttons}>
-              <FormControl>
                 <Button onClick={handleLog}>Login</Button>
-              </FormControl>
               <Typography variant="h6" style={{ fontSize: 15 }}>
                 OR
               </Typography>
-              <FormControl>
                 <Button onClick={handleRegister}>Register</Button>
-              </FormControl>
             </div>
           )}
         </div>
-      </div>
+      </Paper>
       <Dialog open={openDialog} onClose={handleDialogCloseCancel}>
         <DialogTitle>Register</DialogTitle>
         <DialogContent>

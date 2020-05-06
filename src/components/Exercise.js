@@ -147,10 +147,14 @@ export default function Exercise(props) {
       copy.splice(copy.indexOf(exercise.sentence), 1);
     });
     let selected = copy[0];
-    const theta = prevTheta.length !== 0 ? prevTheta[prevTheta.length - 1] : 0
-    let best = Math.abs(IRT(estimateDelta(selected[0], "MCQ", word), theta) - 0.75);
+    const theta = prevTheta.length !== 0 ? prevTheta[prevTheta.length - 1] : 0;
+    let best = Math.abs(
+      IRT(estimateDelta(selected[0], "MCQ", word), theta) - 0.75
+    );
     copy.forEach((sentence) => {
-      const current = Math.abs(IRT(estimateDelta(sentence, "MCQ", word), theta) - 0.75);
+      const current = Math.abs(
+        IRT(estimateDelta(sentence, "MCQ", word), theta) - 0.75
+      );
       if (current < best) {
         selected = sentence;
         best = current;

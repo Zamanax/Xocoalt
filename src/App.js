@@ -45,10 +45,6 @@ const firebaseConfig = {
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    height: "100%",
-  },
   main: {
     display: "flex",
     overflowX: "hidden",
@@ -89,18 +85,16 @@ export default function App() {
       localStorage.getItem("theme") !== null
         ? JSON.parse(localStorage.getItem("theme"))
         : {
-            palette: {
-              primary: {
-                main: "#5E7880",
-              },
-              secondary: {
-                main: "#BDF0FF",
-              },
-              background: {
-                default: "#386F80",
-              },
+          palette: {
+            primary: {
+              main: "#3f51b5",
             },
-          }
+            secondary: {
+              main: "#f50057",
+            },
+            type: "dark",
+          },
+        }
     )
   );
 
