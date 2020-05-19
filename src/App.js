@@ -80,21 +80,24 @@ export default function App() {
   }
   const db = firebase.firestore();
 
+  const COLORS = {
+    primary: "#3f51b5",
+    secondary: "#f50057",
+  };
+
   const [theme, setTheme] = React.useState(
     createMuiTheme(
-      localStorage.getItem("theme") !== null
-        ? JSON.parse(localStorage.getItem("theme"))
-        : {
-          palette: {
-            primary: {
-              main: "#3f51b5",
-            },
-            secondary: {
-              main: "#f50057",
-            },
-            type: "dark",
+      localStorage.getItem("theme") || {
+        palette: {
+          primary: {
+            main: COLORS.primary,
           },
-        }
+          secondary: {
+            main: COLORS.secondary,
+          },
+          type: "dark",
+        },
+      }
     )
   );
 

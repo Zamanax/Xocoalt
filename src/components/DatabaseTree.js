@@ -14,12 +14,13 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import WarningIcon from "@material-ui/icons/Warning";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import PublishIcon from "@material-ui/icons/Publish";
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
+import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 
-import { saveAs, mergeDeep } from "file-saver";
+import { saveAs } from "file-saver";
+const merge = require("deepmerge");
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -104,15 +105,13 @@ export default function DatabaseTree() {
   const sendData = () => {
     reader.readAsText(file, "UTF-8");
     reader.onloadend = (e) => {
-      const toUpload = mergeDeep(
-        data,
-        richBuilder(JSON.parse(e.target.result))
-      );
       db.collection("sources")
         .doc("english")
         .collection("exercises")
         .doc("french")
-        .set(toUpload, { merge: !erase });
+        .set(merge(data, richBuilder(JSON.parse(e.target.result))), {
+          merge: !erase,
+        });
       setFetching(true);
       setExpanded([]);
       setSelected([]);
@@ -216,9 +215,7 @@ export default function DatabaseTree() {
       </Typography>
 
       <div style={{ margin: 10 }}>
-        <div
-          className={classes.buttons}
-        >
+        <div className={classes.buttons}>
           <input
             type="file"
             accept="application/JSON"
@@ -227,7 +224,11 @@ export default function DatabaseTree() {
             onChange={handleFileSelect}
           />
           <label htmlFor="uploadButton" style={{ margin: 15 }}>
-            <Button variant="contained" component="span" startIcon={<InsertDriveFileIcon/>}>
+            <Button
+              variant="contained"
+              component="span"
+              startIcon={<InsertDriveFileIcon />}
+            >
               Choose File
             </Button>
           </label>
