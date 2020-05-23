@@ -1,36 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
+
 import {
   makeStyles,
-  Typography,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Select,
 } from "@material-ui/core";
 
-import { capitalizeFirstLetter } from "../model/utils";
+import LessonCard from "../components/LessonCard";
+import * as firebase from "firebase/app";
+import "firebase/firestore";
 
 const useStyles = makeStyles((theme) => ({
   hub: {
     width: "100%",
     height: "100%",
+    marginBottom: 50,
   },
   header: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    height: 110,
     margin: "0 7.5% 0 7.5%",
   },
   cardContainer: {
     display: "flex",
+    flexWrap: "wrap",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-evenly",
-    height: "calc(80% - 110px)",
+    justifyContent: "space-around",
+    height: "100%",
+  },
+  target: {
+    textTransform: "capitalize",
+  },
+  tengwar: {
+    fontFamily: "Tengwar",
   },
 }));
 
@@ -38,18 +48,12 @@ export default function Hub(props) {
   const classes = useStyles();
   const history = useHistory();
 
-  const { values, cards } = props;
   const [openDialog, setOpenDialog] = props.openDialog;
+  const [target, setTarget] = useState("french");
+
+  const [cards, setCards] = useState([]);
 
   const chooseSubject = (remove) => {
-    const defaultSourceLanguage =
-      values.user.languages !== undefined
-        ? Object.keys(values.user.languages)[0]
-        : "english";
-    const defaultDestLanguage =
-      values.user.languages !== undefined
-        ? Object.keys(values.user.languages[defaultSourceLanguage])[0]
-        : "french";
     if (remove) {
       localStorage.removeItem("results");
       localStorage.removeItem("listOfExercises");
@@ -57,8 +61,8 @@ export default function Hub(props) {
     const chapToResume = JSON.parse(localStorage.chapToResume);
     history.push(
       "/" +
-        defaultSourceLanguage.slice(0, 2) +
-        defaultDestLanguage.slice(0, 2) +
+        "en" +
+        target.slice(0, 2) +
         "/" +
         chapToResume.type +
         "/" +
@@ -74,18 +78,40 @@ export default function Hub(props) {
     chooseSubject(true);
   };
 
+  const handleLanguageChange = (event) => {
+    setTarget(event.target.value);
+  };
+
+  if (cards.length === 0) {
+    const db = firebase.firestore();
+    db.collection("sources")
+      .doc("english")
+      .collection("exercises")
+      .doc(target)
+      .get()
+      .then((snap) => {
+        const val = snap.data();
+        setCards(
+          Object.keys(val).map((subject, i) => (
+            <LessonCard
+              type={subject}
+              chapters={val[subject]}
+              setOpenDialog={setOpenDialog}
+              key={i}
+            />
+          ))
+        );
+      });
+  }
+
   return (
     <div className={classes.hub}>
       <div className={classes.header}>
-        <Typography variant="h3" color="secondary">
-          {capitalizeFirstLetter(
-            values.user.languages !== undefined
-              ? Object.keys(values.user.languages)[0]
-              : "french"
-          )}
-        </Typography>
+        <Select value={target} onChange={handleLanguageChange}>
+          {}
+        </Select>
       </div>
-      <div className={classes.cardContainer}>{cards.list}</div>
+      <div className={classes.cardContainer}>{cards}</div>
       {localStorage.results !== undefined && (
         <Button
           variant="contained"

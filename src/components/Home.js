@@ -23,13 +23,10 @@ export default function Welcome(props) {
 
   const [values, setValues] = props.values;
 
-  const [cards, setCards] = props.cards;
-
   const [err, setError] = props.err;
 
   const [openDialog, setOpenDialog] = props.openDialog;
 
-  const openLesson = props.openLesson;
 
   const setOpenAlert = props.setOpenAlert;
 
@@ -41,10 +38,7 @@ export default function Welcome(props) {
         {firebase.auth().currentUser || authInit ? (
           <Hub
             values={values}
-            cards={cards}
-            setCards={setCards}
             openDialog={[openDialog, setOpenDialog]}
-            openLesson={openLesson}
           />
         ) : (
           <Login

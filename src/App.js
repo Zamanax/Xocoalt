@@ -26,7 +26,6 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
-import { createSubjects } from "./model/utils";
 import Settings from "./components/Settings";
 import Account from "./components/Account";
 import Header from "./components/Header";
@@ -109,19 +108,10 @@ export default function App() {
     fetching: false,
   });
 
-  const [cards, setCards] = React.useState({
-    list: [],
-    fetching: false,
-  });
-
   const [open, setOpen] = React.useState(false);
 
   const [openDialog, setOpenDialog] = React.useState(false);
 
-  const [openLesson, setOpenLesson] = React.useState({
-    type: "",
-    chap: "",
-  });
 
   const [authInit, setAuthInit] = React.useState(true);
 
@@ -149,12 +139,11 @@ export default function App() {
           .doc(user.email)
           .get()
           .then((snap) => {
-            const val = snap.data();
-            createSubjects(val, cards, setCards, setOpenDialog, setOpenLesson);
-            setValues({ ...values, user: val });
+            setValues({ ...values, user: snap.data() });
           });
       }
-    });
+      }
+    );
   }
 
   return (
@@ -205,12 +194,10 @@ export default function App() {
               <Route path="/">
                 <Home
                   values={[values, setValues]}
-                  cards={[cards, setCards]}
                   auth={authInit}
                   err={[err, setError]}
                   setOpenAlert={setOpenAlert}
                   openDialog={[openDialog, setOpenDialog]}
-                  openLesson={openLesson}
                 />
               </Route>
             </Switch>

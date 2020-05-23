@@ -23,7 +23,6 @@ import {
   shuffle,
   capitalizeFirstLetter,
   randomMinMax,
-  mergeDeep,
 } from "../model/utils";
 import { Fade } from "react-reveal";
 
@@ -32,8 +31,12 @@ import "firebase/firestore";
 
 import { checkAnswer, languages } from "../model/utils";
 import { createDistractorOrtho } from "../model/distractor_ortho";
-import AnswerCard from "./AnswerCard";
 import { estimateAbilityEAP, IRT } from "../model/irt";
+
+import AnswerCard from "./AnswerCard";
+import DefinitionCard from "./DefinitonCard";
+
+const merge = require("deepmerge");
 
 const useStyles = makeStyles((theme) => ({
   frame: {
@@ -54,6 +57,9 @@ const useStyles = makeStyles((theme) => ({
   },
   result: {
     width: "100%",
+  },
+  defCardContainer: {
+
   },
   cardContainer: {
     display: "flex",
@@ -114,8 +120,11 @@ export default function Exercise(props) {
         }
   );
   const [fetching, setFecthing] = React.useState(true);
+  const [intro, setIntro] = React.useState(true);
   const [answered, setAnswered] = React.useState(false);
   const [answer, setAnswer] = React.useState("_____");
+
+  const [chapterWords, setChapterWords] = React.useState({});
 
   const sourceLang = languages[lang.slice(0, 2)];
   const destLang = languages[lang.slice(2)];
@@ -374,6 +383,7 @@ export default function Exercise(props) {
       .then((snap) => {
         const val = snap.data();
         const fetchedData = getChapter(val[subject], chapter);
+        setChapterWords(fetchedData.words);
         if (listOfExercises.length === 0) {
           try {
             prevTheta = val.progress[sourceLang][destLang][subject].theta;
@@ -494,7 +504,7 @@ export default function Exercise(props) {
       .get()
       .then((snap) => {
         const val = snap.data();
-        const newUser = mergeDeep(val, {
+        const newUser = merge(val, {
           progress: {
             [sourceLang]: {
               [destLang]: {
@@ -560,6 +570,25 @@ export default function Exercise(props) {
               Well Done !
             </Button>
           </div>
+        </div>
+      ) : intro ? (
+        <div>
+            <div className={classes.defCardContainer}>
+          {Object.keys(chapterWords).map((source) => (
+            <DefinitionCard source={source} target={chapterWords[source]} />
+          ))}
+          </div>
+          <Button
+            color="secondary"
+            size="large"
+            variant="contained"
+            onClick={() => {
+              setIntro(false);
+            }}
+            style={{ margin: 20 }}
+          >
+            Start
+          </Button>
         </div>
       ) : exercise.fetching ? (
         <Fade bottom cascade>

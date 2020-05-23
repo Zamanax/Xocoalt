@@ -10,13 +10,20 @@ import CheckIcon from "@material-ui/icons/Check";
 
 import { useHistory } from "react-router-dom";
 
-import { capitalizeFirstLetter, reverseGradient } from "../model/utils";
+import {
+  capitalizeFirstLetter,
+  reverseGradient,
+  randomMinMax,
+} from "../model/utils";
+
+import * as firebase from "firebase/app";
+import "firebase/auth";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    background: reverseGradient(theme),
+    background: reverseGradient(theme, randomMinMax(0, 180)),
+    animation: `$animatedGradient ${randomMinMax(10, 15)}s linear infinite`,
     backgroundSize: "400% 400%",
-    animation: "$animatedGradient 15s linear infinite",
     margin: 15,
     width: 400,
     height: "60%",
@@ -46,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 10,
-    // borderTop: "1px solid",
     height: "calc(15% + 10px)",
     minHeight: 50,
   },
@@ -74,16 +80,17 @@ export default function LessonCard(props) {
   const theme = useTheme();
 
   const setOpenDialog = props.setOpenDialog;
-  const setOpenLesson = props.setOpenLesson;
+
+  const user = firebase.auth().currentUser
 
   const defaultLanguage =
-    props.user.languages !== undefined
-      ? Object.keys(props.user.languages)[0]
+    user.languages !== undefined
+      ? Object.keys(user.languages)[0]
       : "french";
 
   let currentChap = undefined;
   try {
-    currentChap = props.user.languages[defaultLanguage][props.type].current;
+    currentChap = user.languages[defaultLanguage][props.type].current;
   } catch {}
 
   const buildChapter = (chap) => {
@@ -150,12 +157,12 @@ export default function LessonCard(props) {
 
   const chooseSubject = (chap) => {
     const defaultSourceLanguage =
-      props.user.languages !== undefined
-        ? Object.keys(props.user.languages)[0]
+      user.languages !== undefined
+        ? Object.keys(user.languages)[0]
         : "english";
     const defaultDestLanguage =
-      props.user.languages !== undefined
-        ? Object.keys(props.user.languages[defaultSourceLanguage])[0]
+      user.languages !== undefined
+        ? Object.keys(user.languages[defaultSourceLanguage])[0]
         : "french";
     if (localStorage.getItem("results")) {
       localStorage.removeItem("results");
@@ -184,7 +191,6 @@ export default function LessonCard(props) {
     });
     if (localStorage.results !== undefined) {
       setOpenDialog(true);
-      setOpenLesson({ type: props.type, chap: chap });
     } else {
       chooseSubject(chap);
     }
@@ -201,18 +207,18 @@ export default function LessonCard(props) {
         {buildChapter(props.chapters)}
       </CardContent>
       <div className={classes.bottom}>
-          <Typography variant="h5">
-            {capitalizeFirstLetter(props.type)}
-          </Typography>
-          <Typography variant="h6" className={classes.percent}>
-            {props.user.languages !== undefined
-              ? props.user.languages[defaultLanguage][props.type] !== undefined
-                ? props.user.languages[defaultLanguage][props.type]
-                    .progression + "%"
-                : "0%"
-              : "0%"}
-          </Typography>
-        </div>
+        <Typography variant="h5">
+          {capitalizeFirstLetter(props.type)}
+        </Typography>
+        <Typography variant="h6" className={classes.percent}>
+          {user.languages !== undefined
+            ? user.languages[defaultLanguage][props.type] !== undefined
+              ? user.languages[defaultLanguage][props.type].progression +
+                "%"
+              : "0%"
+            : "0%"}
+        </Typography>
+      </div>
     </Card>
   );
 }
