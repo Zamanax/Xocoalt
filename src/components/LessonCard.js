@@ -22,12 +22,11 @@ import "firebase/auth";
 const useStyles = makeStyles((theme) => ({
   card: {
     background: reverseGradient(theme, randomMinMax(0, 180)),
-    animation: `$animatedGradient ${randomMinMax(10, 15)}s linear infinite`,
+    animation: `$animatedGradient 30s linear infinite`,
     backgroundSize: "400% 400%",
     margin: 15,
     width: 400,
-    height: "60%",
-    maxHeight: 250,
+    height: 200,
     transition: "transform .3s",
     "&:hover": {
       transform: "scale(1.1)",
@@ -52,7 +51,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
     height: "calc(15% + 10px)",
     minHeight: 50,
   },

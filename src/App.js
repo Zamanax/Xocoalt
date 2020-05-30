@@ -20,7 +20,7 @@ import { Fade } from "react-reveal";
 import DashBoard from "./components/DashBoard";
 import Home from "./components/Home";
 import Sidebar from "./components/Sidebar";
-import Exercise from "./components/Exercise";
+import ExerciseHub from "./components/ExerciseHub";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -50,8 +50,8 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "auto",
     scrollbarColor: "#1c1e1f #2a2c2e",
     flexDirection: "column",
-    height: "100%",
-    marginLeft: theme.spacing(7) + 1,
+    height: "calc(100% - 20px)",
+    marginLeft: theme.spacing(9) + 1,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   mainShift: {
-    marginLeft: theme.spacing(11) + 1 + drawerWidth,
+    marginLeft: theme.spacing(2) + 1 + drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -109,9 +109,6 @@ export default function App() {
   });
 
   const [open, setOpen] = React.useState(false);
-
-  const [openDialog, setOpenDialog] = React.useState(false);
-
 
   const [authInit, setAuthInit] = React.useState(true);
 
@@ -189,7 +186,7 @@ export default function App() {
                 </Fade>
               </Route>
               <Route path="/:lang/:subject/:chapter">
-                <Exercise values={values} setValues={setValues} />
+                <ExerciseHub values={values} setValues={setValues} />
               </Route>
               <Route path="/">
                 <Home
@@ -197,7 +194,6 @@ export default function App() {
                   auth={authInit}
                   err={[err, setError]}
                   setOpenAlert={setOpenAlert}
-                  openDialog={[openDialog, setOpenDialog]}
                 />
               </Route>
             </Switch>

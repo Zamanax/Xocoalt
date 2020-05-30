@@ -99,6 +99,7 @@ const mergeDeep = (target, ...sources) => {
 const languages = {
   en: "english",
   fr: "french",
+  el: "elvish",
 };
 
 const linearGradient = (theme, ang) => {

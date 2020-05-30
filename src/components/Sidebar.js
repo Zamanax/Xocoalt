@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     flexShrink: 0,
     whiteSpace: "nowrap",
     background: reverseGradient(theme),
+    overflowX: "hidden",
   },
   drawerOpen: {
     width: drawerWidth,

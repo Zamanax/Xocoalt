@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 
 import {
@@ -10,6 +10,7 @@ import {
   DialogContentText,
   DialogTitle,
   Select,
+  MenuItem,
 } from "@material-ui/core";
 
 import LessonCard from "../components/LessonCard";
@@ -18,9 +19,6 @@ import "firebase/firestore";
 
 const useStyles = makeStyles((theme) => ({
   hub: {
-    width: "100%",
-    height: "100%",
-    marginBottom: 50,
   },
   header: {
     display: "flex",
@@ -34,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    height: "100%",
+    padding: 50,
   },
   target: {
     textTransform: "capitalize",
@@ -42,16 +40,42 @@ const useStyles = makeStyles((theme) => ({
   tengwar: {
     fontFamily: "Tengwar",
   },
+  button: {
+    marginBottom: 10,
+  }
 }));
 
 export default function Hub(props) {
+  const db = firebase.firestore();
   const classes = useStyles();
   const history = useHistory();
 
-  const [openDialog, setOpenDialog] = props.openDialog;
+  const [openDialog, setOpenDialog] = useState(false);
   const [target, setTarget] = useState("french");
+  const [languages, setLanguages] = useState([]);
 
   const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    db.collection("sources")
+      .doc("english")
+      .collection("exercises")
+      .doc(target.toLowerCase())
+      .get()
+      .then((snap) => {
+        const val = snap.data();
+        setCards(
+          Object.keys(val).map((subject, i) => (
+            <LessonCard
+              type={subject}
+              chapters={val[subject]}
+              setOpenDialog={setOpenDialog}
+              key={i}
+            />
+          ))
+        );
+      });
+  }, [db, target]);
 
   const chooseSubject = (remove) => {
     if (remove) {
@@ -82,25 +106,18 @@ export default function Hub(props) {
     setTarget(event.target.value);
   };
 
-  if (cards.length === 0) {
+  if (languages.length === 0) {
     const db = firebase.firestore();
     db.collection("sources")
       .doc("english")
       .collection("exercises")
-      .doc(target)
       .get()
       .then((snap) => {
-        const val = snap.data();
-        setCards(
-          Object.keys(val).map((subject, i) => (
-            <LessonCard
-              type={subject}
-              chapters={val[subject]}
-              setOpenDialog={setOpenDialog}
-              key={i}
-            />
-          ))
-        );
+        const toReturn = [];
+        snap.forEach((doc) => {
+          toReturn.push(doc.id);
+        });
+        setLanguages(toReturn);
       });
   }
 
@@ -108,7 +125,11 @@ export default function Hub(props) {
     <div className={classes.hub}>
       <div className={classes.header}>
         <Select value={target} onChange={handleLanguageChange}>
-          {}
+          {languages.map((language, i) => (
+            <MenuItem value={language} key={i} className={classes.target}>
+              {language}
+            </MenuItem>
+          ))}
         </Select>
       </div>
       <div className={classes.cardContainer}>{cards}</div>
@@ -118,6 +139,8 @@ export default function Hub(props) {
           onClick={() => {
             chooseSubject(false);
           }}
+          className={classes.button}
+          size="large"
         >
           Resume
         </Button>
