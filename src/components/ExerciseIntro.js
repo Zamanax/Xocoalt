@@ -12,8 +12,8 @@ export default function ExerciseIntro({ chapterWords, setIntro }) {
   return (
     <div>
       <div className={classes.defCardContainer}>
-        {Object.keys(chapterWords).map((source) => (
-          <DefinitionCard source={source} target={chapterWords[source]} />
+        {Object.keys(chapterWords).map((source, i) => (
+          <DefinitionCard source={source} target={chapterWords[source]} key={i} />
         ))}
       </div>
       <Button

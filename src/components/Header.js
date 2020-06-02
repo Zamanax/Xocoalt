@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     justifyContent: "space-between",
     alignItems: "center",
-    minheight: 110,
+    minHeight: 110,
     margin: "2% 7.5% 1% 7.5%",
   },
   title: {
@@ -54,7 +54,7 @@ export default function Header(props) {
   let title = "";
 
   if (location.pathname === "/") {
-    title = "XOCOALT";
+    title = "";
   } else if (location.pathname.slice(1).split("/").length !== 1) {
     let lang = location.pathname.slice(1).split("/")[0];
     title =
@@ -65,15 +65,15 @@ export default function Header(props) {
     title = location.pathname.slice(1).split("/")[0];
   }
 
+  const size = useMediaQuery(theme.breakpoints.up("sm")) ? "h2" : "h3";
+
   return (
     <div className={classes.header}>
-      <Typography
-        variant={useMediaQuery(theme.breakpoints.up("sm")) ? "h2" : "h3"}
-        color="secondary"
-        className={classes.title}
-      >
-        {title}
-      </Typography>
+      {title !== "" && (
+        <Typography variant={size} color="secondary" className={classes.title}>
+          {title}
+        </Typography>
+      )}
       {user && (
         <Button
           color="secondary"

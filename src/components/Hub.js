@@ -13,7 +13,8 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
-import LessonCard from "../components/LessonCard";
+import LessonCard from "./LessonCard";
+import SubjectPage from "./SubjectPage"
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 
@@ -52,8 +53,8 @@ export default function Hub(props) {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [target, setTarget] = useState("french");
+  const [subject, setSubject] = useState(undefined)
   const [languages, setLanguages] = useState([]);
-
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
@@ -133,6 +134,7 @@ export default function Hub(props) {
         </Select>
       </div>
       <div className={classes.cardContainer}>{cards}</div>
+      {/* <SubjectPage lang={target} subject={subject} /> */}
       {localStorage.results !== undefined && (
         <Button
           variant="contained"
