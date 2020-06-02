@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     scrollbarColor: "#1c1e1f #2a2c2e",
     flexDirection: "column",
     height: "calc(100% - 20px)",
-    marginLeft: theme.spacing(9) + 1,
+    marginLeft: theme.spacing(7) + 1,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,

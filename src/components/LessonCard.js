@@ -1,18 +1,7 @@
 import React from "react";
-import {
-  Typography,
-  makeStyles,
-  Paper,
-} from "@material-ui/core";
+import { Typography, makeStyles, Paper } from "@material-ui/core";
 
-import { useHistory } from "react-router-dom";
-
-import {
-  capitalizeFirstLetter,
-} from "../model/utils";
-
-import * as firebase from "firebase/app";
-import "firebase/auth";
+import { capitalizeFirstLetter } from "../model/utils";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -26,76 +15,22 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: 25,
-  }
+  },
 }));
 
-export default function LessonCard(props) {
+export default function LessonCard({ setSubject, subject }) {
   const classes = useStyles();
-  const history = useHistory();
-
-  const setOpenDialog = props.setOpenDialog;
-
-  const user = firebase.auth().currentUser
-
-  const defaultLanguage =
-    user.languages !== undefined
-      ? Object.keys(user.languages)[0]
-      : "french";
-
-  let currentChap = undefined;
-  try {
-    currentChap = user.languages[defaultLanguage][props.type].current;
-  } catch {}
-
-  const chooseSubject = (chap) => {
-    const defaultSourceLanguage =
-      user.languages !== undefined
-        ? Object.keys(user.languages)[0]
-        : "english";
-    const defaultDestLanguage =
-      user.languages !== undefined
-        ? Object.keys(user.languages[defaultSourceLanguage])[0]
-        : "french";
-    if (localStorage.getItem("results")) {
-      localStorage.removeItem("results");
-    }
-    chap =
-      chap !== undefined
-        ? chap
-        : currentChap !== undefined
-        ? currentChap
-        : props.chapters[0].title;
-    history.push(
-      "/" +
-        defaultSourceLanguage.slice(0, 2) +
-        defaultDestLanguage.slice(0, 2) +
-        "/" +
-        props.type +
-        "/" +
-        chap
-    );
-  };
-
-  const passInfo = (chap) => {
-    localStorage.chapToResume = JSON.stringify({
-      title: chap,
-      type: props.type,
-    });
-    if (localStorage.results !== undefined) {
-      setOpenDialog(true);
-    } else {
-      chooseSubject(chap);
-    }
-  };
 
   return (
     <Paper
       className={classes.card}
       onClick={(e) => {
-        passInfo(props.chapters[0].title);
+        setSubject(subject);
       }}
     >
-      <Typography className={classes.title}>{capitalizeFirstLetter(props.type)}</Typography>
+      <Typography className={classes.title}>
+        {capitalizeFirstLetter(subject)}
+      </Typography>
     </Paper>
   );
 }

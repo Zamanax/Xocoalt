@@ -32,8 +32,8 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
-    padding: 50,
+    justifyContent: "space-evenly",
+    padding: 30,
   },
   target: {
     textTransform: "capitalize",
@@ -68,9 +68,8 @@ export default function Hub(props) {
         setCards(
           Object.keys(val).map((subject, i) => (
             <LessonCard
-              type={subject}
-              chapters={val[subject]}
-              setOpenDialog={setOpenDialog}
+              subject={subject}
+              setSubject={setSubject}
               key={i}
             />
           ))
@@ -134,7 +133,7 @@ export default function Hub(props) {
         </Select>
       </div>
       <div className={classes.cardContainer}>{cards}</div>
-      {/* <SubjectPage lang={target} subject={subject} /> */}
+      <SubjectPage lang={target} subject={subject} setOpenDialog={setOpenDialog} />
       {localStorage.results !== undefined && (
         <Button
           variant="contained"
